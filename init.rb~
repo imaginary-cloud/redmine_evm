@@ -7,9 +7,7 @@ Redmine::Plugin.register :redmine_evm do
   url 'http://imaginarycloud.com'
   author_url 'mailto:jcosta@imaginarycloud.com'
 
-  project_module :ratios do
-	 permission :ratios, { :ratios => [:index] }, :public => true
-  end
+  permission :ratios, { :ratios => [:index] }, :public => true
   menu :project_menu, :ratios, { :controller => 'ratios', :action => 'index' }, :caption => 'EVM', :after => :files
 
 

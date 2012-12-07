@@ -13,13 +13,15 @@ module IndicatorsLogic
 			ary_reported_time_week_year = my_project.time_entries.sum(:hours, :group =>[:tweek, :tyear], :order=> [:tyear, :tweek])
 			ary_all_issues = my_project.issues
 		end
-
+		#ary_reported_time_week_year is ACTUAL COST
+		Rails.logger.info "Este e o array com values do entity: #{ary_reported_time_week_year}"
 		return [ary_reported_time_week_year, ary_all_issues]
 	end
 	
 		
 	def self.calc_indicators(my_project_or_version, ary_reported_time_week_year, ary_all_issues)
 
+		#This part will determine first and last date in entity
 		check_end_date = my_project_or_version.due_date || Time.now.to_date
 		check_ary_reported_time_week_year = ary_reported_time_week_year.empty? ? Time.now.to_date : Date.ordinal(ary_reported_time_week_year.keys.last[1], ary_reported_time_week_year.keys.last[0]*7-3)
 		check_ary_all_issues = ary_all_issues.empty? ? Time.now.to_date : ary_all_issues.maximum(:start_date)
@@ -27,17 +29,23 @@ module IndicatorsLogic
 		
 		ary_weeks_years = []
 		
+		#This will generate a array with weeks and years from initial entity date to entity last date known
+		#It will serve as keys for hash containing values
+		#!!!!!  ATTENTION - TIME ENTRIES BEFORE START DATE AREN'T CONSIDERED - MUST CHANGE THAT!!!!
 		real_start_date = [(my_project_or_version.start_date.nil? ? (Time.now.to_date - 1.day): my_project_or_version.start_date.beginning_of_week), (ary_reported_time_week_year.empty? ? Time.now.to_date : Date.ordinal(ary_reported_time_week_year.keys.first[1], ary_reported_time_week_year.keys.first[0]*7-3))].min
-		
+		#real_start_date = my_project_or_version.start_date.nil? ? (Time.now.to_date - 1.day): my_project_or_version.start_date.beginning_of_week
+		Rails.logger.info "Este e a start date : #{real_start_date.to_s}"
 		while real_start_date < my_project_or_version_end_date + 1.week
 			ary_weeks_years << [real_start_date.cweek, real_start_date.cwyear]
 			real_start_date += 1.week
 		end	
 		
+		Rails.logger.info "Este e o array das dates : #{ary_weeks_years}"
 		hash_weeks_years = {}
 		ary_weeks_years.each{|e| hash_weeks_years[e] = [0,0,0]}
 		@done_ratio = 0
 		
+		#This will iterate from all issues to retrieve data	
 		ary_all_issues.each do |issue|
 
 				start_issue_date = issue.start_date? ? issue.start_date : my_project_or_version.start_date
@@ -66,8 +74,10 @@ module IndicatorsLogic
 		sum_earned = 0
 		
 		hash_weeks_years.each do |k,v|
+			#This is actual cost per week
 			sum_real += ary_reported_time_week_year.has_key?(k)? ary_reported_time_week_year[k] : 0
 			v[0] = sum_real
+			#This is budget cost per week
 			sum_planned += v[1]
 			v[1] = sum_planned
 			sum_earned += v[2]
@@ -77,6 +87,7 @@ module IndicatorsLogic
 
 		@cpi = hash_weeks_years.values.last[0].zero? ? 0 : hash_weeks_years.values.last[2]/hash_weeks_years.values.last[0]
 		@spi = hash_weeks_years.values.last[1].zero? ? 0 : hash_weeks_years.values.last[2]/hash_weeks_years.values.last[1]
+		Rails.logger.info "Este e o array com values do calc: #{@ary_data_week_years}"
 		return [@ary_data_week_years, @cpi, @spi]
 	
 	end
