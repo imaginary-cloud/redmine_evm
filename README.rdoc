@@ -24,13 +24,16 @@ V0.9.0 (05-Dec-2012)
 	Hours are presented in a cummulated fashion over time, shown in linear format which serves as a visual 
 	indicator to performance obtained.
 	Also included are CPI and SPI indicators.
-	Permissions are 
+	Permissions are set to br public. This plugin will act as a module, therefore must be activated on
+	project level.
 	Charts are provided by Google Charts. Live connection to internet is required to generate charts.
 	
 ==Installation:
 	
-	1) Downloading tarball.
-	2) Extract tarball to {redmine_root}/plugins/redmine_evm/	
+	
+	1) Download tarball
+	2) cd {redmine_root}/plugins/; mkdir redmine_evm
+	3) Extract files to {redmine_root}/plugins/redmine_evm/	
 	
 
 ==Keywords:
