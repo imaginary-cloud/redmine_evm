@@ -25,5 +25,5 @@
 
 /.bundle
 /Gemfile.local
-/.idea/*
+/.idea
 .svn
