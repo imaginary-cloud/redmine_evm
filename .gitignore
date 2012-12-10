@@ -22,6 +22,8 @@
 /vendor/cache
 /vendor/rails
 *.rbc
+*.*~
+*~
 
 /.bundle
 /Gemfile.local
