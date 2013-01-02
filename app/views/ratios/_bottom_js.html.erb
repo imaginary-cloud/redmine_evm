@@ -1,16 +1,14 @@
-
 <div id="chart <%= name %>" class="goocharts"></div>
 <div id="gauge_cpi <%= name %>" class="googauges"></div>
 <div id="gauge_spi <%= name %>" class="googauges"></div>
 <div style="clear:both;"></div>
 <script type="text/javascript">
-    drawChart();
-    drawCpi();
-    drawSpi();
+	drawChart();
+	drawCpi();
+	drawSpi();
 
 	function drawChart() {
-		var data = new google.visualization.arrayToDataTable(<%=raw @proj_or_vers_indicators[0] %>);
-
+		var data = new google.visualization.arrayToDataTable(<%=raw @proj_or_vers_indicators[0].to_json %>);
 		var options = {
 		title: 'EVM Indicators - <%= name %>',
 		series: {0:{color: 'red'},
@@ -18,7 +16,6 @@
 		       2:{color: 'green'}},
 		vAxis: {title: 'Hours',  titleTextStyle: {color: 'red'}}
 		};
-
 		var chart = new google.visualization.LineChart(document.getElementById("chart <%= name %>"));
 		chart.draw(data, options);
 	}
@@ -27,10 +24,8 @@
 		// Create and populate the data table.
 		var data_gauge = new google.visualization.arrayToDataTable([
 		  ['Label', 'Value'],
-		  ['CPI', <%=raw @proj_or_vers_indicators[1].round(3) %>]
+		  ['CPI', <%= raw (@proj_or_vers_indicators[1] * 1000).to_f.round / 1000 %>]
 		]);
-	
-	 
 		var options_g = {
 		  redFrom: 0, redTo: 0.85,
 		  yellowFrom:0.85, yellowTo: 1,
@@ -38,7 +33,6 @@
 		  minorTicks:5,
 		  min:0, max:2
 		};
-
 		// Create and draw the visualization.
 		var gauge= new google.visualization.Gauge(document.getElementById("gauge_cpi <%= name %>"));
 		gauge.draw(data_gauge, options_g);
@@ -48,10 +42,8 @@
 		// Create and populate the data table.
 		var data_gauges = new google.visualization.arrayToDataTable([
 		  ['Label', 'Value'],
-		  ['SPI', <%=raw @proj_or_vers_indicators[2].round(3) %>]
+		  ['SPI', <%= raw (@proj_or_vers_indicators[2] * 1000).to_f.round / 1000 %>]
 		]);
-	
-	 
 		var options_gs = {
 		  redFrom: 0, redTo: 0.85,
 		  yellowFrom:0.85, yellowTo: 1,
@@ -59,7 +51,6 @@
 		  minorTicks:5,
 		  min:0, max:2
 		};
-
 		// Create and draw the visualization.
 		var gauge= new google.visualization.Gauge(document.getElementById("gauge_spi <%= name %>"));
 		gauge.draw(data_gauges, options_gs);
