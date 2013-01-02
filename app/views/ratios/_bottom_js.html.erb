@@ -8,7 +8,7 @@
     drawSpi();
 
 	function drawChart() {
-		var data = new google.visualization.arrayToDataTable(<%=raw @proj_or_vers_indicators[0] %>);
+		var data = new google.visualization.arrayToDataTable(<%=raw @proj_or_vers_indicators[0].to_json %>);
 		var options = {
 		title: 'EVM Indicators - <%= name %>',
 		series: {0:{color: 'red'},
@@ -24,7 +24,7 @@
 		// Create and populate the data table.
 		var data_gauge = new google.visualization.arrayToDataTable([
 		  ['Label', 'Value'],
-		  ['CPI', <%=raw @proj_or_vers_indicators[1].round(3) %>]
+		  ['CPI', <%= raw (@proj_or_vers_indicators[1] * 1000).to_f.round / 1000 %>]
 		]);
 		var options_g = {
 		  redFrom: 0, redTo: 0.85,
@@ -42,7 +42,7 @@
 		// Create and populate the data table.
 		var data_gauges = new google.visualization.arrayToDataTable([
 		  ['Label', 'Value'],
-		  ['SPI', <%=raw @proj_or_vers_indicators[2].round(3) %>]
+		  ['SPI', <%= raw (@proj_or_vers_indicators[2] * 1000).to_f.round / 1000 %>]
 		]);
 		var options_gs = {
 		  redFrom: 0, redTo: 0.85,

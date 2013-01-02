@@ -40,7 +40,7 @@ module IndicatorsLogic
 				estimated_time = issue.estimated_hours? ? issue.estimated_hours : 0
 				@done_ratio = (issue.done_ratio / 100.0)
 				ary_dates = (start_issue_date..end_issue_date).to_a
-				ary_dates.delete_if{|x| x.saturday? || x.sunday?}
+				ary_dates.delete_if{|x| x.wday == 5 || x.wday == 6}
 				if ary_dates.any? && estimated_time != 0
 					hoursPerDay = estimated_time / ary_dates.size
 					ary_dates.each do |day|
@@ -62,7 +62,11 @@ module IndicatorsLogic
 			v[1] = sum_planned
 			sum_earned += v[2]
 			v[2] = sum_earned
-			@ary_data_week_years.push(Array[k[0].to_s + "/" + k[1].to_s, v[0].round(2), v[1].round(2), v[2].round(2)])
+			@ary_data_week_years.push(
+				Array[k[0].to_s + "/" + k[1].to_s,
+							 ((v[0] * 100).to_f).round / 100,
+							 ((v[1] * 100).to_f).round / 100,
+							 ((v[2] * 100).to_f).round / 100])
 		end
 		@cpi = hash_weeks_years.values.last[0].zero? ? 0 : hash_weeks_years.values.last[2]/hash_weeks_years.values.last[0]
 		@spi = hash_weeks_years.values.last[1].zero? ? 0 : hash_weeks_years.values.last[2]/hash_weeks_years.values.last[1]
