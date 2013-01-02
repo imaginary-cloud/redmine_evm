@@ -55,7 +55,8 @@ module IndicatorsLogic
 		sum_real = 0
 		sum_planned = 0
 		sum_earned = 0
-		hash_weeks_years.each do |k,v|
+		ary_weeks_years.each do |k|
+			v = hash_weeks_years[k]
 			sum_real += ary_reported_time_week_year.has_key?(k)? ary_reported_time_week_year[k] : 0
 			v[0] = sum_real
 			sum_planned += v[1]
@@ -64,9 +65,9 @@ module IndicatorsLogic
 			v[2] = sum_earned
 			@ary_data_week_years.push(
 				Array[k[0].to_s + "/" + k[1].to_s,
-							 ((v[0] * 100).to_f).round / 100,
-							 ((v[1] * 100).to_f).round / 100,
-							 ((v[2] * 100).to_f).round / 100])
+							 (v[0] * 100).round / 100.0,
+							 (v[1] * 100).round / 100.0,
+							 (v[2] * 100).round / 100.0])
 		end
 		@cpi = hash_weeks_years.values.last[0].zero? ? 0 : hash_weeks_years.values.last[2]/hash_weeks_years.values.last[0]
 		@spi = hash_weeks_years.values.last[1].zero? ? 0 : hash_weeks_years.values.last[2]/hash_weeks_years.values.last[1]
