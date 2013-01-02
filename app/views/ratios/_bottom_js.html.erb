@@ -3,9 +3,9 @@
 <div id="gauge_spi <%= name %>" class="googauges"></div>
 <div style="clear:both;"></div>
 <script type="text/javascript">
-    drawChart();
-    drawCpi();
-    drawSpi();
+	drawChart();
+	drawCpi();
+	drawSpi();
 
 	function drawChart() {
 		var data = new google.visualization.arrayToDataTable(<%=raw @proj_or_vers_indicators[0].to_json %>);
