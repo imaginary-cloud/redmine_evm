@@ -6,15 +6,11 @@
     <%= stylesheet_link_tag 'ratios', :plugin => 'redmine_evm' %>
 <% end %>
 
-<!--- Load javascript functions --->
-<%= render :partial=>"ratios/bottom_js", :locals=>{:name=>@project.name}%>
-
-<!--- Iterate through versions and render indicators --->
-<% @project.versions.where(:status=>"open").each do |my_version|%>
+<% @evms.each do |evm| %>
 <%= render "ratios/head_js" %>
-<% proj_or_vers_data=IndicatorsLogic::retrive_data(my_version) %>
-<% @proj_or_vers_indicators=IndicatorsLogic::calc_indicators(my_version, proj_or_vers_data[0], proj_or_vers_data[1]) %>
-<%= render :partial=>"ratios/bottom_js", :locals=>{:name=>my_version.name}%>
+    <%= render :partial=>"ratios/bottom_js", :locals => {:evm => evm} %>
 <% end %>
 
-
+<% other_formats_links do |f| %>
+    <%= f.link_to 'CSV', :url => params %>
+<% end %>
