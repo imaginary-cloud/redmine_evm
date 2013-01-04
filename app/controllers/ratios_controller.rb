@@ -2,6 +2,9 @@ class RatiosController < ApplicationController
 	unloadable
 	include IndicatorsLogic
 
+	helper :ratios
+	include RatiosHelper
+
 	def index
 		project = Project.find(params[:id])
 		data = IndicatorsLogic::retrive_data(project)
@@ -16,6 +19,12 @@ class RatiosController < ApplicationController
 					:name => my_version.name,
 					:indicators => IndicatorsLogic::calc_indicators(my_version, data[0], data[1])
 				}
+		end
+		respond_to do |format|
+			format.html { render :action => 'index' }
+			format.csv {
+				send_data(evm_csv(@evms), :type => 'text/csv; header=present', :filename => 'evm.csv')
+			}
 		end
 	end
 end

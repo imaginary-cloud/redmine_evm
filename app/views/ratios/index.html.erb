@@ -10,3 +10,7 @@
 <%= render "ratios/head_js" %>
     <%= render :partial=>"ratios/bottom_js", :locals => {:evm => evm} %>
 <% end %>
+
+<% other_formats_links do |f| %>
+    <%= f.link_to 'CSV', :url => params %>
+<% end %>
