@@ -71,7 +71,7 @@ module IndicatorsLogic
 		end
 		@cpi = hash_weeks_years.values.last[0].zero? ? 0 : hash_weeks_years.values.last[2]/hash_weeks_years.values.last[0]
 		@spi = hash_weeks_years.values.last[1].zero? ? 0 : hash_weeks_years.values.last[2]/hash_weeks_years.values.last[1]
-		return [@ary_data_week_years, @cpi, @spi]
+		return [@ary_data_week_years, (@cpi * 1000).round / 1000.0, (@spi * 1000).round / 1000.0]
 	end
 
 	def self.included(base)
