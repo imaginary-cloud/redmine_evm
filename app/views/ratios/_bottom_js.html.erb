@@ -1,6 +1,6 @@
-<div id="chart <%= name %>" class="goocharts"></div>
-<div id="gauge_cpi <%= name %>" class="googauges"></div>
-<div id="gauge_spi <%= name %>" class="googauges"></div>
+<div id="chart <%= evm[:name] %>" class="goocharts"></div>
+<div id="gauge_cpi <%= evm[:name] %>" class="googauges"></div>
+<div id="gauge_spi <%= evm[:name] %>" class="googauges"></div>
 <div style="clear:both;"></div>
 <%= javascript_tag do %>
 	drawChart();
@@ -8,15 +8,15 @@
 	drawSpi();
 
 	function drawChart() {
-		var data = new google.visualization.arrayToDataTable(<%=raw @proj_or_vers_indicators[0].to_json %>);
+		var data = new google.visualization.arrayToDataTable(<%= raw evm[:indicators][0].to_json %>);
 		var options = {
-		title: 'EVM Indicators - <%= name %>',
+		title: 'EVM Indicators - <%= evm[:name] %>',
 		series: {0:{color: 'red'},
 		       1:{color: 'blue'},
 		       2:{color: 'green'}},
 		vAxis: {title: 'Hours',  titleTextStyle: {color: 'red'}}
 		};
-		var chart = new google.visualization.LineChart(document.getElementById("chart <%= name %>"));
+		var chart = new google.visualization.LineChart(document.getElementById("chart <%= evm[:name] %>"));
 		chart.draw(data, options);
 	}
 
@@ -24,7 +24,7 @@
 		// Create and populate the data table.
 		var data_gauge = new google.visualization.arrayToDataTable([
 		  ['Label', 'Value'],
-		  ['CPI', <%= (@proj_or_vers_indicators[1] * 1000).round / 1000.0 %>]
+		  ['CPI', <%= (evm[:indicators][1] * 1000).round / 1000.0 %>]
 		]);
 		var options_g = {
 		  redFrom: 0, redTo: 0.85,
@@ -34,7 +34,7 @@
 		  min:0, max:2
 		};
 		// Create and draw the visualization.
-		var gauge= new google.visualization.Gauge(document.getElementById("gauge_cpi <%= name %>"));
+		var gauge= new google.visualization.Gauge(document.getElementById("gauge_cpi <%= evm[:name] %>"));
 		gauge.draw(data_gauge, options_g);
 	}  
 
@@ -42,7 +42,7 @@
 		// Create and populate the data table.
 		var data_gauges = new google.visualization.arrayToDataTable([
 		  ['Label', 'Value'],
-		  ['SPI', <%= (@proj_or_vers_indicators[2] * 1000).round / 1000.0 %>]
+		  ['SPI', <%= (evm[:indicators][2] * 1000).round / 1000.0 %>]
 		]);
 		var options_gs = {
 		  redFrom: 0, redTo: 0.85,
@@ -52,7 +52,7 @@
 		  min:0, max:2
 		};
 		// Create and draw the visualization.
-		var gauge= new google.visualization.Gauge(document.getElementById("gauge_spi <%= name %>"));
+		var gauge= new google.visualization.Gauge(document.getElementById("gauge_spi <%= evm[:name] %>"));
 		gauge.draw(data_gauges, options_gs);
 	}   
 <% end %>
