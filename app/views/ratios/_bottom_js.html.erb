@@ -2,7 +2,7 @@
 <div id="gauge_cpi <%= name %>" class="googauges"></div>
 <div id="gauge_spi <%= name %>" class="googauges"></div>
 <div style="clear:both;"></div>
-<script type="text/javascript">
+<%= javascript_tag do %>
 	drawChart();
 	drawCpi();
 	drawSpi();
@@ -55,4 +55,4 @@
 		var gauge= new google.visualization.Gauge(document.getElementById("gauge_spi <%= name %>"));
 		gauge.draw(data_gauges, options_gs);
 	}   
-</script>
+<% end %>
