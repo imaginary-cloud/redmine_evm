@@ -7,14 +7,12 @@
 <% end %>
 
 <!--- Load javascript functions --->
-<%= render :partial=>"ratios/bottom_js", :locals=>{:name=>@project.name}%>
+<%= render :partial=>"ratios/bottom_js", :locals => {:name => @project.name} %>
 
 <!--- Iterate through versions and render indicators --->
-<% @project.versions.where(:status=>"open").each do |my_version|%>
+<% @project.versions.where(:status=>"open").each do |my_version| %>
 <%= render "ratios/head_js" %>
-<% proj_or_vers_data=IndicatorsLogic::retrive_data(my_version) %>
-<% @proj_or_vers_indicators=IndicatorsLogic::calc_indicators(my_version, proj_or_vers_data[0], proj_or_vers_data[1]) %>
-<%= render :partial=>"ratios/bottom_js", :locals=>{:name=>my_version.name}%>
+    <% proj_or_vers_data = IndicatorsLogic::retrive_data(my_version) %>
+    <% @proj_or_vers_indicators = IndicatorsLogic::calc_indicators(my_version, proj_or_vers_data[0], proj_or_vers_data[1]) %>
+    <%= render :partial=>"ratios/bottom_js", :locals => {:name => my_version.name} %>
 <% end %>
-
-
