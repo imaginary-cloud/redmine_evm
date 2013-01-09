@@ -6,8 +6,9 @@
     <%= stylesheet_link_tag 'ratios', :plugin => 'redmine_evm' %>
 <% end %>
 
-<% @evms.each do |evm| %>
 <%= render "ratios/head_js" %>
+
+<% @evms.each do |evm| %>
     <%= render :partial=>"ratios/bottom_js", :locals => {:evm => evm} %>
 <% end %>
 
