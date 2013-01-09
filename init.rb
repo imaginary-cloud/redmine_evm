@@ -1,5 +1,4 @@
 Redmine::Plugin.register :redmine_evm do
-	
   name 'Redmine Evm plugin'
   author 'ImaginaryCloud'
   description 'Graphical indicators for EV Management'
@@ -8,9 +7,9 @@ Redmine::Plugin.register :redmine_evm do
   author_url 'mailto:info@imaginarycloud.com'
 
   project_module :evm do
-	 permission :ratios, { :ratios => [:index] }, :public => true
+    permission :ratios, { :ratios => [:index] }, :public => true
   end
-  menu :project_menu, :ratios, { :controller => 'ratios', :action => 'index' }, :caption => 'EVM', :after => :files
-
-
+  menu :project_menu, :ratios,
+       { :controller => 'ratios', :action => 'index' },
+       :caption => 'EVM', :after => :files
 end
