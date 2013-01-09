@@ -6,14 +6,14 @@ class RatiosController < ApplicationController
 	include RatiosHelper
 
 	def index
-		project = Project.find(params[:id])
-		data = IndicatorsLogic::retrive_data(project)
+		@project = Project.find(params[:id])
+		data = IndicatorsLogic::retrive_data(@project)
 		@evms = []
 		@evms << {
-					:name => project.name,
-					:indicators => IndicatorsLogic::calc_indicators(project, data[0], data[1])
+					:name => @project.name,
+					:indicators => IndicatorsLogic::calc_indicators(@project, data[0], data[1])
 				}
-		project.versions.where(:status=>"open").each do |my_version|
+		@project.versions.where(:status=>"open").each do |my_version|
 			data = IndicatorsLogic::retrive_data(my_version)
 			@evms << {
 					:name => my_version.name,
