@@ -32,13 +32,13 @@ module IndicatorsLogic
 
 		hash_weeks_years = {}
 		ary_weeks_years.each{|e| hash_weeks_years[e] = [0,0,0]}
-		@done_ratio = 0
+		done_ratio = 0
 
 		ary_all_issues.each do |issue|
 				start_issue_date = issue.start_date? ? issue.start_date : my_project_or_version.start_date
 				end_issue_date = issue.due_date? ? issue.due_date : my_project_or_version_end_date
 				estimated_time = issue.estimated_hours? ? issue.estimated_hours : 0
-				@done_ratio = (issue.done_ratio / 100.0)
+				done_ratio = (issue.done_ratio / 100.0)
 				ary_dates = (start_issue_date..end_issue_date).to_a
 				ary_dates.delete_if{|x| x.wday == 5 || x.wday == 6}
 				if ary_dates.any? && estimated_time != 0
@@ -47,11 +47,11 @@ module IndicatorsLogic
 						week = day.cweek
 						year = day.cwyear
 						hash_weeks_years[[week,year]][1] += hoursPerDay
-						hash_weeks_years[[week,year]][2] += hoursPerDay * @done_ratio
+						hash_weeks_years[[week,year]][2] += hoursPerDay * done_ratio
 					end
 				end
 		end
-		@ary_data_week_years = [Array['week', 'ActualCost', 'PlannedCost', 'EarnedValue']]
+		ary_data_week_years = [Array['week', 'ActualCost', 'PlannedCost', 'EarnedValue']]
 		sum_real = 0
 		sum_planned = 0
 		sum_earned = 0
@@ -63,15 +63,15 @@ module IndicatorsLogic
 			v[1] = sum_planned
 			sum_earned += v[2]
 			v[2] = sum_earned
-			@ary_data_week_years.push(
+			ary_data_week_years.push(
 				Array[k[0].to_s + "/" + k[1].to_s,
 							 (v[0] * 100).round / 100.0,
 							 (v[1] * 100).round / 100.0,
 							 (v[2] * 100).round / 100.0])
 		end
-		@cpi = hash_weeks_years.values.last[0].zero? ? 0 : hash_weeks_years.values.last[2]/hash_weeks_years.values.last[0]
-		@spi = hash_weeks_years.values.last[1].zero? ? 0 : hash_weeks_years.values.last[2]/hash_weeks_years.values.last[1]
-		return [@ary_data_week_years, (@cpi * 1000).round / 1000.0, (@spi * 1000).round / 1000.0]
+		cpi = hash_weeks_years.values.last[0].zero? ? 0 : hash_weeks_years.values.last[2]/hash_weeks_years.values.last[0]
+		spi = hash_weeks_years.values.last[1].zero? ? 0 : hash_weeks_years.values.last[2]/hash_weeks_years.values.last[1]
+		return [ary_data_week_years, (cpi * 1000).round / 1000.0, (spi * 1000).round / 1000.0]
 	end
 
 	def self.included(base)
