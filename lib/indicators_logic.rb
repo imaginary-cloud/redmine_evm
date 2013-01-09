@@ -21,13 +21,24 @@ module IndicatorsLogic
 
 	def self.calc_indicators(my_project_or_version, ary_reported_time_week_year, ary_all_issues)
 		check_end_date = my_project_or_version.due_date || Time.now.to_date
-		check_ary_reported_time_week_year = ary_reported_time_week_year.empty? ? Time.now.to_date : Date.ordinal(ary_reported_time_week_year.keys.last[1], ary_reported_time_week_year.keys.last[0]*7-3)
-		check_ary_all_issues = ary_all_issues.empty? ? Time.now.to_date : ary_all_issues.maximum(:start_date)
-		my_project_or_version_end_date = [check_end_date,check_ary_reported_time_week_year, check_ary_all_issues].max
-
+		check_ary_reported_time_week_year =
+			ary_reported_time_week_year.empty? ? Time.now.to_date :
+				Date.ordinal(ary_reported_time_week_year.keys.last[1],
+											 ary_reported_time_week_year.keys.last[0] * 7 - 3)
+		check_ary_all_issues = ary_all_issues.empty? ? Time.now.to_date :
+																													 ary_all_issues.maximum(:start_date)
+		my_project_or_version_end_date =
+			[check_end_date,check_ary_reported_time_week_year, check_ary_all_issues].max
 		ary_weeks_years = []
-
-		real_start_date = [(my_project_or_version.start_date.nil? ? (Time.now.to_date - 1.day): my_project_or_version.start_date.beginning_of_week), (ary_reported_time_week_year.empty? ? Time.now.to_date : Date.ordinal(ary_reported_time_week_year.keys.first[1], ary_reported_time_week_year.keys.first[0]*7-3))].min
+		real_start_date = [
+					(my_project_or_version.start_date.nil? ?
+						(Time.now.to_date - 1.day) :
+							my_project_or_version.start_date.beginning_of_week),
+					(ary_reported_time_week_year.empty? ?
+						Time.now.to_date :
+						Date.ordinal(ary_reported_time_week_year.keys.first[1],
+													 ary_reported_time_week_year.keys.first[0] * 7 - 3))
+				].min
 
 		while real_start_date < my_project_or_version_end_date + 1.week
 			ary_weeks_years << [real_start_date.cweek, real_start_date.cwyear]
