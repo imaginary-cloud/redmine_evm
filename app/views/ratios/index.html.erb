@@ -10,8 +10,8 @@
 
 <% @evms.each do |evm| %>
     <%= render :partial=>"ratios/bottom_js", :locals => {:evm => evm} %>
-<% end %>
-
-<% other_formats_links do |f| %>
-    <%= f.link_to 'CSV' %>
+    <% other_formats_links do |f| %>
+        <% csv_params = evm[:version].present? ? {"version" => evm[:version].id} : {} %>
+        <%= f.link_to 'CSV', :url => csv_params %>
+    <% end %>
 <% end %>
