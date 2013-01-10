@@ -10,7 +10,7 @@
 	function drawChart() {
 		var data = new google.visualization.arrayToDataTable(<%= raw evm[:indicators][0].to_json %>);
 		var options = {
-		title: 'EVM Indicators - <%= evm[:name] %>',
+		title: '<%= evm[:name] %>',
 		series: {0:{color: 'red'},
 		       1:{color: 'blue'},
 		       2:{color: 'green'}},
