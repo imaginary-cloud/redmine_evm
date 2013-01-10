@@ -1,8 +1,7 @@
 module RatiosHelper
-	def evm_csv(evms)
+	def evm_csv(evm)
 		decimal_separator = l(:general_csv_decimal_separator)
 		export = FCSV.generate(:col_sep => l(:general_csv_separator)) do |csv|
-			evms.each do |evm|
 				fields = ["", "cpi", "spi"]
 				csv << fields.collect {|c| Redmine::CodesetUtil.from_utf8(
 																		c,
@@ -19,7 +18,6 @@ module RatiosHelper
 																		 c.to_s.gsub('.', decimal_separator),
 																		 l(:general_csv_encoding))}
 				end
-			end
 		end
 		export
 	end

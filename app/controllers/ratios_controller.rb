@@ -29,7 +29,7 @@ class RatiosController < ApplicationController
 					evm_hash = evm(@project)
 					csv_fn = "evm-project-#{@project.id}.csv"
 				end
-				send_data(evm_csv([evm_hash]), :type => 'text/csv; header=present', :filename => csv_fn)
+				send_data(evm_csv(evm_hash), :type => 'text/csv; header=present', :filename => csv_fn)
 			end
 		end
 	end
