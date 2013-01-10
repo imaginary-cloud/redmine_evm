@@ -7,18 +7,12 @@ class RatiosController < ApplicationController
 
 	def index
 		@project = Project.find(params[:id])
-		data = IndicatorsLogic::retrive_data(@project)
 		@evms = []
-		@evms << {
-					:name => @project.name,
-					:indicators => IndicatorsLogic::calc_indicators(@project, data[0], data[1])
-				}
+		data = IndicatorsLogic::retrive_data(@project)
+		@evms << evm(@project)
 		@project.versions.where(:status=>"open").each do |my_version|
 			data = IndicatorsLogic::retrive_data(my_version)
-			@evms << {
-					:name => my_version.name,
-					:indicators => IndicatorsLogic::calc_indicators(my_version, data[0], data[1])
-				}
+			@evms << evm(my_version)
 		end
 		respond_to do |format|
 			format.html { render :action => 'index' }
@@ -26,5 +20,13 @@ class RatiosController < ApplicationController
 				send_data(evm_csv(@evms), :type => 'text/csv; header=present', :filename => 'evm.csv')
 			}
 		end
+	end
+
+private
+
+	def evm(proj_or_ver)
+		data = IndicatorsLogic::retrive_data(proj_or_ver)
+		{ :name => proj_or_ver.name,
+			:indicators => IndicatorsLogic::calc_indicators(proj_or_ver, data[0], data[1]) }
 	end
 end
