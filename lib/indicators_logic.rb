@@ -20,15 +20,22 @@ module IndicatorsLogic
 	end
 
 	def self.calc_indicators(my_project_or_version, ary_reported_time_week_year, ary_all_issues)
+
 		check_end_date = my_project_or_version.due_date || Time.now.to_date
 		check_ary_reported_time_week_year =
 			ary_reported_time_week_year.empty? ? Time.now.to_date :
 				Date.ordinal(ary_reported_time_week_year.keys.last[1],
 											 ary_reported_time_week_year.keys.last[0] * 7 - 3)
-		check_ary_all_issues = ary_all_issues.empty? ? Time.now.to_date :
-																													 ary_all_issues.maximum(:start_date)
-		my_project_or_version_end_date =
-			[check_end_date,check_ary_reported_time_week_year, check_ary_all_issues].max
+
+    if ary_all_issues.maximum(:start_date)  then
+		  check_ary_all_issues = ary_all_issues.empty? ? Time.now.to_date : ary_all_issues.maximum(:start_date)
+      my_project_or_version_end_date =
+          [check_end_date,check_ary_reported_time_week_year, check_ary_all_issues].max
+    else
+              my_project_or_version_end_date =
+                  [check_end_date,check_ary_reported_time_week_year].max
+    end
+
 		ary_weeks_years = []
 		real_start_date = [
 					(my_project_or_version.start_date.nil? ?
@@ -54,17 +61,19 @@ module IndicatorsLogic
 				end_issue_date = issue.due_date? ? issue.due_date : my_project_or_version_end_date
 				estimated_time = issue.estimated_hours? ? issue.estimated_hours : 0
 				done_ratio = (issue.done_ratio / 100.0)
-				ary_dates = (start_issue_date..end_issue_date).to_a
-				ary_dates.delete_if{|x| x.wday == 5 || x.wday == 6}
-				if ary_dates.any? && estimated_time != 0
-					hoursPerDay = estimated_time / ary_dates.size
-					ary_dates.each do |day|
-						week = day.cweek
-						year = day.cwyear
-						hash_weeks_years[[week,year]][1] += hoursPerDay
-						hash_weeks_years[[week,year]][2] += hoursPerDay * done_ratio
-					end
-				end
+        if (not start_issue_date.nil?) && (not end_issue_date.nil?)
+          ary_dates = (start_issue_date..end_issue_date).to_a
+          ary_dates.delete_if{|x| x.wday == 5 || x.wday == 6}
+          if ary_dates.any? && estimated_time != 0
+            hoursPerDay = estimated_time / ary_dates.size
+            ary_dates.each do |day|
+              week = day.cweek
+              year = day.cwyear
+              hash_weeks_years[[week,year]][1] += hoursPerDay
+              hash_weeks_years[[week,year]][2] += hoursPerDay * done_ratio
+            end
+          end
+        end
 		end
 		ary_data_week_years = [Array['week', 'ActualCost', 'PlannedCost', 'EarnedValue']]
 		sum_real = 0
