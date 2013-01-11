@@ -1,9 +1,9 @@
 Redmine::Plugin.register :redmine_evm do
-  name 'Redmine Evm plugin'
-  author 'ImaginaryCloud'
-  description 'Graphical indicators for EV Management'
+  name 'Redmine EVM plugin'
+  author 'Imaginary Cloud (http://imaginarycloud.com)'
+  description 'Graphical indicators for Earned Value Management'
   version '0.9.0'
-  url 'http://imaginarycloud.com'
+  url 'https://github.com/imaginary-cloud/redmine_evm'
   author_url 'mailto:info@imaginarycloud.com'
 
   project_module :evm do
