@@ -28,8 +28,9 @@ V0.9.1 (12-Jan-2012)
 	project level.
 	Charts are provided by Google Charts. Live connection to internet is required to generate charts.
 
+==Screenshots
 
-https://github.com/imaginary-cloud/redmine_evm/blob/master/screenshot.png
+https://raw.github.com/imaginary-cloud/redmine_evm/master/screenshot.png
 
 ==Installation:
 
