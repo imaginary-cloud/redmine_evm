@@ -1,53 +1,56 @@
 = redmine_evm
 
-V0.9.0 (05-Dec-2012)
+V0.9.1 (12-Jan-2012)
 
 ==About
 
-	This plugin generates line graphical indicators, per Project and open Versions, 
+	This plugin generates line graphical indicators, per Project and open Versions,
 	used in EVM (Earned-Value Management).
-	It shows actual cost (hours reported in log time), planned value 
+	It shows actual cost (hours reported in log time), planned value
 	(estimated hours indicated in new issue),
 	and earned value distributed in weeks / years.
 	It also shows cpi and spi indicators.
-	Tested on redmine 2.1.3
+	Tested on redmine 2.2.1
 
 ==Plugin details
 
-	While within a project, this plugin will collect information on hours planned and spent on a 
+	While within a project, this plugin will collect information on hours planned and spent on a
 	project and it's open versions, and present them along with a time scale of weeks per year.
 	It's advisable to fill information on project, version or issues creation about their start date,
 	end date and estimated hours.
 	If such information is not provided it will assume as end date the most likely to be it,
 	such as today's date, for example.
 	Issue estimated hours are distributed equally through issue duration in working days.
-	Hours are presented in a cummulated fashion over time, shown in linear format which serves as a visual 
+	Hours are presented in a cummulated fashion over time, shown in linear format which serves as a visual
 	indicator to performance obtained.
 	Also included are CPI and SPI indicators.
 	Permissions are set to br public. This plugin will act as a module, therefore must be activated on
 	project level.
 	Charts are provided by Google Charts. Live connection to internet is required to generate charts.
-	
+
+
+https://github.com/imaginary-cloud/redmine_evm/blob/master/screenshot.png
+
 ==Installation:
-	
-	
+
+
 	1) Download tarball
 	2) cd {redmine_root}/plugins/; mkdir redmine_evm
-	3) Extract files to {redmine_root}/plugins/redmine_evm/	
-	
+	3) Extract files to {redmine_root}/plugins/redmine_evm/
+
 
 ==Keywords:
-	
+
 	EVM, CPI, SPI, Earned Value Management, Redmine, Plugin
-	
+
 ==Todo:
 	Baselines;
 	Forecast;
 	Cost to Resources;
 	YTD Values, not constant to End Date;
-	
+
 ==License:
 	Copyright © 2012 ImaginaryCloud, imaginarycloud.com. This plugin is licensed under the MIT license.
-	
-	
-	
+
+
+
