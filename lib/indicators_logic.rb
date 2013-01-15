@@ -6,7 +6,7 @@ module IndicatorsLogic
       my_version = project_or_version
       ary_reported_time_week_year =
         my_project.time_entries.where(
-          :issue_id=>Issue.where(:fixed_version_id => my_version.id)).sum(
+          :issue_id => Issue.where(:fixed_version_id => my_version.id)).sum(
             :hours, :group => [:tweek, :tyear], :order => [:tyear, :tweek])
       ary_all_issues = my_version.fixed_issues
     else
@@ -28,10 +28,10 @@ module IndicatorsLogic
     if ary_all_issues.maximum(:start_date)
       check_ary_all_issues = ary_all_issues.empty? ? Time.now.to_date : ary_all_issues.maximum(:start_date)
       my_project_or_version_end_date =
-          [check_end_date,check_ary_reported_time_week_year, check_ary_all_issues].max
+          [check_end_date, check_ary_reported_time_week_year, check_ary_all_issues].max
     else
       my_project_or_version_end_date =
-          [check_end_date,check_ary_reported_time_week_year].max
+          [check_end_date, check_ary_reported_time_week_year].max
     end
     ary_weeks_years = []
     real_start_date = [
@@ -48,7 +48,7 @@ module IndicatorsLogic
       real_start_date += 1.week
     end
     hash_weeks_years = {}
-    ary_weeks_years.each{|e| hash_weeks_years[e] = [0,0,0]}
+    ary_weeks_years.each{|e| hash_weeks_years[e] = [0, 0, 0]}
     done_ratio = 0
     ary_all_issues.each do |issue|
       start_issue_date = issue.start_date? ? issue.start_date : my_project_or_version.start_date
@@ -63,8 +63,8 @@ module IndicatorsLogic
           ary_dates.each do |day|
             week = day.cweek
             year = day.cwyear
-            hash_weeks_years[[week,year]][1] += hoursPerDay
-            hash_weeks_years[[week,year]][2] += hoursPerDay * done_ratio
+            hash_weeks_years[[week, year]][1] += hoursPerDay
+            hash_weeks_years[[week, year]][2] += hoursPerDay * done_ratio
           end
         end
       end
