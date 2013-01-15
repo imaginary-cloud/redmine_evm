@@ -1,13 +1,13 @@
 .googauges{
-	width:150px;
-	height:200px; 
-	margin-top:150px; 
-	margin-left:25px; 
-	float:left;
+  width:150px;
+  height:200px;
+  margin-top:150px;
+  margin-left:25px;
+  float:left;
 }
 
 .goocharts{
-	width:60%; 
-	height:400px; 
-	float:left;
+  width:60%;
+  height:400px;
+  float:left;
 }
