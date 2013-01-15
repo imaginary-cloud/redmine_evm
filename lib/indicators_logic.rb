@@ -7,13 +7,13 @@ module IndicatorsLogic
       ary_reported_time_week_year =
         my_project.time_entries.where(
           :issue_id => Issue.where(:fixed_version_id => my_version.id)).sum(
-            :hours, :group => [:tweek, :tyear], :order => [:tyear, :tweek])
+            :hours, :group => [:tweek, :tyear])
       ary_all_issues = my_version.fixed_issues
     else
       my_project = project_or_version
       ary_reported_time_week_year =
         my_project.time_entries.sum(
-          :hours, :group => [:tweek, :tyear], :order => [:tyear, :tweek])
+          :hours, :group => [:tweek, :tyear])
       ary_all_issues = my_project.issues
     end
     [ary_reported_time_week_year, ary_all_issues]
