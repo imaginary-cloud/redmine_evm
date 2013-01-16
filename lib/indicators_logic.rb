@@ -51,6 +51,7 @@ module IndicatorsLogic
     ary_weeks_years.each{|e| hash_weeks_years[e] = [0,0,0]}
     done_ratio = 0
     ary_all_issues.each do |issue|
+      next if !issue.leaf?
       start_issue_date = issue.start_date? ? issue.start_date : my_project_or_version.start_date
       end_issue_date = issue.due_date? ? issue.due_date : my_project_or_version_end_date
       estimated_time = issue.estimated_hours? ? issue.estimated_hours : 0
