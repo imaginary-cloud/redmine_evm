@@ -88,14 +88,20 @@ module IndicatorsLogic
          (v[1] * 100).round / 100.0,
          (v[2] * 100).round / 100.0])
     end
-    cpi = hash_weeks_years.values.last[0].zero? ?
-            0 : hash_weeks_years.values.last[2] / hash_weeks_years.values.last[0]
-    spi = hash_weeks_years.values.last[1].zero? ?
-            0 : hash_weeks_years.values.last[2] / hash_weeks_years.values.last[1]
+    cpi = calculate_performance_indicator(hash_weeks_years.values.last[2], hash_weeks_years.values.last[0])
+    spi = calculate_performance_indicator(hash_weeks_years.values.last[2], hash_weeks_years.values.last[1])
     [ary_data_week_years, (cpi * 1000).round / 1000.0, (spi * 1000).round / 1000.0]
   end
 
   def self.included(base)
     base.send :helper_method, :calc_indicators, :retrive_data if base.respond_to? :helper_method
   end
+
+  private
+
+  def self.calculate_performance_indicator(earned_value, denominator)
+    denominator == 0 ? 0 : earned_value / denominator
+  end
+
+
 end
