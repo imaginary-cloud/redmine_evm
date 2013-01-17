@@ -37,8 +37,7 @@ class RatiosController < ApplicationController
 private
 
   def evm(proj_or_ver)
-    data = IndicatorsLogic::retrive_data(proj_or_ver)
     { :name => proj_or_ver.name,
-      :indicators => IndicatorsLogic::calc_indicators(proj_or_ver, data[0], data[1]) }
+      :indicators => IndicatorsLogic::calc_indicators(proj_or_ver) }
   end
 end

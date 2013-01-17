@@ -1,25 +1,7 @@
 module IndicatorsLogic
 
-  def self.retrive_data(project_or_version)
-    if project_or_version.instance_of? Version
-      project = project_or_version.project
-      version = project_or_version
-      time_entries_by_week_and_year =
-        project.time_entries.where(
-          :issue_id => Issue.where(:fixed_version_id => version.id)).sum(
-            :hours, :group => [:tweek, :tyear])
-      issues = version.fixed_issues
-    else
-      project = project_or_version
-      time_entries_by_week_and_year =
-        project.time_entries.sum(
-          :hours, :group => [:tweek, :tyear])
-      issues = project.issues
-    end
-    [time_entries_by_week_and_year, issues]
-  end
-
-  def self.calc_indicators(project_or_version, time_entries_by_week_and_year, issues)
+  def self.calc_indicators(project_or_version)
+    time_entries_by_week_and_year, issues = retrive_data(project_or_version)
     end_date = project_or_version.due_date || Time.now.to_date
     check_ary_reported_time_week_year =
       time_entries_by_week_and_year.empty? ? Time.now.to_date :
@@ -49,7 +31,6 @@ module IndicatorsLogic
     end
     hash_weeks_years = {}
     ary_weeks_years.each{|e| hash_weeks_years[e] = [0, 0, 0]}
-    done_ratio = 0
     issues.each do |issue|
       next if !issue.leaf?
       start_issue_date = issue.start_date? ? issue.start_date : project_or_version.start_date
@@ -98,6 +79,25 @@ module IndicatorsLogic
   end
 
   private
+
+  def self.retrive_data(project_or_version)
+    if project_or_version.instance_of? Version
+      project = project_or_version.project
+      version = project_or_version
+      time_entries_by_week_and_year =
+          project.time_entries.where(
+              :issue_id => Issue.where(:fixed_version_id => version.id)).sum(
+              :hours, :group => [:tweek, :tyear])
+      issues = version.fixed_issues
+    else
+      project = project_or_version
+      time_entries_by_week_and_year =
+          project.time_entries.sum(
+              :hours, :group => [:tweek, :tyear])
+      issues = project.issues
+    end
+    return time_entries_by_week_and_year, issues
+  end
 
   def self.calculate_performance_indicator(earned_value, denominator)
     denominator == 0 ? 0 : earned_value / denominator
