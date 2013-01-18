@@ -7,6 +7,7 @@ module IndicatorsLogic
       time_entries_by_week_and_year.empty? ? Time.now.to_date :
         Date.ordinal(time_entries_by_week_and_year.keys.last[1],
                        time_entries_by_week_and_year.keys.last[0] * 7 - 3)
+
     if issues.maximum(:start_date)
       check_ary_all_issues = issues.empty? ? Time.now.to_date : issues.maximum(:start_date)
       my_project_or_version_end_date =
@@ -52,22 +53,17 @@ module IndicatorsLogic
       end
     end
     ary_data_week_years = [['week', 'ActualCost', 'PlannedCost', 'EarnedValue']]
-    sum_real = 0
-    sum_planned = 0
-    sum_earned = 0
+    sum_real, sum_planned, sum_earned = 0,0,0
     ary_weeks_years.each do |k|
       v = hash_weeks_years[k]
-      sum_real += time_entries_by_week_and_year.has_key?(k)? time_entries_by_week_and_year[k] : 0
-      v[0] = sum_real
+      sum_real += time_entries_by_week_and_year.has_key?(k) ? time_entries_by_week_and_year[k] : 0
       sum_planned += v[1]
-      v[1] = sum_planned
       sum_earned += v[2]
-      v[2] = sum_earned
       ary_data_week_years.push(
         [k[0].to_s + "/" + k[1].to_s,
-         (v[0] * 100).round / 100.0,
-         (v[1] * 100).round / 100.0,
-         (v[2] * 100).round / 100.0])
+         (sum_real * 100).round / 100.0,
+         (sum_planned * 100).round / 100.0,
+         (sum_earned * 100).round / 100.0])
     end
     cpi = calculate_performance_indicator(hash_weeks_years.values.last[2], hash_weeks_years.values.last[0])
     spi = calculate_performance_indicator(hash_weeks_years.values.last[2], hash_weeks_years.values.last[1])
@@ -87,13 +83,13 @@ module IndicatorsLogic
       time_entries_by_week_and_year =
           project.time_entries.where(
               :issue_id => Issue.where(:fixed_version_id => version.id)).sum(
-              :hours, :group => [:tweek, :tyear])
+              :hours, :group => [:tweek, :tyear]) # mising sort by year then week - sort na BD
       issues = version.fixed_issues
     else
       project = project_or_version
       time_entries_by_week_and_year =
           project.time_entries.sum(
-              :hours, :group => [:tweek, :tyear])
+              :hours, :group => [:tweek, :tyear]) # mising sort by year then week - sort na BD
       issues = project.issues
     end
     return time_entries_by_week_and_year, issues
