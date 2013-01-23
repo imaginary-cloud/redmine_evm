@@ -10,10 +10,8 @@ class RatiosController < ApplicationController
     respond_to do |format|
       format.html do
         @evms = []
-        data = IndicatorsLogic::retrive_data(@project)
         @evms << evm(@project)
         @project.versions.where(:status=>"open").each do |my_version|
-          data = IndicatorsLogic::retrive_data(my_version)
           evm_hash = evm(my_version)
           evm_hash[:version] = my_version
           @evms << evm_hash
