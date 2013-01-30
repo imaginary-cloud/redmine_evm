@@ -26,7 +26,10 @@ class IndicatorsLogicTest < ActiveSupport::TestCase
 
       indicators = IndicatorsLogic::calc_indicators(project)
       arr = indicators[0]
+      assert_equal 4, arr.size
       assert_equal ["4/2013", 0.0, 3.0, 1.5], arr[1]
+      assert_equal ["5/2013", 0.0, 3.0, 1.5], arr[2]
+      assert_equal ["6/2013", 0.0, 3.0, 1.5], arr[3]
     end
   end
 
@@ -58,7 +61,9 @@ class IndicatorsLogicTest < ActiveSupport::TestCase
 
       indicators = IndicatorsLogic::calc_indicators(project)
       arr = indicators[0]
+      assert_equal 3, arr.size
       assert_equal ["4/2013", 1.0, 3.0, 1.5], arr[1]
+      assert_equal ["5/2013", 1.0, 3.0, 1.5], arr[2]
     end
   end
 end
