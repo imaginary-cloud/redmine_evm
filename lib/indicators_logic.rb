@@ -79,13 +79,15 @@ module IndicatorsLogic
       time_entries_by_week_and_year =
           project.time_entries.where(
               :issue_id => Issue.where(:fixed_version_id => version.id)).sum(
-              :hours, :group => [:tweek, :tyear]) # mising sort by year then week - sort na BD
+              :hours, :group => [:tweek, :tyear],
+              :order => [:tyear, :tweek])
       issues = version.fixed_issues
     else
       project = project_or_version
       time_entries_by_week_and_year =
           project.time_entries.sum(
-              :hours, :group => [:tweek, :tyear]) # mising sort by year then week - sort na BD
+              :hours, :group => [:tweek, :tyear],
+              :order => [:tyear, :tweek])
       issues = project.issues
     end
     return time_entries_by_week_and_year, issues
