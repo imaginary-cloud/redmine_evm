@@ -70,10 +70,6 @@ module IndicatorsLogic
     [ary_data_week_years, (cpi * 1000).round / 1000.0, (spi * 1000).round / 1000.0]
   end
 
-  def self.included(base)
-    base.send :helper_method, :calc_indicators, :retrive_data if base.respond_to? :helper_method
-  end
-
   private
 
   def self.retrive_data(project_or_version)
@@ -98,6 +94,4 @@ module IndicatorsLogic
   def self.calculate_performance_indicator(earned_value, denominator)
     denominator == 0 ? 0 : earned_value / denominator
   end
-
-
 end
