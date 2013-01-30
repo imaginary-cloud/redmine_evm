@@ -24,6 +24,11 @@ class IndicatorsLogicTest < ActiveSupport::TestCase
       assert_equal 3, issue1.estimated_hours
       assert_equal '2013-01-24'.to_date, project.start_date
 
+      time_entries_by_week_and_year, issues = IndicatorsLogic::retrive_data(project)
+      assert_equal 0, time_entries_by_week_and_year.size
+      assert_equal 1, issues.size
+      assert_equal issue1.id, issues[0].id
+
       indicators = IndicatorsLogic::calc_indicators(project)
       arr = indicators[0]
       assert_equal 4, arr.size
@@ -58,6 +63,13 @@ class IndicatorsLogicTest < ActiveSupport::TestCase
                        :project  => project,
                        :user     => anon,
                        :activity => activity)
+
+      time_entries_by_week_and_year, issues = IndicatorsLogic::retrive_data(project)
+      assert_equal 1, time_entries_by_week_and_year.size
+      assert_equal [[4, 2013]], time_entries_by_week_and_year.keys
+      assert_equal [1.0], time_entries_by_week_and_year.values
+      assert_equal 1, issues.size
+      assert_equal issue1.id, issues[0].id
 
       indicators = IndicatorsLogic::calc_indicators(project)
       arr = indicators[0]
