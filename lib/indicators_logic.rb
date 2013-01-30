@@ -16,7 +16,6 @@ module IndicatorsLogic
       my_project_or_version_end_date =
           [end_date, check_ary_reported_time_week_year].max
     end
-    ary_weeks_years = []
     real_start_date = [
           (project_or_version.start_date.nil? ?
             (Time.now.to_date - 1.day) :
@@ -26,6 +25,7 @@ module IndicatorsLogic
             Date.ordinal(time_entries_by_week_and_year.keys.first[1],
                            time_entries_by_week_and_year.keys.first[0] * 7 - 3))
         ].min
+    ary_weeks_years = []
     while real_start_date < my_project_or_version_end_date + 1.week
       ary_weeks_years << [real_start_date.cweek, real_start_date.cwyear]
       real_start_date += 1.week
