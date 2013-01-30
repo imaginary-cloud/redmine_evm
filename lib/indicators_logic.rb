@@ -3,7 +3,7 @@ module IndicatorsLogic
   def self.calc_indicators(project_or_version)
     time_entries_by_week_and_year, issues = retrive_data(project_or_version)
     end_date = project_or_version.due_date || Time.now.to_date
-    check_ary_reported_time_week_year =
+    time_entry_max_date =
       time_entries_by_week_and_year.empty? ? Time.now.to_date :
         Date.ordinal(time_entries_by_week_and_year.keys.last[1],
                        time_entries_by_week_and_year.keys.last[0] * 7 - 3)
@@ -11,10 +11,9 @@ module IndicatorsLogic
     if issues.maximum(:start_date)
       issue_max_start_date = issues.empty? ? Time.now.to_date : issues.maximum(:start_date)
       real_end_date =
-          [end_date, check_ary_reported_time_week_year, issue_max_start_date].max
+          [end_date, time_entry_max_date, issue_max_start_date].max
     else
-      real_end_date =
-          [end_date, check_ary_reported_time_week_year].max
+      real_end_date = [end_date, time_entry_max_date].max
     end
     real_start_date = [
           (project_or_version.start_date.nil? ?
