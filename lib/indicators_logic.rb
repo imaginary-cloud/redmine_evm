@@ -70,8 +70,6 @@ module IndicatorsLogic
     [ary_data_week_years, (cpi * 1000).round / 1000.0, (spi * 1000).round / 1000.0]
   end
 
-  private
-
   def self.retrive_data(project_or_version)
     if project_or_version.instance_of? Version
       project = project_or_version.project
