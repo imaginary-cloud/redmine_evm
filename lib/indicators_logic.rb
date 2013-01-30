@@ -9,9 +9,9 @@ module IndicatorsLogic
                        time_entries_by_week_and_year.keys.last[0] * 7 - 3)
 
     if issues.maximum(:start_date)
-      check_ary_all_issues = issues.empty? ? Time.now.to_date : issues.maximum(:start_date)
+      issue_max_start_date = issues.empty? ? Time.now.to_date : issues.maximum(:start_date)
       real_end_date =
-          [end_date, check_ary_reported_time_week_year, check_ary_all_issues].max
+          [end_date, check_ary_reported_time_week_year, issue_max_start_date].max
     else
       real_end_date =
           [end_date, check_ary_reported_time_week_year].max
