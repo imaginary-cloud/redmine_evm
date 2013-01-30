@@ -10,10 +10,10 @@ module IndicatorsLogic
 
     if issues.maximum(:start_date)
       check_ary_all_issues = issues.empty? ? Time.now.to_date : issues.maximum(:start_date)
-      my_project_or_version_end_date =
+      real_end_date =
           [end_date, check_ary_reported_time_week_year, check_ary_all_issues].max
     else
-      my_project_or_version_end_date =
+      real_end_date =
           [end_date, check_ary_reported_time_week_year].max
     end
     real_start_date = [
@@ -26,7 +26,7 @@ module IndicatorsLogic
                            time_entries_by_week_and_year.keys.first[0] * 7 - 3))
         ].min
     ary_weeks_years = []
-    while real_start_date < my_project_or_version_end_date + 1.week
+    while real_start_date < real_end_date + 1.week
       ary_weeks_years << [real_start_date.cweek, real_start_date.cwyear]
       real_start_date += 1.week
     end
@@ -35,7 +35,7 @@ module IndicatorsLogic
     issues.each do |issue|
       next if !issue.leaf?
       start_issue_date = issue.start_date? ? issue.start_date : project_or_version.start_date
-      end_issue_date = issue.due_date? ? issue.due_date : my_project_or_version_end_date
+      end_issue_date = issue.due_date? ? issue.due_date : real_end_date
       estimated_time = issue.estimated_hours? ? issue.estimated_hours : 0
       done_ratio = (issue.done_ratio / 100.0)
       if (not start_issue_date.nil?) && (not end_issue_date.nil?)
