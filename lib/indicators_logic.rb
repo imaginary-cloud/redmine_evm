@@ -44,7 +44,7 @@ module IndicatorsLogic
       done_ratio = (issue.done_ratio / 100.0)
       if (not start_issue_date.nil?) && (not end_issue_date.nil?)
         ary_dates = (start_issue_date..end_issue_date).to_a
-        ary_dates.delete_if{|x| x.wday == 5 || x.wday == 6}
+        ary_dates.delete_if{|x| x.cwday == 6 || x.cwday == 7}
         if ary_dates.any? && estimated_time != 0
           hoursPerDay = estimated_time / ary_dates.size
           ary_dates.each do |day|
