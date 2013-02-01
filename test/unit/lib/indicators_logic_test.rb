@@ -35,6 +35,10 @@ class IndicatorsLogicTest < ActiveSupport::TestCase
       assert_equal ["4/2013", 0.0, 3.0, 1.5], arr[1]
       assert_equal ["5/2013", 0.0, 3.0, 1.5], arr[2]
       assert_equal ["6/2013", 0.0, 3.0, 1.5], arr[3]
+      cpi = indicators[1]
+      spi = indicators[2]
+      assert_equal 0, cpi
+      assert_equal 0.5, spi
     end
   end
 
@@ -61,6 +65,10 @@ class IndicatorsLogicTest < ActiveSupport::TestCase
       assert_equal ["4/2013", 0.0, 3.0, 1.5], arr[1]
       assert_equal ["5/2013", 0.0, 3.0, 1.5], arr[2]
       assert_equal ["6/2013", 0.0, 3.0, 1.5], arr[3]
+      cpi = indicators[1]
+      spi = indicators[2]
+      assert_equal 0, cpi
+      assert_equal 0.5, spi
     end
   end
 
@@ -102,6 +110,10 @@ class IndicatorsLogicTest < ActiveSupport::TestCase
       assert_equal 3, arr.size
       assert_equal ["4/2013", 1.0, 3.0, 1.5], arr[1]
       assert_equal ["5/2013", 1.0, 3.0, 1.5], arr[2]
+      cpi = indicators[1]
+      spi = indicators[2]
+      assert_equal 1.5, cpi
+      assert_equal 0.5, spi
     end
   end
 
@@ -150,6 +162,10 @@ class IndicatorsLogicTest < ActiveSupport::TestCase
       assert_equal 3, arr.size
       assert_equal ["3/2013", 1.0,  0.0, 0.0], arr[1]
       assert_equal ["4/2013", 3.0, 10.0, 5.0], arr[2]
+      cpi = indicators[1]
+      spi = indicators[2]
+      assert_equal 1.667, cpi
+      assert_equal 0.5, spi
     end
   end
 end
