@@ -69,8 +69,8 @@ module IndicatorsLogic
          (sum_planned * 100).round / 100.0,
          (sum_earned * 100).round / 100.0])
     end
-    cpi = calculate_performance_indicator(hash_weeks_years.values.last[2], hash_weeks_years.values.last[0])
-    spi = calculate_performance_indicator(hash_weeks_years.values.last[2], hash_weeks_years.values.last[1])
+    cpi = calculate_performance_indicator(ary_data_week_years.last[3], ary_data_week_years.last[1])
+    spi = calculate_performance_indicator(ary_data_week_years.last[3], ary_data_week_years.last[2])
     [ary_data_week_years, (cpi * 1000).round / 1000.0, (spi * 1000).round / 1000.0]
   end
 
