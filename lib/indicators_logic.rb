@@ -35,7 +35,11 @@ module IndicatorsLogic
       real_start_date += 1.week
     end
     hash_weeks_years = {}
-    ary_weeks_years.each{|e| hash_weeks_years[e] = [0, 0, 0]}
+    ary_weeks_years.each do |e|
+      hash_weeks_years[e] = {}
+      hash_weeks_years[e][:sum_planned] = 0
+      hash_weeks_years[e][:sum_earned]  = 0
+    end
     issues.each do |issue|
       next if !issue.leaf?
       start_issue_date = issue.start_date? ? issue.start_date : project_or_version.start_date
@@ -50,8 +54,8 @@ module IndicatorsLogic
           ary_dates.each do |day|
             week = day.cweek
             year = day.cwyear
-            hash_weeks_years[[week, year]][1] += hoursPerDay
-            hash_weeks_years[[week, year]][2] += hoursPerDay * done_ratio
+            hash_weeks_years[[week, year]][:sum_planned] += hoursPerDay
+            hash_weeks_years[[week, year]][:sum_earned]  += hoursPerDay * done_ratio
           end
         end
       end
@@ -61,8 +65,8 @@ module IndicatorsLogic
     ary_weeks_years.each do |k|
       v = hash_weeks_years[k]
       sum_real += time_entries_by_week_and_year.has_key?(k) ? time_entries_by_week_and_year[k] : 0
-      sum_planned += v[1]
-      sum_earned += v[2]
+      sum_planned += v[:sum_planned]
+      sum_earned  += v[:sum_earned]
       ary_data_week_years.push(
         [k[0].to_s + "/" + k[1].to_s,
          (sum_real * 100).round / 100.0,
