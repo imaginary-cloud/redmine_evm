@@ -2,57 +2,193 @@
 <div id="gauge_cpi <%= evm[:name] %>" class="googauges"></div>
 <div id="gauge_spi <%= evm[:name] %>" class="googauges"></div>
 <div style="clear:both;"></div>
+
 <%= javascript_tag do %>
+
+//  alert('aaaa');
+
   drawChart();
   drawCpi();
   drawSpi();
 
-  function drawChart() {
-    var data = new google.visualization.arrayToDataTable(<%= raw evm[:indicators][0].to_json %>);
-    var options = {
-    title: '<%= evm[:name] %>',
-    series: {0:{color: 'red'},
-           1:{color: 'blue'},
-           2:{color: 'green'}},
-    vAxis: {title: 'Hours',  titleTextStyle: {color: 'red'}}
-    };
-    var chart = new google.visualization.LineChart(document.getElementById("chart <%= evm[:name] %>"));
-    chart.draw(data, options);
-  }
+  function drawChart(){
+     var chartOptions = {
+	credits: {
+		enabled: false
+	},
+        chart:{
+		renderTo: "chart <%= evm[:name] %>",
+		type: 'line',
+		zoomType: 'x'
+//		marginRight: 130,
+//		marginBottom: 25
+	},
+	title:{
+          	text: "<%= raw evm[:name] %>",
+		align: "left"
+	},
+	xAxis:{
+	 	categories: <%= raw evm[:indicators][3] %>,
+		labels:{
+			enabled: true,
+			rotation: 90,
+			y: 40
+		},
+	},
+	yAxis:{
+		plotLines: [{
+			value: 0,
+			width: 1,
+			color: '#808080'
+		}]
+	},
+	 tooltip: {
+                crosshairs: true,
+                shared: true
+	},
+	legend: {
+		layout: 'vertical',
+		align: 'right',
+		verticalAlign: 'top',
+		x: -10,
+		y: 100,
+		borderWidth: 0
+	},
+	series:[{
+		name: 'PV',
+		data: <%= raw evm[:indicators][5] %>
+		},{
+		name: 'AC',
+		data: <%= raw evm[:indicators][4] %>
+		},{
+		name: 'EV',
+		data: <%= raw evm[:indicators][6] %>
+		}
+	       	]
+     };
+     var lg = new Highcharts.Chart(chartOptions);
+  };
 
-  function drawCpi() {
-    // Create and populate the data table.
-    var data_gauge = new google.visualization.arrayToDataTable([
-      ['Label', 'Value'],
-      ['CPI', <%= evm[:indicators][1] %>]
-    ]);
-    var options_g = {
-      redFrom: 0, redTo: 0.85,
-      yellowFrom:0.85, yellowTo: 1,
-      greenFrom:1, greenTo:2,
-      minorTicks:5,
-      min:0, max:2
-    };
-    // Create and draw the visualization.
-    var gauge= new google.visualization.Gauge(document.getElementById("gauge_cpi <%= evm[:name] %>"));
-    gauge.draw(data_gauge, options_g);
-  }
+  function drawCpi(){
 
-  function drawSpi() {
-    // Create and populate the data table.
-    var data_gauges = new google.visualization.arrayToDataTable([
-      ['Label', 'Value'],
-      ['SPI', <%= evm[:indicators][2] %>]
-    ]);
-    var options_gs = {
-      redFrom: 0, redTo: 0.85,
-      yellowFrom:0.85, yellowTo: 1,
-      greenFrom:1, greenTo:2,
-      minorTicks:5,
-      min:0, max:2
-    };
-    // Create and draw the visualization.
-    var gauge= new google.visualization.Gauge(document.getElementById("gauge_spi <%= evm[:name] %>"));
-    gauge.draw(data_gauges, options_gs);
-  }
+     var chart = new Highcharts.Chart({
+        credits: {
+		enabled: false
+	},
+	chart: {
+		renderTo: "gauge_cpi <%= evm[:name] %>",
+		type: 'gauge',
+            	plotBackgroundColor: null,
+            	plotBackgroundImage: null,
+            	plotBorderWidth: 0,
+            	plotShadow: false
+	},
+	title: {
+	         text: 'CPI'
+	},
+	pane: {
+		startAngle: -120,
+	        endAngle: 120
+	},
+	yAxis: {
+		min: 0,
+		max: 2,
+//            	minorTickInterval: 'auto',
+//            	minorTickWidth: 1,
+            	minorTickLength: 5,
+//            	minorTickPosition: 'inside',
+//            	minorTickColor: '#666',
+    
+            	tickPixelInterval: 60,
+            	tickWidth: 2,
+            	tickPosition: 'inside',
+            	tickLength: 10,
+            	tickColor: '#666',
+            	labels: {
+                	step: 1,
+//                	rotation: 'auto'
+            	},
+	        plotBands: [{
+                	from: 0,
+                	to: 0.8,
+	                color: '#DF5353' // red
+                }, {
+                	from: 0.8,
+                	to: 1,
+                	color: '#DDDF0D' // yellow
+                }, {
+                	from: 1,
+                	to: 2,
+                	color: '#55BF3B' // green
+            }]        
+	},
+	series: [{
+			name: 'CPI',
+//			data: [ 1 ]
+			data: [<%= evm[:indicators][1] %>]
+	}]
+     });
+  };
+
+  function drawSpi(){
+     var chart = new Highcharts.Chart({
+        credits: {
+		enabled: false
+	},
+	chart: {
+		renderTo: "gauge_spi <%= evm[:name] %>",
+		type: 'gauge',
+            	plotBackgroundColor: null,
+            	plotBackgroundImage: null,
+            	plotBorderWidth: 0,
+            	plotShadow: false
+	},
+	title: {
+	         text: 'SPI'
+	},
+	pane: {
+		startAngle: -120,
+	        endAngle: 120
+	},
+	yAxis: {
+		min: 0,
+		max: 2,
+//            	minorTickInterval: 'auto',
+//            	minorTickWidth: 1,
+            	minorTickLength: 5,
+//            	minorTickPosition: 'inside',
+//            	minorTickColor: '#666',
+    
+            	tickPixelInterval: 60,
+            	tickWidth: 2,
+            	tickPosition: 'inside',
+            	tickLength: 10,
+            	tickColor: '#666',
+            	labels: {
+                	step: 1,
+//                	rotation: 'auto'
+            	},
+	        plotBands: [{
+                	from: 0,
+                	to: 0.8,
+	                color: '#DF5353' // red
+                }, {
+                	from: 0.8,
+                	to: 1,
+                	color: '#DDDF0D' // yellow
+                }, {
+                	from: 1,
+                	to: 2,
+                	color: '#55BF3B' // green
+            }]        
+	},
+	series: [{
+			name: 'SPI',
+//			data: [ 1 ]
+			data: [<%= evm[:indicators][2] %>]
+	}]
+     });
+  };
+
 <% end %>
+

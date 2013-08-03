@@ -1,5 +1,5 @@
-<%= javascript_include_tag "https://www.google.com/jsapi" %>
-<%= javascript_tag do %>
-  google.load("visualization", "1", {packages:["corechart"]});
-  google.load('visualization', '1', {packages: ['gauge']});
-<% end %>
+<% baseurl = Redmine::Utils.relative_url_root -%>
+<%= javascript_include_tag ("/plugin_assets/redmine_evm/javascripts/js/modules/jquery-1.8.3.min.js") %>
+<%= javascript_include_tag ("/plugin_assets/redmine_evm/javascripts/js/highcharts.js") %>
+<%= javascript_include_tag ("/plugin_assets/redmine_evm/javascripts/js/highcharts-more.js") %>
+<%= javascript_include_tag ("/plugin_assets/redmine_evm/javascripts/js/modules/exporting.js") %>
