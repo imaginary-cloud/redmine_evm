@@ -1,3 +1,16 @@
 = redmine_evm
 
-Description goes here
+V0.0.1 (27-Mar-2014)
+
+==About
+
+	This plugin generates line graphical indicators, per Project and open Versions,
+	used in EVM (Earned-Value Management).
+	It shows actual cost (hours reported in log time), planned value
+	(estimated hours indicated in new issue),
+	and earned value distributed in weeks / years.
+	It also shows cpi and spi indicators.
+
+==Plugin details
+	
+	In development 
