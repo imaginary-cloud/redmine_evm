@@ -1,4 +1,4 @@
-require sfsd
+require 'redmine_evm'
 
 Redmine::Plugin.register :redmine_evm do
   name 'Redmine EVM plugin'
