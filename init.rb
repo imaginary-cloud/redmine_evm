@@ -1,3 +1,5 @@
+require sfsd
+
 Redmine::Plugin.register :redmine_evm do
   name 'Redmine EVM plugin'
   author 'Imaginary Cloud (http://imaginarycloud.com)'
