@@ -7,6 +7,7 @@ class BaselinesController < ApplicationController
   end
 
   def show
+    @baseline = Baseline.find(params[:id])
   end
 
   def new
