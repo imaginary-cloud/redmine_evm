@@ -1,0 +1,36 @@
+<!-- BASELINE SETTINGS TAB -->
+<!-- Check imaginary-intra-redmine/app/views/projects/settings/_versions.html.erb -->
+
+
+<% if @project.baselines.any? %>
+    <table class="list versions">
+      <thead><tr>
+        <th><%= l(:label_baseline) %></th>
+        <th><%= l(:label_date) %></th>
+        <th><%= l(:field_description) %></th>
+        <th><%= l(:field_status) %></th>
+        <th style="width:15%"></th>
+      </tr></thead>
+      <tbody>
+      <% @project.baselines.each do |baseline| %>
+          <tr class="baseline">
+            <td class="name"><%= baseline.name %></td>
+            <td class="date"><%= format_date(baseline.created_on) %></td>
+            <td class="description"><%= baseline.description %></td>
+            <td class="status"><%= baseline.state %></td>
+            <td class="buttons">
+              <% if baseline.project == @project %>
+                  <%= link_to l(:button_edit), edit_baseline_path(baseline), :class => 'icon icon-edit' %>
+                  <%= delete_link baseline_path(baseline) %>
+              <% end %>
+            </td>
+          </tr>
+      <% end; reset_cycle %>
+      </tbody>
+    </table>
+
+<% else %>
+    <p class="nodata"><%= l(:label_no_data) %></p>
+<% end %>
+
+<p><%= link_to l(:label_baseline_new), new_baseline_path(@project, :back_url => ''), :class => 'icon icon-add' %></p>
