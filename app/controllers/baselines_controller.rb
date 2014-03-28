@@ -2,7 +2,7 @@ class BaselinesController < ApplicationController
   unloadable
 
   def index
-  	@project = Project.find(params[:id])
+    @project = Project.find(params[:project_id])
   	@baselines = @project.baselines.all
   end
 

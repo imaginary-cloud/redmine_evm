@@ -7,4 +7,11 @@ Redmine::Plugin.register :redmine_evm do
   version '0.0.1'
   url 'https://github.com/imaginary-cloud/redmine_evm'
   author_url 'mailto:info@imaginarycloud.com'
+
+
+
+  project_module :evm do
+    permission :baselines, { :baselines => [:index] }, :public => true
+  end
+
 end
