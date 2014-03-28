@@ -1,3 +1,5 @@
 # English strings go here for Rails i18n
 en:
   # my_label: "My label"
+  label_baseline: Baseline
+  label_baseline_plural: Baselines
