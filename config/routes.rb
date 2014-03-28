@@ -2,3 +2,4 @@
 # See: http://guides.rubyonrails.org/routing.html
 
 resources :baselines
+resources :evms

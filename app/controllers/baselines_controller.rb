@@ -23,7 +23,7 @@ class BaselinesController < ApplicationController
   end
 
   def destroy
-    
+     
   end
 
 end

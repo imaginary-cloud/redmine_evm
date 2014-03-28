@@ -2,8 +2,8 @@ class EvmsController < ApplicationController
   unloadable
 
   def index
-  	@evm = []
-  	@evm = 
+  	@project = Project.find(params[:id])
+
   end
 
 end
