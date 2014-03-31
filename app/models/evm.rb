@@ -25,7 +25,7 @@ class Evm
 		planned_value = [[0,0]]
 
 		for i in start_date..end_date
-			time += calculate_issues_pv(version.baseline_issues)
+			time += calculate_issues_pv(version.baseline_issues)# REVER Where baseline_issues time weeks = i
 			planned_value.push([time,i])
 		end
 	end 

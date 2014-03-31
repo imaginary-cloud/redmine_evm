@@ -3,7 +3,5 @@ en:
   # my_label: "My label"
   label_baseline: Baseline
   label_baseline_plural: Baselines
-
   label_baseline_version: Baseline Version
-
   label_baseline_new: New Baseline
