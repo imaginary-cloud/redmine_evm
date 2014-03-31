@@ -23,8 +23,13 @@ class BaselinesController < ApplicationController
   def create
     @baseline = Baseline.new(params[:baseline])
     @baseline.project = @project
+    @baseline.state = "open"
 
     if @baseline.save
+      @baseline_versions = @project.versions
+      @baseline_versions.each do |version|
+        BaselineVersions.create(version)
+      end
       redirect_to settings_project_path(@project, :tab => 'baselines')
     end
 
@@ -38,18 +43,10 @@ class BaselinesController < ApplicationController
       attributes = params[:baseline].dup
       @baseline.safe_attributes = attributes
       if @baseline.save
-        respond_to do |format|
-          format.html {
-            flash[:notice] = l(:notice_successful_update)
-            redirect_to settings_project_path(@project, :tab => 'baselines')
-          }
-          #format.api  { render_api_ok }
-        end
+        flash[:notice] = l(:notice_successful_update)
+        redirect_to settings_project_path(@project, :tab => 'baselines')
       else
-        respond_to do |format|
-          format.html { render :action => 'edit' }
-          format.api  { render_validation_errors(@version) }
-        end
+        render :action => 'edit' 
       end
     end
   end
@@ -57,6 +54,5 @@ class BaselinesController < ApplicationController
   def destroy
      
   end
-
 
 end
