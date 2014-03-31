@@ -9,5 +9,4 @@ class Baseline < ActiveRecord::Base
   safe_attributes 'name',
   'description'
 
-
 end

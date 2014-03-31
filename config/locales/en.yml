@@ -5,3 +5,6 @@ en:
   label_baseline_plural: Baselines
   label_baseline_version: Baseline Version
   label_baseline_new: New Baseline
+
+  label_due_date: Due Date
+  label_created_date: Created Date
