@@ -1,15 +1,14 @@
 class BaselinesController < ApplicationController
   unloadable
 
+
   model_object Baseline
 
-  #before_filter :find_project_by_project_id, :only => [:update, :edit]
   before_filter :find_model_object, :except => [:index, :new, :create]
   before_filter :find_project_from_association, :except => [:index, :new, :create]
+  before_filter :find_project_by_project_id, :only => [:index, :new, :create]
 
-  
   def index
-    @project = Project.find(params[:project_id])
   	@baselines = @project.baselines.all
   end
 
@@ -18,11 +17,17 @@ class BaselinesController < ApplicationController
   end
 
   def new
-
+    @baseline = Baseline.new
   end
 
-  def create 
-    
+  def create
+    @baseline = Baseline.new(params[:baseline])
+    @baseline.project = @project
+
+    if @baseline.save
+      redirect_to settings_project_path(@project, :tab => 'baselines')
+    end
+
   end 
 
   def edit
@@ -52,5 +57,6 @@ class BaselinesController < ApplicationController
   def destroy
      
   end
+
 
 end

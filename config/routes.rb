@@ -5,6 +5,6 @@
 resources :projects do 
 	resources :baselines
 end
-resources :baselines
 
+resources :baselines
 resources :evms
