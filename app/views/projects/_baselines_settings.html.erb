@@ -12,7 +12,8 @@
         <th style="width:15%"></th>
       </tr></thead>
       <tbody>
-      <% @project.baselines.each do |baseline| %>
+      <!-- TODO: Remove order by replacing model that orders when it stores -->
+      <% @project.baselines.order( 'created_on DESC' ).each do |baseline| %>
           <tr class="baseline">
             <td class="name"><%= baseline.name %></td>
             <td class="date"><%= format_date(baseline.created_on) %></td>
@@ -33,4 +34,4 @@
     <p class="nodata"><%= l(:label_no_data) %></p>
 <% end %>
 
-<p><%= link_to l(:label_baseline_new), new_baseline_path(@project, :back_url => ''), :class => 'icon icon-add' %></p>
+<p><%= link_to l(:label_baseline_new), new_project_baseline_path(@project, :back_url => ''), :class => 'icon icon-add' %></p>
