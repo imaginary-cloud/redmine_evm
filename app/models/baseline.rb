@@ -7,6 +7,7 @@ class Baseline < ActiveRecord::Base
   has_and_belongs_to_many :baseline_versions
 
   safe_attributes 'name',
-  'description'
+  'description',
+  'due_date'
 
 end
