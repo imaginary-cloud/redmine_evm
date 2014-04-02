@@ -16,7 +16,7 @@
       <!-- TODO: Remove order by replacing model that orders when it stores -->
       <% @project.baselines.order( 'created_on DESC' ).each do |baseline| %>
           <tr class="baseline">
-            <td class="name"><%= baseline.name %></td>
+            <td class="name"><%= link_to baseline.name, baseline_path(baseline) %></td>
             <td class="created-date"><%= format_date(baseline.created_on) %></td>
             <td class="due-date"><%= format_date(baseline.due_date) %></td>
             <td class="description"><%= baseline.description %></td>
