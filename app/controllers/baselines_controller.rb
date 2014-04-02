@@ -56,6 +56,7 @@ class BaselinesController < ApplicationController
     #end
 
      @baseline.destroy
+     
      redirect_to settings_project_path(@project, :tab => 'baselines')
   end
 end
