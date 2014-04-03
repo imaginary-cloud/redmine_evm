@@ -1,8 +1,13 @@
 <%= back_url_hidden_field_tag %>
+<%= error_messages_for 'baseline' %>
 
 <div class="box tabular">
   <p><%= f.text_field :name, :size => 60, :required => true %></p>
   <p><%= f.text_field :description, :size => 60 %></p>
   <p><%= f.text_field :due_date, :size => 10, :required => true %><%= calendar_for('baseline_due_date') %></p>
+
+  <% @baseline.custom_field_values.each do |value| %>
+  <p><%= custom_field_tag_with_label :baseline, value %></p>
+<% end %>
 
 </div>

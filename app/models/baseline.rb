@@ -8,6 +8,8 @@ class Baseline < ActiveRecord::Base
 
   validates :name, :due_date, :presence => true
 
+  acts_as_customizable
+
   safe_attributes 'name',
   'description',
   'due_date'
