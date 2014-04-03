@@ -22,13 +22,12 @@ class BaselinesController < ApplicationController
   def create
     @baseline = Baseline.new(params[:baseline])
     @baseline.project = @project
-
-    @baseline.create_version(@project.versions)
-    @baseline.create_issues(@project.issues)
-
-    @baseline.state = 'Open'
+    @baseline.state = 'Current'
 
     if @baseline.save
+
+      @baseline.create_version(@project.versions)
+      @baseline.create_issues(@project.issues)
       flash[:notice] = l(:notice_successful_create)
       redirect_to settings_project_path(@project, :tab => 'baselines')
     else

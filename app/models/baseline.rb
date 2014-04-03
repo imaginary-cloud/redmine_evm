@@ -4,9 +4,12 @@ class Baseline < ActiveRecord::Base
 
   belongs_to :project
   has_many :baseline_issues, dependent: :destroy
-  has_many :baseline_versions, dependent: :destroy 
+  has_many :baseline_versions, dependent: :destroy
 
   validates :name, :due_date, :presence => true
+
+  before_create {update_baseline_status("Old", self.project_id)}
+  after_destroy {update_baseline_status("Current", self.project_id)}
 
   acts_as_customizable
 
@@ -33,6 +36,19 @@ class Baseline < ActiveRecord::Base
         end
         baseline_issues << baseline_issue
       end
+    end
+  end
+
+  def update_baseline_status status, project_id
+    if project_id
+      project = Project.find(project_id) 
+      baseline = project.baselines.last 
+    else
+      baseline = Baseline.last 
+    end
+    if baseline 
+      baseline.state = status 
+      baseline.save
     end
   end
 end

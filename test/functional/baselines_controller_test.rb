@@ -32,7 +32,7 @@ class BaselinesControllerTest < ActionController::TestCase
   def test_create
     @request.session[:user_id] = 2 
     assert_difference 'Baseline.count' do
-      post :create, :project_id => '1', :baseline => {:name => 'test_add_baseline'}
+      post :create, :project_id => '1', :baseline => {:name => 'test_add_baseline', :due_date => Date.today}
     end
     assert_redirected_to '/projects/ecookbook/settings/baselines'
     baseline = Baseline.find_by_name('test_add_baseline')
@@ -40,8 +40,15 @@ class BaselinesControllerTest < ActionController::TestCase
     assert_equal 1, baseline.project_id
   end
 
-  # Replace this with your real tests.
-  def test_truth
-    assert true
+  def test_destroy
+    @request.session[:user_id] = 2
+    assert_difference 'Baseline.count', -1 do
+      delete :destroy, :id => 3
+    end
+    assert_redirected_to :controller => 'projects', :action => 'settings',
+                         :tab => 'baselines', :id => 'ecookbook'
+    assert_nil Baseline.find_by_id(3)
   end
+
+  
 end
