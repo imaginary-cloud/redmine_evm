@@ -10,7 +10,7 @@ class Evm
 
   def calculate_baseline_pv(baseline) #calculate the planned value of the given baseline
     end_date = baseline.due_date.strftime('%g').to_i
-    start_date = baseline.created_on.strftime('%g').to_i# a start date não pode ser o created on mas sim a started date real
+    start_date = baseline.start_date.strftime('%g').to_i# a start date não pode ser o created on mas sim a started date real
     planned_value = [[0,0]]
 
     for i in start_date..end_date
