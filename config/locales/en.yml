@@ -8,3 +8,5 @@ en:
 
   label_due_date: Due Date
   label_created_date: Created Date
+
+  error_due_date_invalid: cannot be in the past.
