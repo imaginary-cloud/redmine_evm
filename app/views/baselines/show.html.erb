@@ -2,14 +2,16 @@
 <h3>Baseline from <%= @baseline.created_on %></h3>
 <p><%= @baseline.description%></p>
 
+<h3>Issues</h3>
 <ul>
   <% @baseline.baseline_issues.each do |issue| %>
-    <li><%= issue.original_issue_id%></li>
+    <li><%= link_to issue.original_issue_id, issue_path(issue.original_issue_id)%></li>
   <% end %>
 </ul>
 
+<h3>Versions</h3>
 <ul>
   <%= @baseline.baseline_versions.each do |version| %>
-    <li><%= version.original_version_id%></li>
+    <li><%= link_to version.original_version_id, version_path(version.original_version_id)%></li>
   <% end %>
 </ul>

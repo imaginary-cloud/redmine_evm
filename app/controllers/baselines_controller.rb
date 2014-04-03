@@ -22,15 +22,19 @@ class BaselinesController < ApplicationController
   def create
     @baseline = Baseline.new(params[:baseline])
     @baseline.project = @project
+
+    @baseline.create_version(@project.versions)
+    @baseline.create_issues(@project.issues)
+
     @baseline.state = 'Open'
 
     if @baseline.save
-      @baseline.create_version(@project.versions)
-      @baseline.create_issues(@project.issues)
       flash[:notice] = l(:notice_successful_create)
       redirect_to settings_project_path(@project, :tab => 'baselines')
+    else
+      render :action => 'new'
     end
-  end 
+  end
 
   def edit
   end
@@ -43,20 +47,13 @@ class BaselinesController < ApplicationController
         flash[:notice] = l(:notice_successful_update)
         redirect_to settings_project_path(@project, :tab => 'baselines')
       else
-        render :action => 'edit' 
+        render :action => 'edit'
       end
     end
   end
 
   def destroy
-    #TODO: If we destroy our current baseline, then the last one will be current.
-    #if @baseline.first?
-    #  @last_baseline_made = Baseline.last
-    #  @last_baseline_made.status = 'Open'
-    #end
-
-     @baseline.destroy
-     
-     redirect_to settings_project_path(@project, :tab => 'baselines')
+    @baseline.destroy
+    redirect_to settings_project_path(@project, :tab => 'baselines')
   end
 end
