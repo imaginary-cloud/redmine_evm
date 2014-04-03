@@ -3,6 +3,6 @@
 <div class="box tabular">
   <p><%= f.text_field :name, :size => 60, :required => true %></p>
   <p><%= f.text_field :description, :size => 60 %></p>
-  <p><%= f.text_field :due_date, :size => 10 %><%= calendar_for('baseline_due_date') %></p>
+  <p><%= f.text_field :due_date, :size => 10, :required => true %><%= calendar_for('baseline_due_date') %></p>
 
 </div>
