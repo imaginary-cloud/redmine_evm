@@ -7,6 +7,7 @@ class Baseline < ActiveRecord::Base
   has_many :baseline_versions, dependent: :destroy
 
   validates :name, :due_date, :presence => true
+  validate :due_date_check, on: :create
 
   before_create {update_baseline_status("Old", self.project_id)}
   after_destroy {update_baseline_status("Current", self.project_id)}
@@ -49,6 +50,12 @@ class Baseline < ActiveRecord::Base
     if baseline 
       baseline.state = status 
       baseline.save
+    end
+  end
+
+  def due_date_check
+    if due_date < Date.today
+      errors.add(:due_date, l(:error_due_date_invalid))
     end
   end
 end
