@@ -10,3 +10,6 @@ en:
   label_created_date: Created Date
 
   error_due_date_invalid: cannot be in the past.
+
+  label_current_baseline: Current
+  label_old_baseline: Old

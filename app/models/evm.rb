@@ -1,39 +1,28 @@
 class Evm
   include ActiveModel::Model
 
-  def calculate_evm(project)
-    calculate_baseline_pv(project.baselines.last)
-    project.baseline_versions.each do |version|
-      calculate_version_pv(version)
+
+  def calculate_evm baseline_or_baseline_version
+    start_date = baseline_or_baseline_version.start_date
+    end_date = baseline_or_baseline_version.end_date
+
+    issues = baseline_or_baseline_version.baseline_issues
+    week_year = []
+    planned_value = []
+    time = 0;
+
+    while start_date < end_date
+      date = start_date.strftime('%U/%Y')
+      week_year << date
+
+      issues.each do |issue|
+        if issue.end_date.strftime('%U/%Y')==date ? time+=issue.estimated_time : time+=0
+      end
+      planned_value << time
+      start_date+=1.week
     end
   end
-
-  def calculate_baseline_pv(baseline) #calculate the planned value of the given baseline
-    end_date = baseline.due_date.strftime('%g').to_i
-    start_date = baseline.start_date.strftime('%g').to_i# a start date não pode ser o created on mas sim a started date real
-    planned_value = [[0,0]]
-
-    for i in start_date..end_date
-      time += calculate_issues_pv(baseline.baseline_issues)
-      planned_value.push([time,i])
-    end
+    [planned_value, week_year]
   end
 
-  def calculate_version_pv(version) #calculate the planned value of the given version
-    end_date = version.effective_date.strftime('%g').to_i
-    start_date = version.created_on.strftime('%g').to_i
-    planned_value = [[0,0]]
-
-    for i in start_date..end_date
-      time += calculate_issues_pv(version.baseline_issues)# REVER Where baseline_issues time weeks = i
-      planned_value.push([time,i])
-    end
-  end
-
-  def calculate_issues_pv(issues) #calculate the planned value of the given issues
-    planned_value = 0
-    issues.each do |t|
-      planned_value+=t.estimated_time
-    end
-  end
 end

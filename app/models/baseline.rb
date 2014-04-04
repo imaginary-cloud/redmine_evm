@@ -11,8 +11,8 @@ class Baseline < ActiveRecord::Base
   validate :due_date_check, on: :create
 
 
-  before_create {update_baseline_status("Old", self.project_id)}
-  after_destroy {update_baseline_status("Current", self.project_id)}
+  before_create {update_baseline_status("#{l(:label_old_baseline)}", self.project_id)}
+  after_destroy {update_baseline_status("#{l(:label_current_baseline)}", self.project_id)}
 
   acts_as_customizable
 
@@ -32,7 +32,7 @@ class Baseline < ActiveRecord::Base
   def create_issues issues
     unless issues.nil?
       issues.each do |issue|
-        baseline_issue = BaselineIssue.create(original_issue_id: issue.id, estimated_time: issue.estimated_hours, due_date: issue.due_date, time_week: issue.start_date)  
+        baseline_issue = BaselineIssue.create(original_issue_id: issue.id, estimated_time: issue.estimated_hours, due_date: issue.due_date, time_week: 1)  
         baseline_version = self.baseline_versions.where("original_version_id = :id", id: issue.fixed_version_id).first
         unless baseline_version.nil?
           baseline_issue.baseline_version_id = baseline_version.id
@@ -53,6 +53,14 @@ class Baseline < ActiveRecord::Base
       baseline.state = status 
       baseline.save
     end
+  end
+
+  def start_date 
+    Project.find(project_id).created_on
+  end
+
+  def end_date
+    due_date
   end
 
   # Returns PV from project.

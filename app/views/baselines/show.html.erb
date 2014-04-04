@@ -1,5 +1,5 @@
 <h2><%= @baseline.name%></h2>
-<h3>Baseline from <%= @baseline.created_on.strftime('%F') %></h3>
+<h3>Snapshot from <%= @baseline.created_on.strftime('%F') %></h3>
 <p><%= @baseline.description%></p>
 
 <h3>Baseline Planned Value (PV)</h3>
@@ -10,6 +10,7 @@
 <h3>Versions</h3>
 <p>Nº of Versions: <%= @baseline.baseline_versions.count%></p>
 
+<div>
 <% if @baseline.baseline_issues.present? %>
     <%= form_tag({}) do -%>
         <table class="list related-issues">
@@ -23,5 +24,5 @@
     <% end %>
     <%= context_menu issues_context_menu_path %>
 <% end %>
-
 </div>
+

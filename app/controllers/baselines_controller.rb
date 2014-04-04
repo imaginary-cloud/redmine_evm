@@ -22,7 +22,7 @@ class BaselinesController < ApplicationController
   def create
     @baseline = Baseline.new(params[:baseline])
     @baseline.project = @project
-    @baseline.state = 'Current'
+    @baseline.state = l(:label_current_baseline)
 
     if @baseline.save
 
