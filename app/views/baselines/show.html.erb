@@ -1,17 +1,27 @@
 <h2><%= @baseline.name%></h2>
-<h3>Baseline from <%= @baseline.created_on %></h3>
+<h3>Baseline from <%= @baseline.created_on.strftime('%F') %></h3>
 <p><%= @baseline.description%></p>
 
+<h3>Baseline Planned Value (PV)</h3>
+    <p><%= @baseline.planned_value%> hours</p>
 <h3>Issues</h3>
-<ul>
-  <% @baseline.baseline_issues.each do |issue| %>
-    <li><%= link_to issue.original_issue_id, issue_path(issue.original_issue_id)%></li>
-  <% end %>
-</ul>
+<p>Nº of Issues: <%= @baseline.baseline_issues.count%></p>
 
 <h3>Versions</h3>
-<ul>
-  <%= @baseline.baseline_versions.each do |version| %>
-    <li><%= link_to version.original_version_id, version_path(version.original_version_id)%></li>
-  <% end %>
-</ul>
+<p>Nº of Versions: <%= @baseline.baseline_versions.count%></p>
+
+<% if @baseline.baseline_issues.present? %>
+    <%= form_tag({}) do -%>
+        <table class="list related-issues">
+          <caption><%= l(:label_related_issues) %></caption>
+          <%- @baseline.baseline_issues.each do |issue| -%>
+              <tr class="issue hascontextmenu">
+                <td class="subject"><%= link_to issue.original_issue_id, issue_path(issue.original_issue_id) %></td>
+              </tr>
+          <% end %>
+        </table>
+    <% end %>
+    <%= context_menu issues_context_menu_path %>
+<% end %>
+
+</div>
