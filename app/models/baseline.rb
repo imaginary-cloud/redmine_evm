@@ -23,7 +23,8 @@ class Baseline < ActiveRecord::Base
   def create_version versions
     unless versions.nil?
       versions.each do |version|
-        baseline_version = BaselineVersion.create( original_version_id: version.id, effective_date: version.effective_date, start_date: version.created_on)
+        baseline_version = BaselineVersion.create( original_version_id: version.id, effective_date: version.effective_date,
+                                                   start_date: version.created_on, name: version.name, description: version.description, status: version.status)
         self.baseline_versions << baseline_version
       end
     end
@@ -32,7 +33,11 @@ class Baseline < ActiveRecord::Base
   def create_issues issues
     unless issues.nil?
       issues.each do |issue|
-        baseline_issue = BaselineIssue.create(original_issue_id: issue.id, estimated_time: issue.estimated_hours, due_date: issue.due_date, time_week: 1)  
+        baseline_issue = BaselineIssue.create(original_issue_id: issue.id, estimated_time: issue.estimated_hours, due_date: issue.due_date,
+                                              done_ratio: issue.done_ratio, subject: issue.subject, description: issue.description, tracker_id: issue.tracker_id)
+        unless issue.due_date.nil?
+          baseline_issue.time_week = issue.due_date.strftime('%U')
+        end
         baseline_version = self.baseline_versions.where("original_version_id = :id", id: issue.fixed_version_id).first
         unless baseline_version.nil?
           baseline_issue.baseline_version_id = baseline_version.id
