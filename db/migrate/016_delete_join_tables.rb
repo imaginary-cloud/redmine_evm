@@ -6,7 +6,14 @@ class DeleteJoinTables< ActiveRecord::Migration
   end
 
   def down
-    raise ActiveRecord::IrreversibleMigration
+    create_table :baseline_issues_baselines, :id => false do |t|
+      t.integer :baseline_id
+      t.integer :baseline_issue_id
+    end
+    create_table :baseline_versions_baselines, :id => false do |t|
+      t.integer :baseline_id
+      t.integer :baseline_version_id
+    end
   end
 
 end
