@@ -2,7 +2,7 @@ class Evm
   include ActiveModel::Model
 
 
-  def calculate_evm baseline_or_baseline_version
+  def calculate_planned_value baseline_or_baseline_version
     start_date = baseline_or_baseline_version.start_date
     end_date = baseline_or_baseline_version.end_date
 
@@ -11,7 +11,7 @@ class Evm
     planned_value = []
     time = 0;
 
-    while start_date < end_date
+    while start_date <= end_date
       date = start_date.strftime('%U/%Y')
       week_year << date
 
@@ -24,5 +24,7 @@ class Evm
   end
     [planned_value, week_year]
   end
+
+  
 
 end
