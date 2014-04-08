@@ -6,7 +6,11 @@ class BaselineIssue < ActiveRecord::Base
 
 
   def end_date
-  	due_date || baseline_version.end_date || baseline.due_date
+    if baseline_version.nil?
+      due_date || baseline.due_date
+    else
+  	  due_date || baseline_version.end_date || baseline.due_date
+    end
   end
 
 end
