@@ -1,5 +1,6 @@
 class Baseline < ActiveRecord::Base
   include Redmine::SafeAttributes
+  include Schedulable
   unloadable
 
   belongs_to :project
@@ -68,15 +69,13 @@ class Baseline < ActiveRecord::Base
     due_date
   end
 
-  # Returns PV from project.
-  def planned_value
-    baseline_issues.sum(:estimated_time)
-  end
-
   # Validation - Check if due_date is after baseline is defined.
   def due_date_check
-    if due_date < Date.today
-      errors.add(:due_date, l(:error_due_date_invalid))
+    unless due_date.nil?
+      if due_date < Date.today
+        errors.add(:due_date, l(:error_due_date_invalid))
+      end
     end
   end
+
 end
