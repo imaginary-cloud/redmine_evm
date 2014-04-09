@@ -24,7 +24,7 @@ class Baseline < ActiveRecord::Base
     unless versions.nil?
       versions.each do |version|
         baseline_version = BaselineVersion.create( original_version_id: version.id, effective_date: version.effective_date,
-                                                   start_date: version.created_on, name: version.name, description: version.description, status: version.status)
+                                                   start_date: version.start_date || version.created_on, name: version.name, description: version.description, status: version.status)
         self.baseline_versions << baseline_version
       end
     end
@@ -58,10 +58,6 @@ class Baseline < ActiveRecord::Base
       baseline.state = status 
       baseline.save
     end
-  end
-
-  def start_date 
-    Project.find(project_id).created_on
   end
 
   def end_date
