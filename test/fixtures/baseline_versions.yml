@@ -1,4 +1,60 @@
-baselines_versions_006:
+baseline_versions_001:
   id: 1
+  original_version_id: 1
+  effective_date: 2006-08-01
+  created_on: 2014-01-05 21:00:33 +02:00
   baseline_id: 1
-  start_date: 2013-06-01
+  name: "0.1"
+  status: closed
+  description: Beta
+  start_date: 2006-07-19 
+sbaseline_versions_002:
+  id: 2
+  original_version_id: 2
+  effective_date: 2006-08-19 21:00:33 +02:00
+  created_on: 2014-01-05 21:00:33 +02:00
+  baseline_id: 1
+  name: "1.0"
+  status: locked
+  description: Stable release
+  start_date: 2006-07-19
+baseline_versions_003:
+  id: 3
+  original_version_id: 1
+  effective_date: 2006-08-01
+  created_on: 2014-04-24 21:00:33 +02:00
+  baseline_id: 2
+  name: "0.1"
+  status: closed
+  description: Beta
+  start_date: 2006-07-19
+baseline_versions_004:
+  id: 4
+  original_version_id: 2
+  effective_date: 2006-08-19 21:00:33 +02:00
+  created_on: 2014-04-24 21:00:33 +02:00
+  baseline_id: 2
+  name: "1.0"
+  status: locked
+  description: Stable release
+  start_date: 2006-07-19
+baseline_versions_006:
+  id: 6
+  original_version_id: 3
+  effective_date: 
+  created_on: 2013-10-19 21:00:33 +02:00
+  baseline_id: 3
+  name: "Alpha"
+  status: open
+  description: Private Alpha
+  start_date: 2006-07-19
+baseline_versions_007:
+ id: 7
+ original_version_id: 3
+ effective_date: 
+ created_on: 2013-11-03 21:00:33 +02:00
+ baseline_id: 3
+ name: "Alpha"
+ status: open
+ description: Private Alpha
+ start_date: 2006-07-19
