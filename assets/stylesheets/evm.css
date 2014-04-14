@@ -1,0 +1,16 @@
+/* Graph Container */
+.graph-container {
+    position: relative;
+    width: 90%;
+    height: 300px;
+    padding: 20px;
+
+}
+
+.graph-container > div {
+    position: absolute;
+    width: inherit;
+    height: inherit;
+    top: 10px;
+    left: 25px;
+}

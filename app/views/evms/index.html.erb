@@ -1,2 +1,75 @@
 <h2>EVM Indicators</h2>
 <% html_title('EVM Indicators') %>
+
+<!-- Graph HTML -->
+<div id="graph-wrapper">  
+      <div class="graph-container">
+          <div id="graph-lines"></div>
+          <div id="graph-bars"></div>
+      </div>
+</div>
+<!-- end Graph HTML -->
+
+<%= javascript_include_tag 'jquery', :plugin => 'redmine_evm' %>
+<%= javascript_include_tag 'flot',  :plugin => 'redmine_evm' %>
+<%= javascript_include_tag 'flottime', :plugin => 'redmine_evm' %>
+<%= stylesheet_link_tag 'evm' , :plugin => 'redmine_evm' %>
+
+<script>
+    $(document).ready(function () {
+
+
+
+        var graphData = [{
+            // Visits
+            <% planned_value_by_week = @baselines.first.planned_value_by_week %>
+            <% planned_value_by_week_converted = Hash[planned_value_by_week.map{ |k, v| [k.to_time.to_i*1000, v] }] %>
+            data: <%= raw planned_value_by_week_converted.to_a %>,
+            color: '#71c73e'
+        }, {
+	        // Returning Visits
+	        <% actual_cost_by_week = @project.actual_cost_by_week %>
+            <% actual_cost_by_week_converted = Hash[actual_cost_by_week.map{ |k, v| [k.to_time.to_i*1000, v] }] %>
+            data: <%= raw actual_cost_by_week_converted.to_a %>,
+	        color: '#77b7c5',
+	        points: { radius: 4, fillColor: '#77b7c5' }
+    }
+        ];
+
+        var options =   {
+      grid:   {show: true,
+               color: "rgb(48, 48, 48)",
+               tickColor: "rgba(255, 255, 255, 0)",
+               backgroundColor: "rgb(255, 255, 255)"}
+    };
+
+
+        // Lines
+        $.plot($('#graph-lines'), graphData, {
+            series: {
+                points: {
+                    show: true,
+                    radius: 3
+                },
+                lines: {
+                    show: true
+                },
+                shadowSize: 0
+            },
+            grid: {
+            	show: true,
+                color: '#646464',
+                borderColor: 'transparent',
+                borderWidth: 20,
+                hoverable: true
+            },
+            xaxis: {
+            	mode: "time", timeformat: "%m/%d/%y", minTickSize: [7, "day"]
+            },
+            yaxis: {
+                tickSize: 100
+            }
+        });
+
+    });
+</script>
