@@ -27,7 +27,7 @@ class BaselinesController < ApplicationController
 
     if @baseline.save
 
-      @baseline.create_version(@project.versions)
+      @baseline.create_versions(@project.versions)
       @baseline.create_issues(@project.issues)
       flash[:notice] = l(:notice_successful_create)
       redirect_to settings_project_path(@project, :tab => 'baselines')

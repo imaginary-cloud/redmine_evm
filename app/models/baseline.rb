@@ -8,8 +8,7 @@ class Baseline < ActiveRecord::Base
   has_many :baseline_versions, dependent: :destroy
 
   validates :name, :due_date, :presence => true
-  validates :due_date, :date => true
-  validate :due_date_check, on: :create
+  # validate :due_date_check, on: :create
 
 
   before_create {update_baseline_status("#{l(:label_old_baseline)}", self.project_id)}
@@ -21,7 +20,7 @@ class Baseline < ActiveRecord::Base
   'description',
   'due_date'
 
-  def create_version versions
+  def create_versions versions
     unless versions.nil?
       versions.each do |version|
         baseline_version = BaselineVersion.create( original_version_id: version.id, effective_date: version.effective_date,
@@ -39,7 +38,8 @@ class Baseline < ActiveRecord::Base
         unless issue.due_date.nil?
           baseline_issue.time_week = issue.due_date.strftime('%U')
         end
-        baseline_version = self.baseline_versions.where("original_version_id = :id", id: issue.fixed_version_id).first
+        baseline_version = self.baseline_versions.find_by_original_version_id(issue.fixed_version_id)
+        #baseline_version = self.baseline_versions.where("original_version_id = :id", id: issue.fixed_version_id).first
         unless baseline_version.nil?
           baseline_issue.baseline_version_id = baseline_version.id
         end
@@ -66,12 +66,12 @@ class Baseline < ActiveRecord::Base
   end
 
   # Validation - Check if due_date is after baseline is defined.
-  def due_date_check
-    unless due_date.nil?
-      if due_date < Date.today
-        errors.add(:due_date, l(:error_due_date_invalid))
-      end
-    end
-  end
+  # def due_date_check
+  #   unless due_date.nil?
+  #     if due_date < Date.today#menos que a data de criação do projecto--->rever isto
+  #       errors.add(:due_date, l(:error_due_date_invalid))
+  #     end
+  #   end
+  # end
 
 end
