@@ -11,7 +11,6 @@ def test_if_end_date_is_not_nil
 	assert_not_nil issue2.end_date
 end
 
-  def test_truth
-    assert true
-  end
+
+
 end
