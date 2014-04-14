@@ -33,7 +33,7 @@ class Baseline < ActiveRecord::Base
   def create_issues issues
     unless issues.nil?
       issues.each do |issue|
-        baseline_issue = BaselineIssue.create(original_issue_id: issue.id, estimated_time: issue.estimated_hours, due_date: issue.due_date,
+        baseline_issue = BaselineIssue.create(original_issue_id: issue.id, estimated_time: issue.estimated_hours || 0, due_date: issue.due_date,
                                               done_ratio: issue.done_ratio, subject: issue.subject, description: issue.description, tracker_id: issue.tracker_id)
         unless issue.due_date.nil?
           baseline_issue.time_week = issue.due_date.strftime('%U')
