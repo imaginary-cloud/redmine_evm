@@ -1,0 +1,23 @@
+$(document).ready(function () {
+	var opts = {
+		  lines: 12, // The number of lines to draw
+		  angle: 0, // The length of each line
+		  lineWidth: 0.21, // The line thickness
+		  pointer: {
+		    length: 0.65, // The radius of the inner circle
+		    strokeWidth: 0.100, // The rotation offset
+		    color: '#424242' // Fill color
+		},
+		limitMax: 'false',   // If true, the pointer will not go past the end of the gauge
+		percentColors: [[0.0, "#ff0000" ],[0.30, "#f9c802"], [0.40, "#a9d70b" ], [0.60, "#a9d70b" ], [0.70, "#f9c802"], [1.0, "#ff0000"]],
+		strokeColor: '#E0E0E0',   // to see which ones work best for you
+		generateGradient: true
+	};
+
+	var target = document.getElementById('spi'); // your canvas element
+	var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
+	gauge.setTextField(document.getElementById("gauge-value"));
+	gauge.maxValue = 2; // set max gauge value
+	gauge.animationSpeed = 40; // set animation speed (32 is default value)
+	gauge.set(1.200); // set actual value
+)};
