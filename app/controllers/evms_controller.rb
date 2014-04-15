@@ -5,7 +5,7 @@ class EvmsController < ApplicationController
 
   def index
     @project = Project.find(params[:id])
-    @baselines = @project.baselines.all
+    @baselines = @project.baselines
     respond_with(@baselines)
   end
 

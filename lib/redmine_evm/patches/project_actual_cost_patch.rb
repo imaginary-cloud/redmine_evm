@@ -42,22 +42,24 @@ module RedmineEvm
           actual_cost_by_weeks[key.beginning_of_week] = time
         end
         actual_cost_by_weeks
-        # actual_cost_by_weeks = {}
-        # (get_start_date.to_date...time_entries.maximum('spent_on').to_date).each do |key| #entries maximum?????''
-        #   actual_cost_by_weeks[key.beginning_of_week] = 0
-        # end
-        # sorted_time_entries = time_entries.sort_by {|date| date.spent_on}
-        # time = 0
 
-        # sorted_time_entries.each do |entry|
-        #   entry_week =  entry.spent_on.beginning_of_week 
-        #   unless entry_week.nil?
-        #     time += entry.hours 
-        #     #puts"time:#{time} week: #{entry_week}"
-        #     actual_cost_by_weeks[entry_week] = time
-        #   end
-        # end
-        # actual_cost_by_weeks
+      end
+
+      def done_ratio_by_week
+        done_ratio_by_weeks = {}
+        done_ratio = 0
+        (get_start_date.to_date...time_entries.maximum('spent_on').to_date).each do |key| 
+          done_ratio_by_weeks[key.beginning_of_week] = 0
+        end
+        issues.each do |issue|
+          unless issue.time_entries.maximum('spent_on').nil?
+          date = issue.time_entries.maximum('spent_on').to_date
+          done_ratio += issue.done_ratio / 100
+          done_ratio_by_weeks[date.beginning_of_week] = done_ratio
+          end
+          
+        end    
+        done_ratio_by_weeks
       end
 
       
