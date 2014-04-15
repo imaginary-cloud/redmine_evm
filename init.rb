@@ -15,5 +15,5 @@ Redmine::Plugin.register :redmine_evm do
   end
   menu :project_menu, :evms,
        { :controller => 'evms', :action => 'index' },
-       :caption => 'EVM', :after => :files
+       :caption => 'EVM', :after => :files, :param => :project_id
 end

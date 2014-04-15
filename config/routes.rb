@@ -7,4 +7,7 @@ resources :projects do
 end
 
 resources :baselines
-resources :evms
+
+resources :projects do
+	resources :evms
+end
