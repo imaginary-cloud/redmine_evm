@@ -35,17 +35,20 @@ module RedmineEvm
       def earned_value_by_week
         done_ratio_by_weeks = {}
         done_ratio = 0
-        (get_start_date.to_date...time_entries.maximum('spent_on').to_date).each do |key| 
-          done_ratio_by_weeks[key.beginning_of_week] = 0
-        end
-        issues.each do |issue|
+        earned_value = 0
+        filtered_issues = issues.select{ |i| !i.time_entries.maximum('spent_on').nil? }
+        sorted_issues = filtered_issues.sort_by{ |issue| issue.time_entries.maximum('spent_on') }
+        
+        sorted_issues.each do |issue|
+          done_ratio = issue.done_ratio / 100
           unless issue.time_entries.maximum('spent_on').nil?
-          date = issue.time_entries.maximum('spent_on').to_date
-          done_ratio += issue.done_ratio / 100
-          done_ratio_by_weeks[date.beginning_of_week] = done_ratio
+            date = issue.time_entries.maximum('spent_on').to_date
+            unless issue.estimated_hours.nil?
+              earned_value += issue.estimated_hours * done_ratio
+            end
+            done_ratio_by_weeks[date.beginning_of_week] = earned_value
           end
-          
-        end    
+        end
         done_ratio_by_weeks
       end
 
