@@ -1,7 +1,7 @@
 /* Graph Container */
 .graph-container {
     position: relative;
-    width: 90%;
+    width: 80%;
     height: 300px;
     padding: 20px;
 
@@ -13,4 +13,8 @@
     height: inherit;
     top: 10px;
     left: 25px;
+}
+
+.evm-gauge{
+	width: 150px;
 }
