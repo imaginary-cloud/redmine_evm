@@ -13,3 +13,9 @@ en:
 
   label_current_baseline: Current
   label_old_baseline: Old
+
+  label_select_baseline: Select Baseline
+
+  title_evm_tab: EVM Indicators
+  subtitle_evm_tab: Here you can see how your project is progressing relative to the plan seted
+  subtitle_evm_summary: Summary
