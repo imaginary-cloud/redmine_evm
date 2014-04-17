@@ -6,6 +6,10 @@ class BaselineIssue < ActiveRecord::Base
 
 
   def end_date
+    @end_date ||= get_end_date
+  end
+
+  def get_end_date
     if baseline_version.nil? 
       due_date || baseline.due_date
     else
