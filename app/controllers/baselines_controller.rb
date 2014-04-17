@@ -10,6 +10,30 @@ class BaselinesController < ApplicationController
   def show
   end
 
+  def chart_data
+    @project = Project.find(params[:project_id])
+    @baseline = Baseline.find(params[:id])
+    
+    planned_value_by_week = @baseline.planned_value_by_week
+    planned_value_by_week_converted = Hash[planned_value_by_week.map{ |k, v| [k.to_time.to_i * 1000, v] }]
+
+    actual_cost_by_week = @project.actual_cost_by_week
+    actual_cost_by_week_converted = Hash[actual_cost_by_week.map{ |k, v| [k.to_time.to_i * 1000, v] }] 
+
+    earned_value_by_week = @project.earned_value_by_week
+    earned_value_by_week_converted = Hash[earned_value_by_week.map{ |k, v| [k.to_time.to_i * 1000, v] }]
+
+    data_to_chart = Hash.new
+    data_to_chart['pv'] = planned_value_by_week_converted.to_a
+    data_to_chart['ac'] = actual_cost_by_week_converted.to_a
+    data_to_chart['ev'] = earned_value_by_week_converted.to_a
+
+    respond_to do |format|
+      format.json { render :json => data_to_chart }
+    end
+
+  end
+
   def new
     @baseline = Baseline.new
   end

@@ -5,7 +5,7 @@ class EvmsController < ApplicationController
 
   def index
     @project = Project.find(params[:project_id])
-    @baselines = @project.baselines.all
+    @baselines = @project.baselines.order( 'created_on DESC' ) #Order to get the current baseline first.
     respond_with(@baselines)
   end
 
