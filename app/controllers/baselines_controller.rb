@@ -3,16 +3,11 @@ class BaselinesController < ApplicationController
 
   model_object Baseline
 
-  before_filter :find_model_object, :except => [:index, :new, :create]
-  before_filter :find_project_from_association, :except => [:index, :new, :create]
-  before_filter :find_project_by_project_id, :only => [:index, :new, :create]
-
-  def index
-    @baselines = @project.baselines.all
-  end
+  before_filter :find_model_object, :except => [:new, :create]
+  before_filter :find_project_from_association, :except => [:new, :create]
+  before_filter :find_project_by_project_id, :only => [:new, :create]
 
   def show
-    @baseline = Baseline.find(params[:id])
   end
 
   def new
