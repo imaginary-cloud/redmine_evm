@@ -1,7 +1,7 @@
 /* Graph Container */
 .graph-container {
     position: relative;
-    width: 700px;
+    width: 570px;
     height: 300px;
     padding: 20px;
 
@@ -16,7 +16,7 @@
 }
 
 .evm-gauge{
-	width: 150px;
+	width: 100px;
 }
 
 #graph-wrapper{
@@ -26,4 +26,39 @@
 .gauge-container{
     float: right;
     padding: 10px;
+}
+
+#evm-subtitle{
+    color: gray;
+}
+
+/*dropdown box*/
+#baseline_id{
+    border-radius: 0; 
+}
+#baseline_id option{
+    color: grey;
+}
+
+#evm-summary{
+    float: right;
+    /*width: 330px;*/
+    height: 200px;
+}
+
+#evm-summary-indicators{
+    border: 1px solid lightgrey;
+    overflow: auto;
+}
+
+.styled-select select {
+   background: transparent;
+   width: 570px;
+    background-color: lightgrey;
+   padding: 5px;
+   color gray;
+   line-height: 1;
+   border: 0;
+   border-radius: 0;
+   -webkit-appearance: none;
 }

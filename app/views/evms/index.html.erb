@@ -1,11 +1,30 @@
-<h2>EVM Indicators</h2>
-<% html_title('EVM Indicators') %>
 
-<!-- Dropdown for baselines -->
-<%= label :baseline, "Select Baseline:" %>
-<%= collection_select :baseline, :id, @baselines, :id, :name, :remote => true %>
+<% if @project.baselines.any? %>
+    <h2><%=l(:title_evm_tab)%></h2>
+    <% html_title('EVM Indicators') %>
+    <p id="evm-subtitle"><%=l(:subtitle_evm_tab)%></p>
 
-<div>
+    <div id="evm-summary">
+        <!-- Gauges -->
+        <h3><%= l(:subtitle_evm_summary)%></h3>
+        <div id="evm-summary-indicators">
+            <div class="gauge-container">
+                <canvas id="spi" class="evm-gauge"></canvas>
+                <p>Schedule Performance Index(SPI)<br> <span id="spi-value"></span></p>
+            </div>
+            <div class="gauge-container">
+                <canvas id="cpi" class="evm-gauge"></canvas>
+                <p>Cost Performance Index(CPI)<br><span id="cpi-value"></span></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dropdown for baselines -->
+    <h3><%=l(:label_select_baseline) %></h3>
+    <div class="styled-select">
+        <%= collection_select :baseline, :id, @baselines, :id, :name, :remote => true %>
+    </div>
+
     <!-- Graph HTML -->
     <div id="graph-wrapper">  
           <div class="graph-container">
@@ -13,176 +32,188 @@
           </div>
     </div>
 
-    <!-- Gauges -->
-    <div class="gauge-container">
-    	<canvas id="spi" class="evm-gauge"></canvas>
-    	<p>SPI - Schedule Performance Index<br> <span id="spi-value"></span></p>
-    </div>
-    <div class="gauge-container">
-        <canvas id="cpi" class="evm-gauge"></canvas>
-        <p>CPI - Cost Performance Index <br><span id="cpi-value"></span></p>
-    </div>
-</div>
+    <!-- Versions Chart -->
+    <!-- Divs for each version of the project 
+    <% @project.versions.each do |version| %>
+        <p><%= version.name%></p>
+        <div id="graph-wrapper-<%= version.id%>">
+            <div class="graph-container">
+              <div id="graph-lines-<%= version.id%>"></div>
+          </div>
+        </div>
+    <% end %> 
 
+    -->
 
-<%= javascript_include_tag 'jquery',   :plugin => 'redmine_evm' %>
-<%= javascript_include_tag 'flot',     :plugin => 'redmine_evm' %>
-<%= javascript_include_tag 'flottime', :plugin => 'redmine_evm' %>
-<%= javascript_include_tag 'gaugemin', :plugin => 'redmine_evm' %>
-<%= stylesheet_link_tag    'evm' ,     :plugin => 'redmine_evm' %>
+    <%= javascript_include_tag 'jquery',        :plugin => 'redmine_evm' %>
+    <%= javascript_include_tag 'flot',          :plugin => 'redmine_evm' %>
+    <%= javascript_include_tag 'flottime',      :plugin => 'redmine_evm' %>
+    <%= javascript_include_tag 'flotrotate',    :plugin => 'redmine_evm' %>
+    <%= javascript_include_tag 'flotlabel',     :plugin => 'redmine_evm' %>
+    <%= javascript_include_tag 'gaugemin',      :plugin => 'redmine_evm' %>
+    <%= stylesheet_link_tag    'evm' ,          :plugin => 'redmine_evm' %>
 
-<!-- This script draws the chart -->
-<script>
-    function drawChart(dataFromJson){
-        var data = dataFromJson;
-        var graphData = [{
-            // Planned Value 
-            data: data.pv,
-            label: "Planned Value",
-            color: '#66CCFF'
-        }, {
-            // Actual Cost  
-            data: data.ac,
-            label: "Acutal Cost",
-            color: '#FF9933',
-            points: { radius: 2, fillColor: '#77b7c5'} 
-        }, {
-            // Earned Value       
-            data: data.ev,
-            label: "Earned Value",
-            color: '#99FF33'
-        }];
+    <!-- This script draws the chart -->
+    <script>
+        function drawChart(dataFromJson){
+            var data = dataFromJson;
+            var graphData = [{
+                // Planned Value 
+                data: data.pv,
+                label: "Planned Value",
+                color: '#0f75bc'
+            }, {
+                // Actual Cost  
+                data: data.ac,
+                label: "Acutal Cost",
+                color: '#f0522e'
+            }, {
+                // Earned Value       
+                data: data.ev,
+                label: "Earned Value",
+                color: '#8cc63f'
+            }];
 
-        var options =   {
-            grid:    { show: true,
-            color: "rgb(48, 48, 48)",
-            tickColor: "rgba(255, 255, 255, 0)",
-            backgroundColor: "rgb(255, 255, 255)" }
-        };
+            var options =   {
+                grid:    { show: false,
+                color: "rgb(48, 48, 48)",
+                tickColor: "rgba(255, 255, 255, 0)",
+                backgroundColor: "rgb(255, 255, 255)" }
+            };
 
-        // Lines
-        $.plot($('#graph-lines'), graphData, {
-            series: {
-                points: {
+            // Lines
+            $.plot($('#graph-lines'), graphData, {
+                series: {
+                    points: {
+                        show: false
+                    },
+                    lines: {
+                        show: true,
+                        fill: false
+                    },
+                    shadowSize: 0
+                },
+                grid: {
                     show: true,
-                    radius: 2
+                    color: '#bfbfbf',
+                    borderColor: { bottom: "#bfbfbf", left: "#bfbfbf" },
+                    borderWidth: 1,
+                    hoverable: true
                 },
-                lines: {
-                    show: true
+                xaxis: {
+                    mode: "time", 
+                    timeformat: "%d %b %Y", 
+                    minTickSize: [7, "day"]
                 },
-                shadowSize: 0
-            },
-            grid: {
-                show: true,
-                color: '#646464',
-                borderColor: 'transparent',
-                borderWidth: 1,
-                hoverable: true
-            },
-            xaxis: {
-                mode: "time", timeformat: "%d/%m/%y", minTickSize: [7, "day"]
-            },
-            yaxis: {
-                
-            }
-        });
-    }       
-</script>
-
-<!-- This script is the ajax way to select baselines from dropdown box-->
-<script>
-    $(document).ready( function (){
-        //Debug on the console instead of alert.
-        //console.log(dropdown) ; 
-
-        var dropdownMenu = $('#baseline_id'); //Dropdown element from html.  
-        var projectId = <%= @project.id %> ;  //The current project id;
-        var baselineId = dropdownMenu.val();  //The dropdown selected baseline id;
-
-        function getDataFromChart(projectId, baselineId){ //Get json for chart data, from baselines_controller chart_data.
-            var data;
-            $.ajax({
-                async: false,                 //Whithout this it would not return the json data. 
-                url: '/projects/' + projectId + '/baselines/' + baselineId + '/chart_data',
-                type: "GET",
-                dataType: "json",
-                success: function(resp) {
-                    data = resp
+                yaxis: {
+                    axisLabel: 'Hours',
+                    axisLabelUseCanvas: true,
+                    axisLabelFontSizePixels: 12,
+                    axisLabelFontFamily: 'Verdana, Arial, Helvetica, Tahoma, sans-serif',
+                    axisLabelPadding: 5
                 }
             });
-            return data;
-        }
+        }       
+    </script>
 
-        //Upon loading the page, draws the chart by default.
-        var data = getDataFromChart(projectId, baselineId);
-        drawChart(data);
+    <!-- This script is the ajax way to select baselines from dropdown box-->
+    <script>
+        $(document).ready( function (){
+            //Debug on the console instead of alert.
+            //console.log(dropdown) ; 
 
-        //After changing the baseline from dropdown menu, updates the chart.
-        dropdownMenu.change(function() {
-            var baselineId = $(this).val();
+            var dropdownMenu = $('#baseline_id'); //Dropdown element from html.  
+            var projectId = <%= @project.id %> ;  //The current project id;
+            var baselineId = dropdownMenu.val();  //The dropdown selected baseline id;
+
+            function getDataFromChart(projectId, baselineId){ //Get json for chart data, from baselines_controller chart_data.
+                var data;
+                $.ajax({
+                    async: false,                 //Whithout this it would not return the json data. 
+                    url: '/projects/' + projectId + '/baselines/' + baselineId + '/chart_data',
+                    type: "GET",
+                    dataType: "json",
+                    success: function(resp) {
+                        data = resp
+                    }
+                });
+                return data;
+            }
+
+            //Upon loading the page, draws the chart by default.
             var data = getDataFromChart(projectId, baselineId);
             drawChart(data);
+
+            //After changing the baseline from dropdown menu, updates the chart.
+            dropdownMenu.change(function() {
+                var baselineId = $(this).val();
+                var data = getDataFromChart(projectId, baselineId);
+                drawChart(data);
+            })
         })
-    })
-</script>
+    </script>
 
-<!-- Script for the gauge -->
-<script>
-    var ev = <%= @project.earned_value %> ;
-    var pv = <%= @baselines.first.planned_value %> ;
-    var spi = ev / pv ;
-    spi = spi * 1000.0;
+    <!-- Script for the gauge -->
+    <script>
+        var ev = <%= @project.earned_value %> ;
+        var pv = <%= @baselines.first.planned_value %> ;
+        var spi = ev / pv ;
+        spi = spi * 1000.0;
 
-	var opts= {
-	  lines: 12, // The number of lines to draw
-	  angle: 0, // The length of each line
-	  lineWidth: 0.21, // The line thickness
-	  pointer: {
-	    length: 0.65, // The radius of the inner circle
-	    strokeWidth: 0.100, // The rotation offset
-	    color: '#424242' // Fill color
-	},
-	limitMax: 'false',   // If true, the pointer will not go past the end of the gauge
-	percentColors: [[0.0, "#ff0000" ],[0.30, "#f9c802"], [0.40, "#a9d70b" ], [0.60, "#a9d70b" ], [0.70, "#f9c802"], [1.0, "#ff0000"]],
-	strokeColor: '#E0E0E0',   // to see which ones work best for you
-	generateGradient: true
-	};
+    	var opts= {
+    	  lines: 12, // The number of lines to draw
+    	  angle: 0, // The length of each line
+    	  lineWidth: 0.21, // The line thickness
+    	  pointer: {
+    	    length: 0.65, // The radius of the inner circle
+    	    strokeWidth: 0.100, // The rotation offset
+    	    color: '#424242' // Fill color
+    	},
+    	limitMax: 'false',   // If true, the pointer will not go past the end of the gauge
+    	percentColors: [[0.0, "#ff0000" ],[0.30, "#f9c802"], [0.40, "#a9d70b" ], [0.60, "#a9d70b" ], [0.70, "#f9c802"], [1.0, "#ff0000"]],
+    	strokeColor: '#E0E0E0',   // to see which ones work best for you
+    	generateGradient: true
+    	};
 
-	var target = document.getElementById('spi'); // your canvas element
-	var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
-	gauge.setTextField(document.getElementById("spi-value"));
-	gauge.maxValue = 2000; // set max gauge value
-	gauge.animationSpeed = 40; // set animation speed (32 is default value)
-	gauge.set(spi); // set actual value
-</script>
+    	var target = document.getElementById('spi'); // your canvas element
+    	var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
+    	gauge.setTextField(document.getElementById("spi-value"));
+    	gauge.maxValue = 2000; // set max gauge value
+    	gauge.animationSpeed = 40; // set animation speed (32 is default value)
+    	gauge.set(spi); // set actual value
+    </script>
 
-<!-- Script for the gauge -->
-<script>
-    var ev = <%= @project.earned_value %> ;
-    var ac = <%= @project.actual_cost %> ;
-    var cpi = ev / ac ;
-    cpi = cpi * 1000.0;
+    <!-- Script for the gauge -->
+    <script>
+        var ev = <%= @project.earned_value %> ;
+        var ac = <%= @project.actual_cost %> ;
+        var cpi = ev / ac ;
+        cpi = cpi * 1000.0;
 
-    var opts= {
-      lines: 12, // The number of lines to draw
-      angle: 0, // The length of each line
-      lineWidth: 0.21, // The line thickness
-      pointer: {
-        length: 0.65, // The radius of the inner circle
-        strokeWidth: 0.100, // The rotation offset
-        color: '#424242' // Fill color
-    },
-    limitMax: 'false',   // If true, the pointer will not go past the end of the gauge
-    percentColors: [[0.0, "#ff0000" ],[0.30, "#f9c802"], [0.40, "#a9d70b" ], [0.60, "#a9d70b" ], [0.70, "#f9c802"], [1.0, "#ff0000"]],
-    strokeColor: '#E0E0E0',   // to see which ones work best for you
-    generateGradient: true
-    };
+        var opts= {
+          lines: 12, // The number of lines to draw
+          angle: 0, // The length of each line
+          lineWidth: 0.21, // The line thickness
+          pointer: {
+            length: 0.65, // The radius of the inner circle
+            strokeWidth: 0.100, // The rotation offset
+            color: '#424242' // Fill color
+        },
+        limitMax: 'false',   // If true, the pointer will not go past the end of the gauge
+        percentColors: [[0.0, "#ff0000" ],[0.30, "#f9c802"], [0.40, "#a9d70b" ], [0.60, "#a9d70b" ], [0.70, "#f9c802"], [1.0, "#ff0000"]],
+        strokeColor: '#E0E0E0',   // to see which ones work best for you
+        generateGradient: true
+        };
 
-    var target = document.getElementById('cpi'); // your canvas element
-    var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
-    gauge.setTextField(document.getElementById("cpi-value"));
-    gauge.maxValue = 2000; // set max gauge value
-    gauge.animationSpeed = 40; // set animation speed (32 is default value)
-    gauge.set(cpi); // set actual value
-</script>
+        var target = document.getElementById('cpi'); // your canvas element
+        var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
+        gauge.setTextField(document.getElementById("cpi-value"));
+        gauge.maxValue = 2000; // set max gauge value
+        gauge.animationSpeed = 40; // set animation speed (32 is default value)
+        gauge.set(cpi); // set actual value
+    </script>
 
+<% else %>
+    <p class="nodata"><%= l(:label_no_data) %></p>
+    <p><%= link_to l(:label_baseline_new), new_project_baseline_path(@project, :back_url => ''), :class => 'icon icon-add' %></p>
+<% end %>
