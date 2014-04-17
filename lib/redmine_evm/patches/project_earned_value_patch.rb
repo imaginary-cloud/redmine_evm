@@ -7,7 +7,7 @@ module RedmineEvm
 
         base.extend(ClassMethods)
 
-        base.send(:include, InstanceMethods)
+        base.send(:include, ProjectInstanceMethods)
 
         base.class_eval do
           unloadable # Send unloadable so it will not be unloaded in development  
@@ -20,7 +20,7 @@ module RedmineEvm
       
     end
 
-    module InstanceMethods
+    module ProjectInstanceMethods
 
       def earned_value
         sum_earned_value = 0
@@ -38,9 +38,9 @@ module RedmineEvm
         earned_value = 0
         filtered_issues = issues.select{ |i| !i.time_entries.maximum('spent_on').nil? }
         sorted_issues = filtered_issues.sort_by{ |issue| issue.time_entries.maximum('spent_on') }
-        
+
         sorted_issues.each do |issue|
-          done_ratio = issue.done_ratio / 100
+          done_ratio = issue.done_ratio / 100.0
           unless issue.time_entries.maximum('spent_on').nil?
             date = issue.time_entries.maximum('spent_on').to_date
             unless issue.estimated_hours.nil?
@@ -50,9 +50,8 @@ module RedmineEvm
           end
         end
         done_ratio_by_weeks
-      end
+      end      
 
-      
     end
 
   end

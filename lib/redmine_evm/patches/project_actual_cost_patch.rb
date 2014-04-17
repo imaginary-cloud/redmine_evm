@@ -7,7 +7,7 @@ module RedmineEvm
 
         base.extend(ClassMethods)
 
-        base.send(:include, InstanceMethods)
+        base.send(:include, ProjectInstanceMethods)
 
         base.class_eval do
           unloadable # Send unloadable so it will not be unloaded in development  
@@ -17,10 +17,10 @@ module RedmineEvm
     end
 
     module ClassMethods
-      
+
     end
 
-    module InstanceMethods
+    module ProjectInstanceMethods 
 
       def get_start_date
         start_date || created_on
@@ -44,10 +44,7 @@ module RedmineEvm
           end
         end
         actual_cost_by_weeks
-
       end
-
-      
     end
 
   end
