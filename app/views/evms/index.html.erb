@@ -1,26 +1,25 @@
+<h2 id="evm-title"><%=l(:title_evm_tab)%></h2>
+<% html_title('EVM Indicators') %>
+<p id="evm-subtitle"><%=l(:subtitle_evm_tab)%></p>
 
 <% if @project.baselines.any? %>
-    <h2><%=l(:title_evm_tab)%></h2>
-    <% html_title('EVM Indicators') %>
-    <p id="evm-subtitle"><%=l(:subtitle_evm_tab)%></p>
-
     <div id="evm-summary">
         <!-- Gauges -->
         <h3><%= l(:subtitle_evm_summary)%></h3>
         <div id="evm-summary-indicators">
             <div class="gauge-container">
                 <canvas id="spi" class="evm-gauge"></canvas>
-                <p>Schedule Performance Index(SPI)<br> <span id="spi-value"></span></p>
+                <p>SPI = <span id="spi-value"></span></p>
             </div>
             <div class="gauge-container">
                 <canvas id="cpi" class="evm-gauge"></canvas>
-                <p>Cost Performance Index(CPI)<br><span id="cpi-value"></span></p>
+                <p>CPI = <span id="cpi-value"></span></p>
             </div>
         </div>
     </div>
 
     <!-- Dropdown for baselines -->
-    <h3><%=l(:label_select_baseline) %></h3>
+    <br><h3 id="evm-label-select-baseline"><%=l(:label_select_baseline) %></h3>
     <div class="styled-select">
         <%= collection_select :baseline, :id, @baselines, :id, :name, :remote => true %>
     </div>
@@ -33,17 +32,11 @@
     </div>
 
     <!-- Versions Chart -->
-    <!-- Divs for each version of the project 
-    <% @project.versions.each do |version| %>
-        <p><%= version.name%></p>
-        <div id="graph-wrapper-<%= version.id%>">
-            <div class="graph-container">
-              <div id="graph-lines-<%= version.id%>"></div>
-          </div>
-        </div>
-    <% end %> 
+    <!-- Divs for each version of the project -->
+    <div id="evm-versions">
+    </div>
 
-    -->
+    
 
     <%= javascript_include_tag 'jquery',        :plugin => 'redmine_evm' %>
     <%= javascript_include_tag 'flot',          :plugin => 'redmine_evm' %>
@@ -103,7 +96,7 @@
                 xaxis: {
                     mode: "time", 
                     timeformat: "%d %b %Y", 
-                    minTickSize: [7, "day"]
+                    minTickSize: [1, "day"]
                 },
                 yaxis: {
                     axisLabel: 'Hours',
@@ -126,7 +119,7 @@
             var projectId = <%= @project.id %> ;  //The current project id;
             var baselineId = dropdownMenu.val();  //The dropdown selected baseline id;
 
-            function getDataFromChart(projectId, baselineId){ //Get json for chart data, from baselines_controller chart_data.
+            function getDataForMainChart(projectId, baselineId){ //Get json for chart data, from baselines_controller chart_data.
                 var data;
                 $.ajax({
                     async: false,                 //Whithout this it would not return the json data. 
@@ -141,13 +134,13 @@
             }
 
             //Upon loading the page, draws the chart by default.
-            var data = getDataFromChart(projectId, baselineId);
+            var data = getDataForMainChart(projectId, baselineId);
             drawChart(data);
 
             //After changing the baseline from dropdown menu, updates the chart.
             dropdownMenu.change(function() {
                 var baselineId = $(this).val();
-                var data = getDataFromChart(projectId, baselineId);
+                var data = getDataForMainChart(projectId, baselineId);
                 drawChart(data);
             })
         })
@@ -155,9 +148,12 @@
 
     <!-- Script for the gauge -->
     <script>
+
+        funcion drawGauge(project, baseline)
         var ev = <%= @project.earned_value %> ;
         var pv = <%= @baselines.first.planned_value %> ;
         var spi = ev / pv ;
+        $('#spi-value').append(spi.toFixed(3).toString());
         spi = spi * 1000.0;
 
     	var opts= {
@@ -169,17 +165,17 @@
     	    strokeWidth: 0.100, // The rotation offset
     	    color: '#424242' // Fill color
     	},
-    	limitMax: 'false',   // If true, the pointer will not go past the end of the gauge
-    	percentColors: [[0.0, "#ff0000" ],[0.30, "#f9c802"], [0.40, "#a9d70b" ], [0.60, "#a9d70b" ], [0.70, "#f9c802"], [1.0, "#ff0000"]],
+    	limitMax: 'true',   // If true, the pointer will not go past the end of the gauge
+    	percentColors: [[0.0, "#ff0000" ], [0.40, "#a9d70b" ], [0.60, "#a9d70b" ], [1.0, "#ff0000"]],
     	strokeColor: '#E0E0E0',   // to see which ones work best for you
     	generateGradient: true
     	};
 
     	var target = document.getElementById('spi'); // your canvas element
     	var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
-    	gauge.setTextField(document.getElementById("spi-value"));
+    	//gauge.setTextField(document.getElementById("spi"));
     	gauge.maxValue = 2000; // set max gauge value
-    	gauge.animationSpeed = 40; // set animation speed (32 is default value)
+    	gauge.animationSpeed = 32; // set animation speed (32 is default value)
     	gauge.set(spi); // set actual value
     </script>
 
@@ -188,8 +184,9 @@
         var ev = <%= @project.earned_value %> ;
         var ac = <%= @project.actual_cost %> ;
         var cpi = ev / ac ;
+        $('#cpi-value').append(cpi.toFixed(3).toString());
         cpi = cpi * 1000.0;
-
+        
         var opts= {
           lines: 12, // The number of lines to draw
           angle: 0, // The length of each line
@@ -199,21 +196,21 @@
             strokeWidth: 0.100, // The rotation offset
             color: '#424242' // Fill color
         },
-        limitMax: 'false',   // If true, the pointer will not go past the end of the gauge
-        percentColors: [[0.0, "#ff0000" ],[0.30, "#f9c802"], [0.40, "#a9d70b" ], [0.60, "#a9d70b" ], [0.70, "#f9c802"], [1.0, "#ff0000"]],
+        limitMax: 'true',   // If true, the pointer will not go past the end of the gauge
+        percentColors: [[0.0, "#ff0000" ], [0.40, "#a9d70b" ], [0.60, "#a9d70b" ], [1.0, "#ff0000"]],
         strokeColor: '#E0E0E0',   // to see which ones work best for you
         generateGradient: true
         };
 
         var target = document.getElementById('cpi'); // your canvas element
         var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
-        gauge.setTextField(document.getElementById("cpi-value"));
+        //gauge.setTextField(document.getElementById("cpi-value"));
         gauge.maxValue = 2000; // set max gauge value
-        gauge.animationSpeed = 40; // set animation speed (32 is default value)
+        gauge.animationSpeed = 32; // set animation speed (32 is default value)
         gauge.set(cpi); // set actual value
     </script>
 
 <% else %>
-    <p class="nodata"><%= l(:label_no_data) %></p>
-    <p><%= link_to l(:label_baseline_new), new_project_baseline_path(@project, :back_url => ''), :class => 'icon icon-add' %></p>
+    <p class="nodata"><%= l(:label_no_data) %> <%= link_to l(:label_baseline_set), new_project_baseline_path(@project, :back_url => ''), :class => 'icon icon-add' %></p>
+
 <% end %>

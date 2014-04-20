@@ -4,12 +4,12 @@ en:
   label_baseline: Baseline
   label_baseline_plural: Baselines
   label_baseline_version: Baseline Version
-  label_baseline_new: New Baseline
+  label_baseline_set: Set Baseline
 
   label_due_date: Due Date
   label_created_date: Created Date
 
-  error_due_date_invalid: cannot be in the past.
+  #error_due_date_invalid: cannot be in the past.
 
   label_current_baseline: Current
   label_old_baseline: Old
