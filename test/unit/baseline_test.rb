@@ -1,14 +1,19 @@
 require File.expand_path('../../test_helper', __FILE__)
 
-class BaselinesTest < ActiveSupport::TestCase
+class BaselineTest < ActiveSupport::TestCase
   fixtures :projects, :baselines, :baseline_issues, :baseline_versions, :versions, :issues
 
   ActiveRecord::Fixtures.create_fixtures(Redmine::Plugin.find(:redmine_evm).directory + '/test/fixtures/',
                                          [:baselines,
                                          :baseline_issues,
                                          :baseline_versions,
-                                         :versions, 
-                                         :issues])
+                                         ])
+
+  should belong_to(:project)
+  should have_many(:baseline_issues)
+  should have_many(:baseline_versions)
+  should validate_presence_of(:name)
+  should validate_presence_of(:due_date)
 
   def setup
     @baseline = baselines(:baselines_001)
@@ -32,7 +37,7 @@ class BaselinesTest < ActiveSupport::TestCase
     baseline = new_baseline
     id = baseline.id
     baseline.create_versions(projects(:projects_001).versions)
-    baseline_version=baseline.baseline_versions.last
+    baseline_version=baseline.baseline_versions.where("original_version_id = ?", 1).first
     assert_equal id, baseline_version.baseline_id
     assert_equal "0.1", baseline_version.name
     assert_equal "Beta", baseline_version.description
@@ -42,30 +47,12 @@ class BaselinesTest < ActiveSupport::TestCase
     baseline = new_baseline
     baseline.create_issues(projects(:projects_001).issues)
     baseline_issue = baseline.baseline_issues.first
-    # puts baseline_issue.inspect
     assert_equal "Can't print recipes", baseline_issue.subject
-    #assert_equal 1 , baseline_issue.baseline_version_id
-  end
-
-  def test_if_planned_value_returns_value
-    assert_not_nil @baseline.planned_value
-    assert_equal 19 , @baseline.planned_value
-  end
-
-  def test_if_planned_value_by_week_returns_correct_hash
-    planned_value_by_week = @baseline.planned_value_by_week
-    assert_not_nil planned_value_by_week
-    assert_equal 10, planned_value_by_week[Time.new(2006,07,30).to_date.beginning_of_week]
   end
 
   def test_if_destroy_deletes_associated_data
     @baseline.destroy 
     assert_equal [], @baseline.baseline_issues
   end
-
-  # def test_if_planned_value_for_chart_returns
-  #   b = Baseline.find(1)
-  #   assert_not_nil b.planned_value_for_chart
-  # end
 
 end
