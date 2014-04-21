@@ -24,19 +24,12 @@
         <%= collection_select :baseline, :id, @baselines, :id, :name, :remote => true %>
     </div>
 
-    <!-- Graph HTML -->
-    <div id="graph-wrapper">  
-          <div class="graph-container">
-              <div id="graph-lines"></div>
-          </div>
-    </div>
-
+    <!-- Main Chart -->
+    <br><h3>Project</h3>   
+    <div id="evm-main-chart"></div>
     <!-- Versions Chart -->
-    <!-- Divs for each version of the project -->
-    <div id="evm-versions">
-    </div>
-
-    
+    <br><h3>Versions</h3>
+    <div id="evm-versions-charts"></div>
 
     <%= javascript_include_tag 'jquery',        :plugin => 'redmine_evm' %>
     <%= javascript_include_tag 'flot',          :plugin => 'redmine_evm' %>
@@ -48,8 +41,10 @@
 
     <!-- This script draws the chart -->
     <script>
-        function drawChart(dataFromJson){
+        function drawChart(dataFromJson, htmlElementToDraw){
             var data = dataFromJson;
+            var chartHtmlElement = $('#' + htmlElementToDraw);
+
             var graphData = [{
                 // Planned Value 
                 data: data.pv,
@@ -67,7 +62,7 @@
                 color: '#8cc63f'
             }];
 
-            var options =   {
+            var options = {
                 grid:    { show: false,
                 color: "rgb(48, 48, 48)",
                 tickColor: "rgba(255, 255, 255, 0)",
@@ -75,7 +70,7 @@
             };
 
             // Lines
-            $.plot($('#graph-lines'), graphData, {
+            $.plot(chartHtmlElement, graphData, {
                 series: {
                     points: {
                         show: false
@@ -118,6 +113,10 @@
             var dropdownMenu = $('#baseline_id'); //Dropdown element from html.  
             var projectId = <%= @project.id %> ;  //The current project id;
             var baselineId = dropdownMenu.val();  //The dropdown selected baseline id;
+            var mainChartData;
+            var mainChartHtmlElement;
+            var versionsChartData;
+            var verisonChartHtmlElement;
 
             function getDataForMainChart(projectId, baselineId){ //Get json for chart data, from baselines_controller chart_data.
                 var data;
@@ -133,23 +132,58 @@
                 return data;
             }
 
-            //Upon loading the page, draws the chart by default.
-            var data = getDataForMainChart(projectId, baselineId);
-            drawChart(data);
+            function getDataForVersionsCharts(projectId, baselineId){ //Get json for chart data, from baselines_controller chart_data.
+                var data;
+                $.ajax({
+                    async: false,                 //Whithout this it would not return the json data. 
+                    url: '/projects/' + projectId + '/baselines/' + baselineId + '/versions_chart_data',
+                    type: "GET",
+                    dataType: "json",
+                    success: function(resp) {
+                        data = resp
+                    }
+                });
+                return data;
+            }
+
+            //Upon loading the page, draws the charts by default.
+            mainChartData = getDataForMainChart(projectId, baselineId);
+            mainChartHtmlElement = 'graph-lines-' + baselineId;
+            $('#evm-main-chart').append(
+                '<div id=' + mainChartHtmlElement + ' style="width:50%;height:300px;"></div>'  //style goes to CSS
+            );
+            drawChart(mainChartData, mainChartHtmlElement);
+
+            versionsChartData = getDataForVersionsCharts(projectId, baselineId);
+            $.each(versionsChartData, function(key, value) {  
+              verisonChartHtmlElement = 'graph-lines-version' + key;
+              $('#evm-versions-charts').append(
+                 '<div id=' + verisonChartHtmlElement + ' style="width:50%;height:300px;"></div>'
+              );
+              drawChart(value, verisonChartHtmlElement);
+            });
+
 
             //After changing the baseline from dropdown menu, updates the chart.
             dropdownMenu.change(function() {
-                var baselineId = $(this).val();
-                var data = getDataForMainChart(projectId, baselineId);
-                drawChart(data);
-            })
+                baselineId = $(this).val();
+
+                mainChartData = getDataForMainChart(projectId, baselineId);
+                drawChart(mainChartData, mainChartHtmlElement);
+
+                versionsChartData = getDataForVersionsCharts(projectId, baselineId);
+                $.each(versionsChartData, function(key, value) {
+                  verisonChartHtmlElement = 'graph-lines-version' + key;
+                  drawChart(value, verisonChartHtmlElement);
+                });
+            });
+
         })
     </script>
 
     <!-- Script for the gauge -->
     <script>
 
-        funcion drawGauge(project, baseline)
         var ev = <%= @project.earned_value %> ;
         var pv = <%= @baselines.first.planned_value %> ;
         var spi = ev / pv ;
