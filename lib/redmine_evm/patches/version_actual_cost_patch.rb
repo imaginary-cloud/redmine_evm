@@ -14,10 +14,6 @@ module RedmineEvm
     end
     module ClassMethods
 
-      def VersionActualCostPatch.included(mod)
-        puts "#{self} esta a ser incluido em #{mod}"
-      end
-
     end
 
     module VersionInstanceMethods
@@ -37,28 +33,11 @@ module RedmineEvm
       end
 
       def actual_cost
-        # puts self.class
-        # actual_cost = 0;
-        # fixed_issues.each do |issue|
-        #   unless issue.time_entries.nil?
-        #     actual_cost += issue.time_entries.sum(:hours)  
-        #   end
-        # end
-        # actual_cost
-        self.spent_hours
+        spent_hours
       end
 
       def get_time_entries
-        # time_entries = []
-        # fixed_issues.each do |issue|
-        #   unless issue.time_entries.nil?
-        #     issue.time_entries.each do|entry|
-        #       time_entries << entry  
-        #     end
-        #   end
-        # end 
-        # time_entries
-        @time_entries ||= TimeEntry.joins(:issue).where("#{Issue.table_name}.fixed_version_id = ?", id)
+        TimeEntry.joins(:issue).where("#{Issue.table_name}.fixed_version_id = ?", id)
       end
 
       def actual_cost_by_week
