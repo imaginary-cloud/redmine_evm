@@ -5,7 +5,7 @@ class BaselineIssue < ActiveRecord::Base
   belongs_to :baseline_version
 
 
-  def end_date
+  def end_date 
     @end_date ||= get_end_date
   end
 
