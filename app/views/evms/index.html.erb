@@ -3,6 +3,7 @@
 <p id="evm-subtitle"><%=l(:subtitle_evm_tab)%></p>
 
 <% if @project.baselines.any? %>
+
     <div id="evm-summary">
         <!-- Gauges -->
         <h3><%= l(:subtitle_evm_summary)%></h3>
@@ -19,32 +20,36 @@
     </div>
 
     <!-- Dropdown for baselines -->
-    <br><h3 id="evm-label-select-baseline"><%=l(:label_select_baseline) %></h3>
+    <br>
+    <h3 id="evm-label-select-baseline"><%=l(:label_select_baseline) %></h3>
     <div class="styled-select">
         <%= collection_select :baseline, :id, @baselines, :id, :name, :remote => true %>
     </div>
 
     <!-- Main Chart -->
-    <br><h3>Project</h3>   
+    <br>
+    <h3>Project</h3>   
     <div id="evm-main-chart"></div>
     <!-- Versions Chart -->
-    <br><h3>Versions</h3>
+    <br>
+    <h3>Versions</h3>
     <div id="evm-versions-charts"></div>
 
     <%= javascript_include_tag 'jquery',        :plugin => 'redmine_evm' %>
     <%= javascript_include_tag 'flot',          :plugin => 'redmine_evm' %>
     <%= javascript_include_tag 'flottime',      :plugin => 'redmine_evm' %>
-    <%= javascript_include_tag 'flotrotate',    :plugin => 'redmine_evm' %>
     <%= javascript_include_tag 'flotlabel',     :plugin => 'redmine_evm' %>
     <%= javascript_include_tag 'gaugemin',      :plugin => 'redmine_evm' %>
     <%= stylesheet_link_tag    'evm' ,          :plugin => 'redmine_evm' %>
 
-    <!-- This script draws the chart -->
+    <!-- This script draws the chart and gauges -->
     <script>
-        function drawChart(dataFromJson, htmlElementToDraw){
-            var data = dataFromJson;
-            var chartHtmlElement = $('#' + htmlElementToDraw);
+        /* Dependencies: jquery, flot, flottime, flotlabel, gaugemin */
 
+        //Draws the chart for the project or versions.
+        function drawChart(dataFromJson, placeholder){
+            var data = dataFromJson;
+            var chartHtmlElement = $('#' + placeholder);
             var graphData = [{
                 // Planned Value 
                 data: data.pv,
@@ -101,10 +106,38 @@
                     axisLabelPadding: 5
                 }
             });
+        }
+
+        //Draws the gauge for spi or cpi.
+        //value should be between 0.0 and 2.0.
+        //placeholder is the html element id to draw.
+        function drawGauge(value, placeholder){
+
+            var opts= {
+              lines: 12, // The number of lines to draw
+              angle: 0, // The length of each line
+              lineWidth: 0.21, // The line thickness
+              pointer: {
+                length: 0.65, // The radius of the inner circle
+                strokeWidth: 0.100, // The rotation offset
+                color: '#424242' // Fill color
+            },
+            limitMax: 'true',   // If true, the pointer will not go past the end of the gauge
+            percentColors: [[0.0, "#ff0000" ], [0.40, "#a9d70b" ], [0.60, "#a9d70b" ], [1.0, "#ff0000"]],
+            strokeColor: '#E0E0E0',   // to see which ones work best for you
+            generateGradient: true
+            };
+
+            var target = document.getElementById(placeholder); // your canvas element
+            var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
+            //gauge.setTextField(document.getElementById("spi"));
+            gauge.maxValue = 2000; // set max gauge value
+            gauge.animationSpeed = 32; // set animation speed (32 is default value)
+            gauge.set(value); // set actual value
         }       
     </script>
 
-    <!-- This script is the ajax way to select baselines from dropdown box-->
+    <!-- This script is the ajax way to select baselines from dropdown box -->
     <script>
         $(document).ready( function (){
             //Debug on the console instead of alert.
@@ -113,10 +146,17 @@
             var dropdownMenu = $('#baseline_id'); //Dropdown element from html.  
             var projectId = <%= @project.id %> ;  //The current project id;
             var baselineId = dropdownMenu.val();  //The dropdown selected baseline id;
+            
             var mainChartData;
             var mainChartHtmlElement;
             var versionsChartData;
             var verisonChartHtmlElement;
+
+            var plannedValue;
+            var earnedValue;
+            var actualCost;
+            var cpi;
+            var spi;
 
             function getDataForMainChart(projectId, baselineId){ //Get json for chart data, from baselines_controller chart_data.
                 var data;
@@ -129,6 +169,7 @@
                         data = resp
                     }
                 });
+                console.log(data); //DEBUG Remove after
                 return data;
             }
 
@@ -143,6 +184,22 @@
                         data = resp
                     }
                 });
+                console.log(data); //DEBUG Remove after
+                return data;
+            }
+
+            function getEvmVariables(projectId, baselineId){ //Get json for chart data, from baselines_controller chart_data.
+                var data;
+                $.ajax({
+                    async: false,                 //Whithout this it would not return the json data. 
+                    url: '/projects/' + projectId + '/baselines/' + baselineId + '/evm_variables',
+                    type: "GET",
+                    dataType: "json",
+                    success: function(resp) {
+                        data = resp
+                    }
+                });
+                console.log(data); //DEBUG Remove after
                 return data;
             }
 
@@ -163,8 +220,23 @@
               drawChart(value, verisonChartHtmlElement);
             });
 
+            //Gauges
+            evmVariables = getEvmVariables(projectId, baselineId);
+            plannedValue = evmVariables['pv'];
+            actualCost = evmVariables['ac'];
+            earnedValue = evmVariables['ev'];
+            
+            spi = earnedValue / plannedValue ;
+            $('#spi-value').append(spi.toFixed(3).toString());  //toFixed is the number of decimal 
+            spi = spi * 1000.0;
+            drawGauge(spi, 'spi');
+            cpi = earnedValue / actualCost ;
+            $('#cpi-value').append(cpi.toFixed(3).toString());
+            cpi = cpi * 1000.0;
+            drawGauge(cpi, 'cpi');
 
-            //After changing the baseline from dropdown menu, updates the chart.
+
+            //After changing the baseline from dropdown menu.
             dropdownMenu.change(function() {
                 baselineId = $(this).val();
 
@@ -176,75 +248,28 @@
                   verisonChartHtmlElement = 'graph-lines-version' + key;
                   drawChart(value, verisonChartHtmlElement);
                 });
+
+                evmVariables = getEvmVariables(projectId, baselineId);
+                plannedValue = evmVariables['pv'];
+                actualCost = evmVariables['ac'];
+                earnedValue = evmVariables['ev'];
+
+                spi = earnedValue / plannedValue ;
+                $('#spi-value').replaceWith(spi.toFixed(3).toString());  //toFixed is the number of decimal 
+                spi = spi * 1000.0;
+                drawGauge(spi, 'spi');
+                cpi = earnedValue / actualCost ;
+                $('#cpi-value').replaceWith(cpi.toFixed(3).toString());
+                cpi = cpi * 1000.0;
+                drawGauge(cpi, 'cpi');
+
             });
 
         })
     </script>
 
-    <!-- Script for the gauge -->
-    <script>
-
-        var ev = <%= @project.earned_value %> ;
-        var pv = <%= @baselines.first.planned_value %> ;
-        var spi = ev / pv ;
-        $('#spi-value').append(spi.toFixed(3).toString());
-        spi = spi * 1000.0;
-
-    	var opts= {
-    	  lines: 12, // The number of lines to draw
-    	  angle: 0, // The length of each line
-    	  lineWidth: 0.21, // The line thickness
-    	  pointer: {
-    	    length: 0.65, // The radius of the inner circle
-    	    strokeWidth: 0.100, // The rotation offset
-    	    color: '#424242' // Fill color
-    	},
-    	limitMax: 'true',   // If true, the pointer will not go past the end of the gauge
-    	percentColors: [[0.0, "#ff0000" ], [0.40, "#a9d70b" ], [0.60, "#a9d70b" ], [1.0, "#ff0000"]],
-    	strokeColor: '#E0E0E0',   // to see which ones work best for you
-    	generateGradient: true
-    	};
-
-    	var target = document.getElementById('spi'); // your canvas element
-    	var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
-    	//gauge.setTextField(document.getElementById("spi"));
-    	gauge.maxValue = 2000; // set max gauge value
-    	gauge.animationSpeed = 32; // set animation speed (32 is default value)
-    	gauge.set(spi); // set actual value
-    </script>
-
-    <!-- Script for the gauge -->
-    <script>
-        var ev = <%= @project.earned_value %> ;
-        var ac = <%= @project.actual_cost %> ;
-        var cpi = ev / ac ;
-        $('#cpi-value').append(cpi.toFixed(3).toString());
-        cpi = cpi * 1000.0;
-        
-        var opts= {
-          lines: 12, // The number of lines to draw
-          angle: 0, // The length of each line
-          lineWidth: 0.21, // The line thickness
-          pointer: {
-            length: 0.65, // The radius of the inner circle
-            strokeWidth: 0.100, // The rotation offset
-            color: '#424242' // Fill color
-        },
-        limitMax: 'true',   // If true, the pointer will not go past the end of the gauge
-        percentColors: [[0.0, "#ff0000" ], [0.40, "#a9d70b" ], [0.60, "#a9d70b" ], [1.0, "#ff0000"]],
-        strokeColor: '#E0E0E0',   // to see which ones work best for you
-        generateGradient: true
-        };
-
-        var target = document.getElementById('cpi'); // your canvas element
-        var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
-        //gauge.setTextField(document.getElementById("cpi-value"));
-        gauge.maxValue = 2000; // set max gauge value
-        gauge.animationSpeed = 32; // set animation speed (32 is default value)
-        gauge.set(cpi); // set actual value
-    </script>
+   
 
 <% else %>
     <p class="nodata"><%= l(:label_no_data) %> <%= link_to l(:label_baseline_set), new_project_baseline_path(@project, :back_url => ''), :class => 'icon icon-add' %></p>
-
 <% end %>
