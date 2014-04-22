@@ -33,7 +33,7 @@ class EvmsController < ApplicationController
     # json format { 'version1':{ 'pv':[[]], 'ac':[[]], 'ev':[[]] }, 'version2':{ 'pv':[[]], 'ac':[[]], 'ev':[[]] }, ... }
     versions_data_to_chart = {}
     project_versions.each do |version|
-      baseline_version = baseline_versions.where(original_version_id = version.id).first
+      baseline_version = baseline_versions.where(original_version_id: version.id).first
       data_to_chart = {}
       data_to_chart['name'] = version.name
       unless baseline_version.nil?
