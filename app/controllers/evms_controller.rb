@@ -35,6 +35,7 @@ class EvmsController < ApplicationController
     project_versions.each do |version|
       baseline_version = baseline_versions.where(original_version_id = version.id).first
       data_to_chart = {}
+      data_to_chart['name'] = version.name
       unless baseline_version.nil?
         data_to_chart['pv'] = convert_to_chart(baseline_version.planned_value_by_week)
       end

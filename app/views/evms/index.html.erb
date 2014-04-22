@@ -9,12 +9,25 @@
         <h3><%= l(:subtitle_evm_summary)%></h3>
         <div id="evm-summary-indicators">
             <div class="gauge-container">
+                <h5>Schedule Performance Index</h5>
                 <canvas id="spi" class="evm-gauge"></canvas>
                 <p>SPI = <span id="spi-value"></span></p>
+                <p>Behind Schedule < 1 < Ahead Schedule</p>
             </div>
             <div class="gauge-container">
+                <h5>Cost Performance Index</h5>
                 <canvas id="cpi" class="evm-gauge"></canvas>
                 <p>CPI = <span id="cpi-value"></span></p>
+                <p>Over Budget < 1 < Under Budget</p>
+
+
+                <h5>Schedule Variance:</h5>
+                <p>SV = EV - PV = <span id="sv-value"></span></p>
+                <h5>Cost Variance:</h5>
+                <p>CV = EV - AC = <span id="cv-value"></span></p>
+                <h5>Project start date:</h5><p> <%=@project.start_date.to_date%></p>
+                <h5>Project due date:</h5><p> <%=@project.due_date.to_date%></p>
+
             </div>
         </div>
     </div>
@@ -28,7 +41,6 @@
 
     <!-- Main Chart -->
     <br>
-    <h3>Project</h3>   
     <div id="evm-main-chart"></div>
     <!-- Versions Chart -->
     <br>
@@ -40,112 +52,20 @@
     <%= javascript_include_tag 'flottime',      :plugin => 'redmine_evm' %>
     <%= javascript_include_tag 'flotlabel',     :plugin => 'redmine_evm' %>
     <%= javascript_include_tag 'gaugemin',      :plugin => 'redmine_evm' %>
+    <%= javascript_include_tag 'drawchartgauge',:plugin => 'redmine_evm' %>
     <%= stylesheet_link_tag    'evm' ,          :plugin => 'redmine_evm' %>
-
-    <!-- This script draws the chart and gauges -->
-    <script>
-        /* Dependencies: jquery, flot, flottime, flotlabel, gaugemin */
-
-        //Draws the chart for the project or versions.
-        function drawChart(dataFromJson, placeholder){
-            var data = dataFromJson;
-            var chartHtmlElement = $('#' + placeholder);
-            var graphData = [{
-                // Planned Value 
-                data: data.pv,
-                label: "Planned Value",
-                color: '#0f75bc'
-            }, {
-                // Actual Cost  
-                data: data.ac,
-                label: "Acutal Cost",
-                color: '#f0522e'
-            }, {
-                // Earned Value       
-                data: data.ev,
-                label: "Earned Value",
-                color: '#8cc63f'
-            }];
-
-            var options = {
-                grid:    { show: false,
-                color: "rgb(48, 48, 48)",
-                tickColor: "rgba(255, 255, 255, 0)",
-                backgroundColor: "rgb(255, 255, 255)" }
-            };
-
-            // Lines
-            $.plot(chartHtmlElement, graphData, {
-                series: {
-                    points: {
-                        show: false
-                    },
-                    lines: {
-                        show: true,
-                        fill: false
-                    },
-                    shadowSize: 0
-                },
-                grid: {
-                    show: true,
-                    color: '#bfbfbf',
-                    borderColor: { bottom: "#bfbfbf", left: "#bfbfbf" },
-                    borderWidth: 1,
-                    hoverable: true
-                },
-                xaxis: {
-                    mode: "time", 
-                    timeformat: "%d %b %Y", 
-                    minTickSize: [1, "day"]
-                },
-                yaxis: {
-                    axisLabel: 'Hours',
-                    axisLabelUseCanvas: true,
-                    axisLabelFontSizePixels: 12,
-                    axisLabelFontFamily: 'Verdana, Arial, Helvetica, Tahoma, sans-serif',
-                    axisLabelPadding: 5
-                }
-            });
-        }
-
-        //Draws the gauge for spi or cpi.
-        //value should be between 0.0 and 2.0.
-        //placeholder is the html element id to draw.
-        function drawGauge(value, placeholder){
-
-            var opts= {
-              lines: 12, // The number of lines to draw
-              angle: 0, // The length of each line
-              lineWidth: 0.21, // The line thickness
-              pointer: {
-                length: 0.65, // The radius of the inner circle
-                strokeWidth: 0.100, // The rotation offset
-                color: '#424242' // Fill color
-            },
-            limitMax: 'true',   // If true, the pointer will not go past the end of the gauge
-            percentColors: [[0.0, "#ff0000" ], [0.40, "#a9d70b" ], [0.60, "#a9d70b" ], [1.0, "#ff0000"]],
-            strokeColor: '#E0E0E0',   // to see which ones work best for you
-            generateGradient: true
-            };
-
-            var target = document.getElementById(placeholder); // your canvas element
-            var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
-            //gauge.setTextField(document.getElementById("spi"));
-            gauge.maxValue = 2000; // set max gauge value
-            gauge.animationSpeed = 32; // set animation speed (32 is default value)
-            gauge.set(value); // set actual value
-        }       
-    </script>
 
     <!-- This script is the ajax way to select baselines from dropdown box -->
     <script>
-        $(document).ready( function (){
+        
             //Debug on the console instead of alert.
             //console.log(dropdown) ; 
 
             var dropdownMenu = $('#baseline_id'); //Dropdown element from html.  
             var projectId = <%= @project.id %> ;  //The current project id;
             var baselineId = dropdownMenu.val();  //The dropdown selected baseline id;
+            console.log('Project ID: ' + projectId); //Debug Remove after
+            console.log('Baseline ID: ' + baselineId); //Debug Remove after
             
             var mainChartData;
             var mainChartHtmlElement;
@@ -215,7 +135,7 @@
             $.each(versionsChartData, function(key, value) {  
               verisonChartHtmlElement = 'graph-lines-version' + key;
               $('#evm-versions-charts').append(
-                 '<div id=' + verisonChartHtmlElement + ' style="width:50%;height:300px;"></div>'
+                 '<h5>'+ versionsChartData[key].name +'</h5><div id=' + verisonChartHtmlElement + ' style="width:50%;height:300px;"></div>'
               );
               drawChart(value, verisonChartHtmlElement);
             });
@@ -234,11 +154,19 @@
             $('#cpi-value').append(cpi.toFixed(3).toString());
             cpi = cpi * 1000.0;
             drawGauge(cpi, 'cpi');
+            //Schedule Variance and Cost Variance
+            var scheduleVariance = earnedValue - plannedValue;
+            var costVariance = earnedValue - actualCost;
+            $('#sv-value').append(scheduleVariance.toFixed(3).toString());
+            $('#cv-value').append(costVariance.toFixed(3).toString());
 
 
             //After changing the baseline from dropdown menu.
             dropdownMenu.change(function() {
                 baselineId = $(this).val();
+
+                console.log('Project ID: ' + projectId); //Debug Remove after
+                console.log('Baseline ID: ' + baselineId); //Debug Remove after
 
                 mainChartData = getDataForMainChart(projectId, baselineId);
                 drawChart(mainChartData, mainChartHtmlElement);
@@ -255,6 +183,7 @@
                 earnedValue = evmVariables['ev'];
 
                 spi = earnedValue / plannedValue ;
+                alert(spi);
                 $('#spi-value').replaceWith(spi.toFixed(3).toString());  //toFixed is the number of decimal 
                 spi = spi * 1000.0;
                 drawGauge(spi, 'spi');
@@ -265,10 +194,8 @@
 
             });
 
-        })
+        
     </script>
-
-   
 
 <% else %>
     <p class="nodata"><%= l(:label_no_data) %> <%= link_to l(:label_baseline_set), new_project_baseline_path(@project, :back_url => ''), :class => 'icon icon-add' %></p>

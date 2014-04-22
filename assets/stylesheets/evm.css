@@ -1,26 +1,5 @@
-/* Graph Container */
-.graph-container {
-    position: relative;
-    width: 570px;
-    height: 300px;
-    padding: 20px;
-
-}
-
-.graph-container > div {
-    position: absolute;
-    width: inherit;
-    height: inherit;
-    top: 10px;
-    left: 25px;
-}
-
 .evm-gauge{
-	width: 100px;
-}
-
-#graph-wrapper{
-    float: left;
+	width: 130px;
 }
 
 .gauge-container{
@@ -32,14 +11,7 @@
     color: gray;
 }
 
-/*dropdown box*/
-#baseline_id{
-    border-radius: 0; 
-}
-#baseline_id option{
-    color: grey;
-}
-
+/**********Summary box**********/
 #evm-summary{
     float: right;
     /*width: 330px;*/
@@ -49,6 +21,15 @@
 #evm-summary-indicators{
     border: 1px solid lightgrey;
     overflow: auto;
+}
+
+/**********Dropdown box********/
+#baseline_id{
+    border-radius: 0; 
+}
+
+#baseline_id option{
+    color: grey;
 }
 
 .styled-select select {
@@ -61,4 +42,11 @@
    border: 0;
    border-radius: 0;
    -webkit-appearance: none;
+}
+
+/********remove summarybox min width**********/
+@media all and (max-width: 1100px){
+  #evm-summary{
+    display: none;
+  }
 }
