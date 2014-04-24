@@ -57,9 +57,9 @@
 
     <!-- This script is the ajax way to select baselines from dropdown box -->
     <script>
-            var dropdownMenu = $('#baseline_id'); //Dropdown element from html.  
+            var dropdownMenu = $('#baseline_id');    //Dropdown element from html.  
             var projectId    = <%= @project.id %> ;  //The current project id;
-            var baselineId   = dropdownMenu.val();  //The dropdown selected baseline id;
+            var baselineId   = dropdownMenu.val();   //The dropdown selected baseline id;
             
             var mainChartData;
             var mainChartHtmlElement;
@@ -74,9 +74,9 @@
             var scheduleVariance;
             var costVariance;
 
-            var urlMainChartData;       //Get json for chart data, from baselines_controller chart_data.
-            var urlVersionsChartData;   //Get json for chart data, from baselines_controller
-            var urlEvmVariables;        //Get json for chart data, from baselines_controller chart_data.
+            var urlMainChartData;       //Get json for chart data, from baselines_controller.
+            var urlVersionsChartData;   //Get json for versions chart data, from baselines_controller.
+            var urlEvmVariables;        //Get json for evms data, from baselines_controller.
 
             function getEvmData(url){ 
                 var data;
@@ -106,11 +106,13 @@
                 );
                 drawChart(mainChartData, mainChartHtmlElement);
 
-                //Draw versions Charts.
+                //Draw versions Charts
+                versionsChartContainer = $('#evm-versions-charts');
                 versionsChartData = getEvmData(urlVersionsChartData);
+                versionsChartContainer.empty();
                 $.each(versionsChartData, function(key, value) {  
                   verisonChartHtmlElement = 'evm-graph-lines-version-' + key;
-                  $('#evm-versions-charts').append(
+                  versionsChartContainer.append(
                      '<h5>'+ versionsChartData[key].name +'</h5><div id=' + verisonChartHtmlElement + ' style="width:50%;height:300px;"></div>'
                   );
                   drawChart(value, verisonChartHtmlElement);
@@ -119,8 +121,8 @@
                 //Draw Gauges
                 evmVariables = getEvmData(urlEvmVariables);
                 plannedValue = evmVariables['pv'];
-                actualCost = evmVariables['ac'];
-                earnedValue = evmVariables['ev'];
+                actualCost   = evmVariables['ac'];
+                earnedValue  = evmVariables['ev'];
                 spi = earnedValue / plannedValue ;
                 cpi = earnedValue / actualCost ;
                 drawGauge(spi * 1000, 'spi');
@@ -130,7 +132,7 @@
 
                 //Schedule Variance and Cost Variance
                 scheduleVariance = earnedValue - plannedValue;
-                costVariance = earnedValue - actualCost;
+                costVariance     = earnedValue - actualCost;
                 $('#sv-value').html(scheduleVariance.toFixed(3).toString());
                 $('#cv-value').html(costVariance.toFixed(3).toString());
             }
