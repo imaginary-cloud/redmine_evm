@@ -1,4 +1,4 @@
-module RedmineEvm
+  module RedmineEvm
   module Patches
 
     module EarnedValuePatch
@@ -34,13 +34,17 @@ module RedmineEvm
         sum_earned_value
       end
 
+      def get_issues
+        issues = self.instance_of?(Project) ? Issue.joins(:time_entries).order(:spent_on).where("#{Issue.table_name}.project_id = :id" , id: id).uniq : Issue.joins(:time_entries).where("fixed_version_id = :id" , id: id).uniq 
+        issues.sort_by{ |issue| issue.time_entries.maximum('spent_on') }
+      end
+
       def earned_value_by_week
-        self.instance_of?(Project) ? issues = self.issues : issues = fixed_issues
         done_ratio_by_weeks = {}
         done_ratio = 0
         earned_value = 0
-        filtered_issues = issues.select{ |i| !i.time_entries.maximum('spent_on').nil? }
-        sorted_issues = filtered_issues.sort_by{ |issue| issue.time_entries.maximum('spent_on') }
+      
+        sorted_issues = get_issues
 
         sorted_issues.each do |issue|
           done_ratio = issue.done_ratio / 100.0
@@ -53,7 +57,7 @@ module RedmineEvm
           end
         end
         done_ratio_by_weeks
-      end      
+      end          
 
     end
 

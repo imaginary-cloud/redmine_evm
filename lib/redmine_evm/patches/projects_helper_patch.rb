@@ -16,7 +16,7 @@ module RedmineEvm
           tabs = project_settings_tabs_without_baselines
 
           tabs.push({ :name => 'baselines',
-                      :action => :baselines,
+                      :action => :view_baselines,
                       :partial => 'projects/baselines_settings',
                       :label => :label_baseline_plural})
 
