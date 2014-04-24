@@ -5,7 +5,7 @@ class BaselinesController < ApplicationController
 
   before_filter :find_model_object, :except => [:new, :create]
   before_filter :find_project_from_association, :except => [:new, :create]
-  before_filter :find_project_by_project_id, :only => [:new, :create]
+  before_filter :find_project_with_project_id, :only => [:new, :create]
   before_filter :authorize
 
   def show
@@ -51,5 +51,11 @@ class BaselinesController < ApplicationController
   def destroy
     @baseline.destroy
     redirect_to settings_project_path(@project, :tab => 'baselines')
+  end
+
+  private 
+
+  def find_project_with_project_id
+    @project = Project.find(params[:project_id])
   end
 end
