@@ -13,9 +13,9 @@ class ProjectActualCostPatchTest < ActiveSupport::TestCase
   end
 
   def test_if_actual_cost_by_week_returns_correct_hash
-    actual_cost_by_week = @project.actual_cost_by_week
-    assert_not_nil planned_value_by_week
-    assert_equal 10, acutal_cost_by_week[Time.new(2006,07,30).to_date.beginning_of_week]
+    project = Project.find(1)
+    actual_cost_by_week = project.actual_cost_by_week
+    assert_equal 150.0, actual_cost_by_week[Time.new(2007,3,12).to_date.beginning_of_week]
   end
 
 end
