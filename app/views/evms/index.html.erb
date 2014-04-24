@@ -57,15 +57,9 @@
 
     <!-- This script is the ajax way to select baselines from dropdown box -->
     <script>
-        
-            //Debug on the console instead of alert.
-            //console.log(dropdown) ; 
-
             var dropdownMenu = $('#baseline_id'); //Dropdown element from html.  
-            var projectId = <%= @project.id %> ;  //The current project id;
-            var baselineId = dropdownMenu.val();  //The dropdown selected baseline id;
-            console.log('Project ID: ' + projectId); //Debug Remove after
-            console.log('Baseline ID: ' + baselineId); //Debug Remove after
+            var projectId    = <%= @project.id %> ;  //The current project id;
+            var baselineId   = dropdownMenu.val();  //The dropdown selected baseline id;
             
             var mainChartData;
             var mainChartHtmlElement;
@@ -77,124 +71,78 @@
             var actualCost;
             var cpi;
             var spi;
+            var scheduleVariance;
+            var costVariance;
 
-            function getDataForMainChart(projectId, baselineId){ //Get json for chart data, from baselines_controller chart_data.
+            var urlMainChartData;       //Get json for chart data, from baselines_controller chart_data.
+            var urlVersionsChartData;   //Get json for chart data, from baselines_controller
+            var urlEvmVariables;        //Get json for chart data, from baselines_controller chart_data.
+
+            function getEvmData(url){ 
                 var data;
                 $.ajax({
-                    async: false,                 //Whithout this it would not return the json data. 
-                    url: '/projects/' + projectId + '/baselines/' + baselineId + '/chart_data',
+                    async: false,       //Whithout this it would not return the json data in var data, for now 
+                    url: url,
                     type: "GET",
                     dataType: "json",
                     success: function(resp) {
                         data = resp
                     }
                 });
-                console.log(data); //DEBUG Remove after
+                console.log(data);      //DEBUG Remove after
                 return data;
             }
 
-            function getDataForVersionsCharts(projectId, baselineId){ //Get json for chart data, from baselines_controller chart_data.
-                var data;
-                $.ajax({
-                    async: false,                 //Whithout this it would not return the json data. 
-                    url: '/projects/' + projectId + '/baselines/' + baselineId + '/versions_chart_data',
-                    type: "GET",
-                    dataType: "json",
-                    success: function(resp) {
-                        data = resp
-                    }
-                });
-                console.log(data); //DEBUG Remove after
-                return data;
-            }
+            function renderEvmData(){
+                urlMainChartData        = '/projects/' + projectId + '/baselines/' + baselineId + '/chart_data';
+                urlVersionsChartData    = '/projects/' + projectId + '/baselines/' + baselineId + '/versions_chart_data';
+                urlEvmVariables         = '/projects/' + projectId + '/baselines/' + baselineId + '/evm_variables';
 
-            function getEvmVariables(projectId, baselineId){ //Get json for chart data, from baselines_controller chart_data.
-                var data;
-                $.ajax({
-                    async: false,                 //Whithout this it would not return the json data. 
-                    url: '/projects/' + projectId + '/baselines/' + baselineId + '/evm_variables',
-                    type: "GET",
-                    dataType: "json",
-                    success: function(resp) {
-                        data = resp
-                    }
-                });
-                console.log(data); //DEBUG Remove after
-                return data;
-            }
-
-            //Upon loading the page, draws the charts by default.
-            mainChartData = getDataForMainChart(projectId, baselineId);
-            mainChartHtmlElement = 'graph-lines-' + baselineId;
-            $('#evm-main-chart').append(
-                '<div id=' + mainChartHtmlElement + ' style="width:50%;height:300px;"></div>'  //style goes to CSS
-            );
-            drawChart(mainChartData, mainChartHtmlElement);
-
-            versionsChartData = getDataForVersionsCharts(projectId, baselineId);
-            $.each(versionsChartData, function(key, value) {  
-              verisonChartHtmlElement = 'graph-lines-version' + key;
-              $('#evm-versions-charts').append(
-                 '<h5>'+ versionsChartData[key].name +'</h5><div id=' + verisonChartHtmlElement + ' style="width:50%;height:300px;"></div>'
-              );
-              drawChart(value, verisonChartHtmlElement);
-            });
-
-            //Gauges
-            evmVariables = getEvmVariables(projectId, baselineId);
-            plannedValue = evmVariables['pv'];
-            actualCost = evmVariables['ac'];
-            earnedValue = evmVariables['ev'];
-            
-            spi = earnedValue / plannedValue ;
-            $('#spi-value').append(spi.toFixed(3).toString());  //toFixed is the number of decimal 
-            spi = spi * 1000.0;
-            drawGauge(spi, 'spi');
-            cpi = earnedValue / actualCost ;
-            $('#cpi-value').append(cpi.toFixed(3).toString());
-            cpi = cpi * 1000.0;
-            drawGauge(cpi, 'cpi');
-            //Schedule Variance and Cost Variance
-            var scheduleVariance = earnedValue - plannedValue;
-            var costVariance = earnedValue - actualCost;
-            $('#sv-value').append(scheduleVariance.toFixed(3).toString());
-            $('#cv-value').append(costVariance.toFixed(3).toString());
-
-
-            //After changing the baseline from dropdown menu.
-            dropdownMenu.change(function() {
-                baselineId = $(this).val();
-
-                console.log('Project ID: ' + projectId); //Debug Remove after
-                console.log('Baseline ID: ' + baselineId); //Debug Remove after
-
-                mainChartData = getDataForMainChart(projectId, baselineId);
+                //Draw the main Chart.
+                mainChartData = getEvmData(urlMainChartData);
+                mainChartHtmlElement = 'evm-graph-lines-' + baselineId;
+                $('#evm-main-chart').html(
+                    '<div id=' + mainChartHtmlElement + ' style="width:50%;height:300px;"></div>'  //style goes to CSS
+                );
                 drawChart(mainChartData, mainChartHtmlElement);
 
-                versionsChartData = getDataForVersionsCharts(projectId, baselineId);
-                $.each(versionsChartData, function(key, value) {
-                  verisonChartHtmlElement = 'graph-lines-version' + key;
+                //Draw versions Charts.
+                versionsChartData = getEvmData(urlVersionsChartData);
+                $.each(versionsChartData, function(key, value) {  
+                  verisonChartHtmlElement = 'evm-graph-lines-version-' + key;
+                  $('#evm-versions-charts').append(
+                     '<h5>'+ versionsChartData[key].name +'</h5><div id=' + verisonChartHtmlElement + ' style="width:50%;height:300px;"></div>'
+                  );
                   drawChart(value, verisonChartHtmlElement);
                 });
 
-                evmVariables = getEvmVariables(projectId, baselineId);
+                //Draw Gauges
+                evmVariables = getEvmData(urlEvmVariables);
                 plannedValue = evmVariables['pv'];
                 actualCost = evmVariables['ac'];
                 earnedValue = evmVariables['ev'];
-
                 spi = earnedValue / plannedValue ;
-                alert(spi);
-                $('#spi-value').replaceWith(spi.toFixed(3).toString());  //toFixed is the number of decimal 
-                spi = spi * 1000.0;
-                drawGauge(spi, 'spi');
                 cpi = earnedValue / actualCost ;
-                $('#cpi-value').replaceWith(cpi.toFixed(3).toString());
-                cpi = cpi * 1000.0;
-                drawGauge(cpi, 'cpi');
+                drawGauge(spi * 1000, 'spi');
+                drawGauge(cpi * 1000, 'cpi');
+                $('#spi-value').html(spi.toFixed(3).toString());  //toFixed is the number of decimal 
+                $('#cpi-value').html(cpi.toFixed(3).toString());
 
-            });
+                //Schedule Variance and Cost Variance
+                scheduleVariance = earnedValue - plannedValue;
+                costVariance = earnedValue - actualCost;
+                $('#sv-value').html(scheduleVariance.toFixed(3).toString());
+                $('#cv-value').html(costVariance.toFixed(3).toString());
+            }
 
-        
+            //Render data from current baseline.
+            renderEvmData();
+            
+            //Render data after changing the baseline from dropdown menu.
+            dropdownMenu.change(function() {
+                baselineId = $(this).val();
+                renderEvmData();
+            });     
     </script>
 
 <% else %>
