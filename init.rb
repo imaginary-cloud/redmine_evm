@@ -10,8 +10,9 @@ Redmine::Plugin.register :redmine_evm do
 
 
   project_module :evm do
-  	permission :evms, { :evms => [:index] }, :public => true
-  	permission :baselines, { :baselines => [:index] }, :public => true
+  	permission :view_evms, { :evms => [:index, :chart_data, :versions_chart_data, :evm_variables] }
+  	permission :view_baselines, { :baselines => [:index, :show] }
+    permission :manage_baselines, { :baselines => [:edit, :destoy, :new, :create, :update]}
   end
   menu :project_menu, :evms,
        { :controller => 'evms', :action => 'index' },

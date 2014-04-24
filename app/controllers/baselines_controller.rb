@@ -6,6 +6,7 @@ class BaselinesController < ApplicationController
   before_filter :find_model_object, :except => [:new, :create]
   before_filter :find_project_from_association, :except => [:new, :create]
   before_filter :find_project_by_project_id, :only => [:new, :create]
+  before_filter :authorize
 
   def show
   end
