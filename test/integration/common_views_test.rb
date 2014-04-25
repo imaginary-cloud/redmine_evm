@@ -1,0 +1,56 @@
+require File.expand_path('../../test_helper', __FILE__)
+require File.expand_path(File.dirname(__FILE__) + '/../../../../test/test_helper')
+
+class CommonViewsTest < ActionController::IntegrationTest
+  fixtures :projects,
+           :users,
+           :roles,
+           :members,
+           :member_roles,
+           :issues,
+           :issue_statuses,
+           :versions,
+           :trackers,
+           :projects_trackers,
+           :issue_categories,
+           :enabled_modules,
+           :enumerations,
+           :attachments,
+           :workflows,
+           :time_entries
+
+    ActiveRecord::Fixtures.create_fixtures(File.dirname(__FILE__) + '/../fixtures/',
+                            [:baselines, 
+                             :roles])
+
+  def setup
+    RedmineContacts::TestCase.prepare
+
+    @request    = ActionController::TestRequest.new
+    @response   = ActionController::TestResponse.new
+    @request.env['HTTP_REFERER'] = '/'
+  end
+
+
+  # User 2 Manager (role 1) in project 1, email jsmith@somenet.foo
+  # User 3 Developer (role 2) in project 1
+
+  test "View evms" do
+    log_user("admin", "admin")
+    get "/projects/ecookbook/evms"
+    assert_response :success
+  end
+
+  test "View baselines list" do
+    log_user("admin", "admin")
+    get "/projects/ecookbook/settings/baselines"
+    assert_response :success
+  end
+
+  test "View baseline edit" do
+    log_user("admin", "admin")
+    get "/baseline/1/edit"
+    assert_response :success
+  end
+
+end
