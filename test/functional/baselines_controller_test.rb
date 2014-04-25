@@ -27,18 +27,30 @@ class BaselinesControllerTest < ActionController::TestCase
            :queries
 
   ActiveRecord::Fixtures.create_fixtures(File.dirname(__FILE__) + '/../fixtures/',
-    [:baselines])
+    [:baselines, :roles])
 
+  #user 1 
+  #user 2 
+  def setup
+    RedmineEvm::TestCase.prepare
+
+    @controller = BaselinesController.new
+    @request    = ActionController::TestRequest.new
+    @response   = ActionController::TestResponse.new
+    User.current = nil
+  end
 
   def test_new
-    @request.session[:user_id] = 2
+    @request.session[:user_id] = 1
     get :new, :project_id => '1'
     assert_response :success
     assert_template 'new'
   end
 
   def test_create
-    @request.session[:user_id] = 2
+    # log_user('admin', 'admin')
+    @request.session[:user_id] = 1
+
     assert_difference 'Baseline.count' do
       post :create, :project_id => '1', :baseline => {:name => 'test_add_baseline', :due_date => Date.today.strftime("%Y-%m-%d")}
     end
@@ -49,14 +61,18 @@ class BaselinesControllerTest < ActionController::TestCase
   end
 
   def test_get_edit
-    @request.session[:user_id] = 2
+    # log_user('admin', 'admin')
+    @request.session[:user_id] = 1
+
     get :edit, :id => 1
     assert_response :success
     assert_template 'edit'
   end
 
   def test_post_update
-    @request.session[:user_id] = 2
+    # log_user('admin', 'admin')
+    @request.session[:user_id] = 1
+
     put :update, :id => 1,
         :baseline => {:name => 'New baseline name',
                      :due_date => Date.today.strftime("%Y-%m-%d")}
@@ -68,7 +84,9 @@ class BaselinesControllerTest < ActionController::TestCase
   end
 
   def test_destroy
-    @request.session[:user_id] = 2
+    # log_user('admin', 'admin')
+    @request.session[:user_id] = 1
+
     assert_difference 'Baseline.count', -1 do
       delete :destroy, :id => 1
     end
