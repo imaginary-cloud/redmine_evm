@@ -1,5 +1,5 @@
 require File.expand_path('../../test_helper', __FILE__)
-require File.expand_path(File.dirname(__FILE__) + '/../../../../test/test_helper')
+#require File.expand_path(File.dirname(__FILE__) + '/../../../../test/test_helper')
 
 class CommonViewsTest < ActionController::IntegrationTest
   fixtures :projects,
@@ -17,20 +17,26 @@ class CommonViewsTest < ActionController::IntegrationTest
            :enumerations,
            :attachments,
            :workflows,
-           :time_entries
+           :custom_fields,
+           :custom_values,
+           :custom_fields_projects,
+           :custom_fields_trackers,
+           :time_entries,
+           :journals,
+           :journal_details,
+           :queries
 
     ActiveRecord::Fixtures.create_fixtures(File.dirname(__FILE__) + '/../fixtures/',
                             [:baselines, 
                              :roles])
 
   def setup
-    RedmineContacts::TestCase.prepare
+    RedmineEvm::TestCase.prepare
 
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
     @request.env['HTTP_REFERER'] = '/'
   end
-
 
   # User 2 Manager (role 1) in project 1, email jsmith@somenet.foo
   # User 3 Developer (role 2) in project 1
@@ -49,7 +55,13 @@ class CommonViewsTest < ActionController::IntegrationTest
 
   test "View baseline edit" do
     log_user("admin", "admin")
-    get "/baseline/1/edit"
+    get "/baselines/1/edit"
+    assert_response :success
+  end
+
+  test "View baseline" do
+    log_user("admin", "admin")
+    get "/baselines/1"
     assert_response :success
   end
 
