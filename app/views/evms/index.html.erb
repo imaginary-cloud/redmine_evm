@@ -1,3 +1,11 @@
+<%= javascript_include_tag 'jquery',        :plugin => 'redmine_evm' %>
+<%= javascript_include_tag 'flot',          :plugin => 'redmine_evm' %>
+<%= javascript_include_tag 'flottime',      :plugin => 'redmine_evm' %>
+<%= javascript_include_tag 'flotlabel',     :plugin => 'redmine_evm' %>
+<%= javascript_include_tag 'gaugemin',      :plugin => 'redmine_evm' %>
+<%= javascript_include_tag 'drawchartgauge',:plugin => 'redmine_evm' %>
+<%= stylesheet_link_tag    'evm' ,          :plugin => 'redmine_evm' %>
+    
 <h2 id="evm-title"><%=l(:title_evm_tab)%></h2>
 <% html_title('EVM Indicators') %>
 <p id="evm-subtitle"><%=l(:subtitle_evm_tab)%></p>
@@ -64,13 +72,7 @@
         </div>
     </div>
 
-    <%= javascript_include_tag 'jquery',        :plugin => 'redmine_evm' %>
-    <%= javascript_include_tag 'flot',          :plugin => 'redmine_evm' %>
-    <%= javascript_include_tag 'flottime',      :plugin => 'redmine_evm' %>
-    <%= javascript_include_tag 'flotlabel',     :plugin => 'redmine_evm' %>
-    <%= javascript_include_tag 'gaugemin',      :plugin => 'redmine_evm' %>
-    <%= javascript_include_tag 'drawchartgauge',:plugin => 'redmine_evm' %>
-    <%= stylesheet_link_tag    'evm' ,          :plugin => 'redmine_evm' %>
+    
 
     <!-- This script is the ajax way to select baselines from dropdown box -->
     <script>
@@ -140,7 +142,15 @@
                   drawChart(value, verisonChartHtmlElement);
                 });
 
-                //Schedule Variance and Cost Variance
+                //Get data from baseline, CPI and SPI, Schedule Variance and Cost Variance
+                evmVariables = getEvmData(urlEvmVariables);
+                plannedValue = evmVariables['pv'];
+                actualCost   = evmVariables['ac'];
+                earnedValue  = evmVariables['ev'];
+
+                spi = earnedValue / plannedValue ;
+                cpi = earnedValue / actualCost ;
+
                 scheduleVariance = earnedValue - plannedValue;
                 costVariance     = earnedValue - actualCost;
 
