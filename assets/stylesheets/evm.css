@@ -1,10 +1,29 @@
-.evm-gauge{
-	width: 130px;
+
+#evm-title{ 
+  line-height: 0px;
+  padding-top: 17px; 
 }
 
+/****bars****/
+.evm-bars-container{
+  width: 80px;
+  height: 100px;
+}
+
+/***gauge*****/
+.evm-gauge{
+	width: 90px;
+}
 .gauge-container{
-    float: right;
-    padding: 10px;
+  overflow: auto;
+  margin-right: 10px;
+  padding: 0 10px 0 10px;
+} 
+
+.gauge-container p{ 
+  line-height: 15px; 
+  padding: 15px 0 15px 0;
+  font-size: 12px;
 }
 
 #evm-subtitle{
@@ -13,14 +32,16 @@
 
 /**********Summary box**********/
 #evm-summary{
-    float: right;
-    /*width: 330px;*/
     height: 200px;
 }
 
 #evm-summary-indicators{
-    border: 1px solid lightgrey;
+    background: #3d454d;
+    color: white;
+    padding: 10px;
     overflow: auto;
+    /*overflow-x: scroll;
+    white-space: nowrap; /*keeps inline forever*/
 }
 
 /**********Dropdown box********/
@@ -32,6 +53,53 @@
     color: grey;
 }
 
+/***********Charts***********/
+#evm-charts-wrapper{
+  margin: auto;
+}
+
+#evm-main-chart{
+  padding: 40px 0 40px 0;
+}
+
+#evm-versions-charts{
+  
+}
+
+/*********Chart legend +info********/
+#evm-legend-info{
+  border: lightgray 1px solid;
+  margin: 10px;
+}
+
+#evm-legend-content{
+  margin: auto;
+  width: 950px;
+  overflow:auto;
+}
+
+#evm-legend-content div{
+  display: inline-block;
+  padding: 20px;
+  color: dimgray;
+  line-height: 5px
+}
+
+#evm-legend-ev{
+  padding-top: 10px;
+  color: #8cc63f;
+}
+
+#evm-legend-ac{
+  padding-top: 20px;
+  color: #fcb040;
+}
+
+#evm-legend-pv{
+  padding-top: 20px;
+  color: #0f75bc ;
+}
+/*
 .styled-select select {
    background: transparent;
    width: 570px;
@@ -43,10 +111,12 @@
    border-radius: 0;
    -webkit-appearance: none;
 }
+*/
 
-/********remove summarybox min width**********/
+/********remove summarybox min width**********
 @media all and (max-width: 1100px){
   #evm-summary{
     display: none;
   }
 }
+*/
