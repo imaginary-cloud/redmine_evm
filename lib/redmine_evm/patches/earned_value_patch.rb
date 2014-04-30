@@ -34,31 +34,35 @@
         sum_earned_value
       end
 
-      def get_issues
-        issues = self.instance_of?(Project) ? Issue.joins(:time_entries).order(:spent_on).where("#{Issue.table_name}.project_id = :id" , id: id).uniq : Issue.joins(:time_entries).where("fixed_version_id = :id" , id: id).uniq 
-        issues.sort_by{ |issue| issue.time_entries.maximum('spent_on') }
+      def get_issues key
+        if self.instance_of?(Project) 
+          Issue.find_by_sql(['SELECT i.done_ratio, i.estimated_hours  FROM redmine.issues i join redmine.time_entries t on( i.id = t.issue_id) where i.project_id = :id group by i.id having max(spent_on) = :key;', id: id, key: key])
+        else
+          Issue.find_by_sql(['SELECT i.done_ratio, i.estimated_hours  FROM redmine.issues i join redmine.time_entries t on( i.id = t.issue_id) where i.fixed_version_id = :id group by i.id having max(spent_on) = :key;', id: id, key: key])
+        end
       end
 
       def earned_value_by_week
         done_ratio_by_weeks = {}
         done_ratio = 0
         earned_value = 0
-      
-        sorted_issues = get_issues
 
-        sorted_issues.each do |issue|
-          done_ratio = issue.done_ratio / 100.0
-          unless issue.time_entries.maximum('spent_on').nil?
-            date = issue.time_entries.maximum('spent_on').to_date
-            unless issue.estimated_hours.nil?
-              earned_value += issue.estimated_hours * done_ratio
+        (get_start_date.to_date..end_date.to_date).each do |key| 
+          issues = get_issues key
+          unless issues.nil?
+            issues.each do |issue|
+              unless issue.estimated_hours.nil?
+                done_ratio = issue.done_ratio / 100.0
+                earned_value += issue.estimated_hours * done_ratio  
+              end  
             end
-            done_ratio_by_weeks[date.beginning_of_week] = earned_value
           end
+          
+          done_ratio_by_weeks[key.beginning_of_week] = earned_value
         end
         done_ratio_by_weeks
-      end          
-
+      end    
+      
     end
 
   end
