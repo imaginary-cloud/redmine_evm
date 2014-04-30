@@ -22,7 +22,7 @@ class Baseline < ActiveRecord::Base
   def create_versions versions
     unless versions.nil?
       versions.each do |version|
-        baseline_version = BaselineVersion.create( original_version_id: version.id, effective_date: version.effective_date,
+        baseline_version = BaselineVersion.create( original_version_id: version.id, effective_date: version.end_date,
                                                    start_date: version.start_date || version.created_on, name: version.name, description: version.description, status: version.status)
         baseline_versions << baseline_version
       end
