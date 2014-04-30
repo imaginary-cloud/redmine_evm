@@ -23,8 +23,11 @@ module RedmineEvm
       end
 
       def end_date
-        date = created_on.to_date
+        date = due_date || created_on.to_date 
         fixed_issues.each do |issue|
+          unless issue.due_date.nil?
+            date = issue.due_date if issue.due_date > date
+          end
           unless issue.time_entries.maximum('spent_on').nil?
             date = issue.time_entries.maximum('spent_on') if (issue.time_entries.maximum('spent_on') > date)
           end
