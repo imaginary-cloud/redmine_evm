@@ -1,59 +1,78 @@
+<%= javascript_include_tag 'jquery',        :plugin => 'redmine_evm' %>
+<%= javascript_include_tag 'flot',          :plugin => 'redmine_evm' %>
+<%= javascript_include_tag 'flottime',      :plugin => 'redmine_evm' %>
+<%= javascript_include_tag 'flotlabel',     :plugin => 'redmine_evm' %>
+<%= javascript_include_tag 'gaugemin',      :plugin => 'redmine_evm' %>
+<%= javascript_include_tag 'drawchartgauge',:plugin => 'redmine_evm' %>
+<%= stylesheet_link_tag    'evm' ,          :plugin => 'redmine_evm' %>
+    
 <h2 id="evm-title"><%=l(:title_evm_tab)%></h2>
 <% html_title('EVM Indicators') %>
 <p id="evm-subtitle"><%=l(:subtitle_evm_tab)%></p>
 
 <% if @project.baselines.any? %>
 
-    <div id="evm-summary">
-        <!-- Gauges -->
-        <h3><%= l(:subtitle_evm_summary)%></h3>
-        <div id="evm-summary-indicators">
-            <div class="gauge-container">
-                <h5>Schedule Performance Index</h5>
-                <canvas id="spi" class="evm-gauge"></canvas>
-                <p>SPI = <span id="spi-value"></span></p>
-                <p>Behind Schedule < 1 < Ahead Schedule</p>
+    <% content_for :sidebar do %>
+        <div id="evm-summary">
+            <h3><%= l(:subtitle_evm_summary) %></h3>
+            <div id="evm-summary-indicators">
+                <div class="gauge-container">
+                    <h5><%= l(:label_project_schedule) %></h5> 
+                    <!--<canvas id="spi" class="evm-gauge"></canvas>-->
+                    <div id="evm-spi-bars-container" class="evm-bars-container">
+
+                    </div>
+                    <p><b>The project is <span id="evm-spi-status-percentage"></span></b>
+                    <br><span id='evm-spi-status-label'></span> schedule</p>
+                </div>
+                <div class="gauge-container">
+                    <h5><%= l(:label_project_cost) %></h5>
+                    <!--<canvas id="cpi" class="evm-gauge"></canvas>-->
+                    <div id="evm-cpi-bars-container" class="evm-bars-container">
+                       
+                    </div>
+                    <div id="evm-cpi-barchart"></div>
+                    <p><b>The project is <span id="evm-cpi-status-percentage"></span></b>
+                    <br><span id='evm-cpi-status-label'></span> budget</p>
+                </div>
             </div>
-            <div class="gauge-container">
-                <h5>Cost Performance Index</h5>
-                <canvas id="cpi" class="evm-gauge"></canvas>
-                <p>CPI = <span id="cpi-value"></span></p>
-                <p>Over Budget < 1 < Under Budget</p>
+        </div>
+    <% end %>
 
+    <!-- Dropdown for baselines -->
+    <fieldset id="filters" class="collapsible">
+      <legend onclick="toggleFieldset(this);"><%= l(:label_baseline_plural) %></legend>
+      <br>
+        <div class="styled-select">
+            <%= collection_select :baseline, :id, @baselines, :id, :name, :remote => true %>
+        </div>
+    </fieldset>
 
-                <h5>Schedule Variance:</h5>
-                <p>SV = EV - PV = <span id="sv-value"></span></p>
-                <h5>Cost Variance:</h5>
-                <p>CV = EV - AC = <span id="cv-value"></span></p>
-                <h5>Project start date:</h5><p> <%=@project.start_date.to_date%></p>
-                <h5>Project due date:</h5><p> <%=@project.due_date.to_date%></p>
+    <div id="evm-charts-wrapper">
+        <!-- Main Chart -->
+        <div id="evm-main-chart"></div>
+        <!-- Versions Chart -->
+        <div id="evm-versions-charts"></div>
+    </div>
 
+    <div id="evm-legend-info">
+        <div id="evm-legend-content">
+            <div>
+                <h3 id="evm-legend-ev">Earned Value</h3>
+                <p>total cost of the work completed/performed</p>
+            </div>
+            <div>
+                <h3 id="evm-legend-ac">Actual Cost</h3>
+                <p>total cost taken to complete the work</p>
+            </div>
+            <div>
+                <h3 id="evm-legend-pv">Planned Value</h3>
+                <p>total cost of the work scheduled/planned</p>
             </div>
         </div>
     </div>
 
-    <!-- Dropdown for baselines -->
-    <br>
-    <h3 id="evm-label-select-baseline"><%=l(:label_select_baseline) %></h3>
-    <div class="styled-select">
-        <%= collection_select :baseline, :id, @baselines, :id, :name, :remote => true %>
-    </div>
-
-    <!-- Main Chart -->
-    <br>
-    <div id="evm-main-chart"></div>
-    <!-- Versions Chart -->
-    <br>
-    <h3>Versions</h3>
-    <div id="evm-versions-charts"></div>
-
-    <%= javascript_include_tag 'jquery',        :plugin => 'redmine_evm' %>
-    <%= javascript_include_tag 'flot',          :plugin => 'redmine_evm' %>
-    <%= javascript_include_tag 'flottime',      :plugin => 'redmine_evm' %>
-    <%= javascript_include_tag 'flotlabel',     :plugin => 'redmine_evm' %>
-    <%= javascript_include_tag 'gaugemin',      :plugin => 'redmine_evm' %>
-    <%= javascript_include_tag 'drawchartgauge',:plugin => 'redmine_evm' %>
-    <%= stylesheet_link_tag    'evm' ,          :plugin => 'redmine_evm' %>
+    
 
     <!-- This script is the ajax way to select baselines from dropdown box -->
     <script>
@@ -78,7 +97,12 @@
             var urlVersionsChartData;   //Get json for versions chart data, from baselines_controller.
             var urlEvmVariables;        //Get json for evms data, from baselines_controller.
 
-            function getEvmData(url){ 
+            var evmSpiStatusLabel      = $('#evm-spi-status-label');        //
+            var evmSpiStatusPercentage = $('#evm-spi-status-percentage');   //Side bar indicator percentage and status
+            var evmCpiStatusLabel      = $('#evm-cpi-status-label');        //
+            var evmCpiStatusPercentage = $('#evm-cpi-status-percentage');   //
+
+            function getEvmData(url){
                 var data;
                 $.ajax({
                     async: false,       //Whithout this it would not return the json data in var data, for now 
@@ -102,7 +126,7 @@
                 mainChartData = getEvmData(urlMainChartData);
                 mainChartHtmlElement = 'evm-graph-lines-' + baselineId;
                 $('#evm-main-chart').html(
-                    '<div id=' + mainChartHtmlElement + ' style="width:50%;height:300px;"></div>'  //style goes to CSS
+                    '<div id=' + mainChartHtmlElement + ' style="width:70%;height:350px;margin:auto;"></div>'
                 );
                 drawChart(mainChartData, mainChartHtmlElement);
 
@@ -113,33 +137,80 @@
                 $.each(versionsChartData, function(key, value) {  
                   verisonChartHtmlElement = 'evm-graph-lines-version-' + key;
                   versionsChartContainer.append(
-                     '<h5>'+ versionsChartData[key].name +'</h5><div id=' + verisonChartHtmlElement + ' style="width:50%;height:300px;"></div>'
+                     '<h5>'+ versionsChartData[key].name +'</h5><div id=' + verisonChartHtmlElement + ' style="width:70%;height:350px;margin:auto;margin-top:40px;margin-bottom:40px;"></div>'
                   );
                   drawChart(value, verisonChartHtmlElement);
                 });
 
-                //Draw Gauges
+                //Get data from baseline, CPI and SPI, Schedule Variance and Cost Variance
                 evmVariables = getEvmData(urlEvmVariables);
                 plannedValue = evmVariables['pv'];
                 actualCost   = evmVariables['ac'];
                 earnedValue  = evmVariables['ev'];
+
                 spi = earnedValue / plannedValue ;
                 cpi = earnedValue / actualCost ;
-                drawGauge(spi * 1000, 'spi');
-                drawGauge(cpi * 1000, 'cpi');
-                $('#spi-value').html(spi.toFixed(3).toString());  //toFixed is the number of decimal 
-                $('#cpi-value').html(cpi.toFixed(3).toString());
 
-                //Schedule Variance and Cost Variance
                 scheduleVariance = earnedValue - plannedValue;
                 costVariance     = earnedValue - actualCost;
-                $('#sv-value').html(scheduleVariance.toFixed(3).toString());
-                $('#cv-value').html(costVariance.toFixed(3).toString());
+
+                //Sidebar Percentage and Status
+                if(scheduleVariance < 0){
+                    evmSpiStatusLabel.html("behind");
+                    evmSpiStatusPercentage.html(((1 - spi) * 100).toFixed(0) + '%'); 
+                    //index is 0.200. 1 - 0.200 = 0.800 * 100 = 80%
+                }else{   
+                    evmSpiStatusLabel.html("ahead");
+                    evmSpiStatusPercentage.html(((spi - 1) * 100).toFixed(0) + '%'); 
+                    //index is 1.500 - 1 = 0.500 * 100 = 50%
+                }
+
+                if(costVariance < 0){
+                    evmCpiStatusLabel.html("over");
+                    evmCpiStatusPercentage.html(((1 - cpi) * 100).toFixed(0) + '%');
+                }else{ 
+                    evmCpiStatusLabel.html("under");
+                    evmCpiStatusPercentage.html(((cpi - 1) * 100).toFixed(0) + '%');
+                }
+
+                //Testing area - Bar indicators in sidebar
+                $('<div id="spi-pv-bar" class="bars">PV</div>').appendTo('#evm-spi-bars-container');
+                $('<div id="spi-ev-bar" class="bars">EV</div>').appendTo('#evm-spi-bars-container');
+                $('<div id="cpi-ev-bar" class="bars">EV</div>').appendTo('#evm-cpi-bars-container');
+                $('<div id="cpi-ac-bar" class="bars">AC</div>').appendTo('#evm-cpi-bars-container');
+
+                var maxValue = Math.max(plannedValue, actualCost, earnedValue);
+                var barMaxHeight = 100;
+
+                var spiPlannedValueBarHeight = Math.floor( (plannedValue * 100) / maxValue );
+                var spiEarnedValueBarHeight  = Math.floor( (earnedValue  * 100) / maxValue );
+                var cpiEarnedValueBarHeight  = Math.floor( (earnedValue  * 100) / maxValue );
+                var cpiActualCostBarHeight   = Math.floor( (actualCost   * 100) / maxValue );
+
+                $('#spi-pv-bar').css("background-color", "#0f75bc");
+                $('#spi-ev-bar').css("background-color", "#8cc63f");
+                $('#cpi-ev-bar').css("background-color", "#8cc63f");
+                $('#cpi-ac-bar').css("background-color", "#fcb040");
+
+                $('#spi-pv-bar').height(spiPlannedValueBarHeight);
+                $('#spi-pv-bar').css("line-height", "" + spiPlannedValueBarHeight + "px"); //Alinha o "PV" no bar
+                $('#spi-ev-bar').height(spiEarnedValueBarHeight);
+                $('#spi-ev-bar').css("line-height", "" + spiEarnedValueBarHeight + "px");
+
+                $('#cpi-ev-bar').height(cpiEarnedValueBarHeight);
+                $('#cpi-ev-bar').css("line-height", "" + cpiEarnedValueBarHeight + "px");
+
+                $('#cpi-ac-bar').height(cpiActualCostBarHeight);
+                $('#cpi-ac-bar').css("line-height", "" + cpiActualCostBarHeight + "px");
+
+                $('.bars').width(40);
+                $('.bars').css("text-align","center");
+                $('.bars').css("float","left");
             }
 
             //Render data from current baseline.
             renderEvmData();
-            
+                        
             //Render data after changing the baseline from dropdown menu.
             dropdownMenu.change(function() {
                 baselineId = $(this).val();

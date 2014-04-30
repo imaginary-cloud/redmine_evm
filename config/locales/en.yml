@@ -9,8 +9,6 @@ en:
   label_due_date: Due Date
   label_created_date: Created Date
 
-  #error_due_date_invalid: cannot be in the past.
-
   label_current_baseline: Current
   label_old_baseline: Old
 
@@ -19,3 +17,6 @@ en:
   title_evm_tab: EVM Indicators
   subtitle_evm_tab: Here you can see how your project is progressing relative to the plan seted
   subtitle_evm_summary: Summary
+
+  label_project_cost: Project Cost
+  label_project_schedule: Project Schedule
