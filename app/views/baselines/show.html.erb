@@ -1,28 +1,165 @@
-<h2><%= @baseline.name%></h2>
-<h3>Snapshot from <%= @baseline.created_on.strftime('%F') %></h3>
-<p><%= @baseline.description%></p>
-
-<h3>Baseline Planned Value (PV)</h3>
-    <p><%= @baseline.planned_value%> hours</p>
-<h3>Issues</h3>
-<p>Nº of Issues: <%= @baseline.baseline_issues.count%></p>
-
-<h3>Versions</h3>
-<p>Nº of Versions: <%= @baseline.baseline_versions.count%></p>
-
-<div>
-<% if @baseline.baseline_issues.present? %>
-    <%= form_tag({}) do -%>
-        <table class="list related-issues">
-          <caption><%= l(:label_related_issues) %></caption>
-          <%- @baseline.baseline_issues.each do |issue| -%>
-              <tr class="issue hascontextmenu">
-                <td class="subject"><%= link_to issue.original_issue_id, issue_path(issue.original_issue_id) %></td>
-              </tr>
-          <% end %>
-        </table>
-    <% end %>
-    <%= context_menu issues_context_menu_path %>
+<% content_for :header_tags do %>
+  <%= stylesheet_link_tag 'evm', :plugin => 'redmine_evm' %>
+  <%= javascript_include_tag 'jquery',        :plugin => 'redmine_evm' %>
+  <%= javascript_include_tag 'flot',          :plugin => 'redmine_evm' %>
+  <%= javascript_include_tag 'flottime',      :plugin => 'redmine_evm' %>
+  <%= javascript_include_tag 'flotlabel',     :plugin => 'redmine_evm' %>
+  <%= javascript_include_tag 'drawchart',     :plugin => 'redmine_evm' %>
 <% end %>
-</div>
+
+<h2 id="evm-title"><%=l(:title_evm_tab)%></h2>
+<% html_title('EVM Indicators') %>
+<p id="evm-subtitle"><%=l(:subtitle_evm_tab)%></p>
+
+<% if @project.baselines.any? %>
+
+  <% content_for :sidebar do %>
+    <div id="evm-summary">
+      <h3><%= l(:subtitle_evm_summary) %></h3>
+      <div id="evm-summary-indicators">
+        <div class="indicators-container">
+          <h5><%= l(:label_project_schedule) %></h5> 
+          <div id="evm-spi-bars-container" class="evm-bars-container">
+            <div id="spi-ev-bar" class="bars">EV</div>
+            <div id="spi-pv-bar" class="bars">PV</div>
+          </div>
+          <p><b>The project is <span id="evm-spi-status-percentage"></span></b>
+          <br><span id='evm-spi-status-label'></span> schedule</p>
+        </div>
+        <div class="indicators-container">
+          <h5><%= l(:label_project_cost) %></h5>
+          <div id="evm-cpi-bars-container" class="evm-bars-container">
+            <div id="cpi-ac-bar" class="bars">AC</div>
+            <div id="cpi-ev-bar" class="bars">EV</div>  
+          </div>
+          <div id="evm-cpi-barchart"></div>
+          <p><b>The project is <span id="evm-cpi-status-percentage"></span></b>
+          <br><span id='evm-cpi-status-label'></span> budget</p>
+        </div>
+
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Dropdown for baselines -->
+  <fieldset id="filters" class="collapsible">
+    <legend onclick="toggleFieldset(this);"><%= l(:label_baseline_plural) %></legend>
+    <br>
+    <div class="styled-select">
+      <%= collection_select :baseline, :id, @project.baselines.order('created_on DESC'), :id, :name %>
+    </div>
+  </fieldset>
+
+  <div id="evm-charts-wrapper">
+    <!-- Main Chart -->
+    <div id="evm-main-chart">
+      <div id='evm-graph-lines-<%=@baseline.id%>' style="width:70%;height:350px;margin:auto;"></div>
+      <% project_chart_data  = [convert_to_chart(@baseline.planned_value_by_week),
+                                convert_to_chart(@project.actual_cost_by_week), 
+                                convert_to_chart(@project.earned_value_by_week)] %>
+
+      <%= render :partial => '/baselines/chart_js', :locals => { project_chart_data: project_chart_data } %>
+    </div>
+    <!-- Versions Charts -->
+    <div id="evm-versions-charts">
+      <% @project.versions.each do |version|%>
+        <h5><%= version.name %></h5>
+        <div id='evm-graph-lines-version-<%= version.id %>' style="width:70%;height:350px;margin:auto;margin-top:40px;margin-bottom:40px;"></div>
+        <% version_chart_data = [] %>
+        <% baseline_version = @baseline.baseline_versions.where(original_version_id: version.id).first %>
+        <% unless baseline_version.nil? %>
+          <% version_chart_data << convert_to_chart(baseline_version.planned_value_by_week) %>
+        <% end %>
+        <% version_chart_data << convert_to_chart(version.actual_cost_by_week) %>
+        <% version_chart_data << convert_to_chart(version.earned_value_by_week) %>
+        <%= render :partial => '/baselines/version_chart_js', :locals => { version_chart_data: version_chart_data, baseline_version: baseline_version } %>
+      <% end %>
+    </div> 
+  </div>
+
+  <div id="evm-legend-info">
+    <div id="evm-legend-content">
+      <div>
+        <h3 id="evm-legend-pv">Planned Value</h3>
+        <p>total cost of the work scheduled/planned</p>
+      </div>
+      <div>
+        <h3 id="evm-legend-ev">Earned Value</h3>
+        <p>total cost of the work completed/performed</p>
+      </div>
+      <div>
+        <h3 id="evm-legend-ac">Actual Cost</h3>
+        <p>total cost taken to complete the work</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var plannedValue = <%= @baseline.planned_value%>;
+    var actualCost   = <%= @project.actual_cost   %>;
+    var earnedValue  = <%= @project.earned_value  %>;
+    
+    //Bar indicators from sidebar.---------------------------------------------------------------------------
+    var maxValue = Math.max(plannedValue, actualCost, earnedValue);
+    var barMaxHeight = 100;
+
+    var spiPlannedValueBarHeight = Math.floor((plannedValue * barMaxHeight) / maxValue);
+    var spiEarnedValueBarHeight  = Math.floor((earnedValue  * barMaxHeight) / maxValue);
+    var cpiEarnedValueBarHeight  = spiEarnedValueBarHeight; //Math.floor((earnedValue  * barMaxHeight) / maxValue);
+    var cpiActualCostBarHeight   = Math.floor((actualCost   * barMaxHeight) / maxValue);
+
+    var spiPvBar = $('#spi-pv-bar');
+    var spiEvBar = $('#spi-ev-bar');
+    var cpiEvBar = $('#cpi-ev-bar');
+    var cpiAcBar = $('#cpi-ac-bar');
+
+    spiPvBar.height(spiPlannedValueBarHeight);
+    spiPvBar.css("line-height", "" + spiPlannedValueBarHeight + "px"); //Alinha o "PV" no bar
+    spiEvBar.height(spiEarnedValueBarHeight);
+    spiEvBar.css("line-height", "" + spiEarnedValueBarHeight  + "px");
+    cpiEvBar.height(cpiEarnedValueBarHeight);
+    cpiEvBar.css("line-height", "" + cpiEarnedValueBarHeight  + "px");
+    cpiAcBar.height(cpiActualCostBarHeight);
+    cpiAcBar.css("line-height", "" + cpiActualCostBarHeight   + "px");
+
+    //Sidebar Percentage and Status.--------------------------------------------------------------------------
+    var evmSpiStatusLabel      = $('#evm-spi-status-label');        //
+    var evmSpiStatusPercentage = $('#evm-spi-status-percentage');   //Side bar indicator percentage and status
+    var evmCpiStatusLabel      = $('#evm-cpi-status-label');        //
+    var evmCpiStatusPercentage = $('#evm-cpi-status-percentage');   //
+
+    var spi = earnedValue / plannedValue;
+    var cpi = earnedValue / actualCost;
+    var scheduleVariance = earnedValue - plannedValue;
+    var costVariance     = earnedValue - actualCost;
+
+    if(scheduleVariance < 0){
+        evmSpiStatusLabel.html("behind");
+        evmSpiStatusPercentage.html(((1 - spi) * 100).toFixed(0) + '%'); 
+        //index is 0.200. 1 - 0.200 = 0.800 * 100 = 80%
+    }else{   
+        evmSpiStatusLabel.html("ahead");
+        evmSpiStatusPercentage.html(((spi - 1) * 100).toFixed(0) + '%'); 
+        //index is 1.500 - 1 = 0.500 * 100 = 50%
+    }
+    if(costVariance < 0){
+        evmCpiStatusLabel.html("over");
+        evmCpiStatusPercentage.html(((1 - cpi) * 100).toFixed(0) + '%');
+    }else{ 
+        evmCpiStatusLabel.html("under");
+        evmCpiStatusPercentage.html(((cpi - 1) * 100).toFixed(0) + '%');
+    }
+  </script>
+
+  <!-- This script redirects to baseline from dropdown box -->
+  <script>
+    var dropdownMenu = $('#baseline_id');               //Dropdown element from html.
+    dropdownMenu.change(function() {                    //When selected.
+      window.location = '/baselines/' + $(this).val();  //Redirect to selected baseline.
+    });
+  </script>
+
+<% else %>
+<p class="nodata"><%= l(:label_no_data) %> <%= link_to l(:label_baseline_set), new_project_baseline_path(@project, :back_url => ''), :class => 'icon icon-add' %></p>
+<% end %>
 
