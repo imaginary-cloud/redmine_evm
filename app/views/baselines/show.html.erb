@@ -20,8 +20,14 @@
         <div class="indicators-container">
           <h5><%= l(:label_project_schedule) %></h5> 
           <div id="evm-spi-bars-container" class="evm-bars-container">
-            <div id="spi-ev-bar" class="bars">EV</div>
-            <div id="spi-pv-bar" class="bars">PV</div>
+            <div id="evm-spi-pv-bar-container" class="bars">
+              <p>PV</p>
+              <div id="spi-pv-bar" class="bar"></div>
+            </div>    
+            <div id="evm-spi-ev-bar-container" class="bars">
+              <p>EV</p>
+              <div id="spi-ev-bar" class="bar"></div>
+            </div>
           </div>
           <p><b>The project is <span id="evm-spi-status-percentage"></span></b>
           <br><span id='evm-spi-status-label'></span> schedule</p>
@@ -29,8 +35,14 @@
         <div class="indicators-container">
           <h5><%= l(:label_project_cost) %></h5>
           <div id="evm-cpi-bars-container" class="evm-bars-container">
-            <div id="cpi-ac-bar" class="bars">AC</div>
-            <div id="cpi-ev-bar" class="bars">EV</div>  
+            <div id="evm-cpi-ev-bar-container" class="bars">
+              <p>AC</p>
+              <div id="cpi-ev-bar" class="bar"></div>
+            </div>
+            <div id="evm-cpi-ac-bar-container" class="bars">
+              <p>EV</p>
+              <div id="cpi-ac-bar" class="bar"></div>
+            </div>
           </div>
           <div id="evm-cpi-barchart"></div>
           <p><b>The project is <span id="evm-cpi-status-percentage"></span></b>
@@ -104,23 +116,29 @@
     var barMaxHeight = 100;
 
     var spiPlannedValueBarHeight = Math.floor((plannedValue * barMaxHeight) / maxValue);
-    var spiEarnedValueBarHeight  = Math.floor((earnedValue  * barMaxHeight) / maxValue);
-    var cpiEarnedValueBarHeight  = spiEarnedValueBarHeight; //Math.floor((earnedValue  * barMaxHeight) / maxValue);
+    var earnedValueBarHeight     = Math.floor((earnedValue  * barMaxHeight) / maxValue);
     var cpiActualCostBarHeight   = Math.floor((actualCost   * barMaxHeight) / maxValue);
 
-    var spiPvBar = $('#spi-pv-bar');
-    var spiEvBar = $('#spi-ev-bar');
-    var cpiEvBar = $('#cpi-ev-bar');
-    var cpiAcBar = $('#cpi-ac-bar');
+    $('#spi-pv-bar').height(spiPlannedValueBarHeight);
+    $('#spi-ev-bar').height(earnedValueBarHeight);
+    $('#cpi-ev-bar').height(earnedValueBarHeight);
+    $('#cpi-ac-bar').height(cpiActualCostBarHeight);
 
-    spiPvBar.height(spiPlannedValueBarHeight);
-    spiPvBar.css("line-height", "" + spiPlannedValueBarHeight + "px"); //Alinha o "PV" no bar
-    spiEvBar.height(spiEarnedValueBarHeight);
-    spiEvBar.css("line-height", "" + spiEarnedValueBarHeight  + "px");
-    cpiEvBar.height(cpiEarnedValueBarHeight);
-    cpiEvBar.css("line-height", "" + cpiEarnedValueBarHeight  + "px");
-    cpiAcBar.height(cpiActualCostBarHeight);
-    cpiAcBar.css("line-height", "" + cpiActualCostBarHeight   + "px");
+    var minHeightForFont = parseInt($('.bars p').css("font-size"));
+     
+    if(spiPlannedValueBarHeight < minHeightForFont)
+      $('#evm-spi-pv-bar-container p').css("padding-bottom", "" + spiPlannedValueBarHeight + "px");
+    else $('#evm-spi-pv-bar-container p').css("line-height", "" + spiPlannedValueBarHeight + "px"); //Alinha o "PV" no bar
+    if(earnedValueBarHeight < minHeightForFont){
+      $('#evm-spi-ev-bar-container p').css("padding-bottom", "" + earnedValueBarHeight     + "px");
+      $('#evm-cpi-ev-bar-container p').css("padding-bottom", "" + earnedValueBarHeight     + "px");
+    } else {
+      $('#evm-spi-ev-bar-container p').css("line-height", "" + earnedValueBarHeight     + "px");
+      $('#evm-cpi-ev-bar-container p').css("line-height", "" + earnedValueBarHeight     + "px");
+    }
+    if(cpiActualCostBarHeight < minHeightForFont)
+      $('#evm-cpi-ac-bar-container p').css("padding-bottom", "" + cpiActualCostBarHeight   + "px");
+    else $('#evm-cpi-ac-bar-container p').css("line-height", "" + cpiActualCostBarHeight   + "px");
 
     //Sidebar Percentage and Status.--------------------------------------------------------------------------
     var evmSpiStatusLabel      = $('#evm-spi-status-label');        //

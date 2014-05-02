@@ -52,7 +52,11 @@ function drawChart(dataFromJson, placeholder){
         xaxis: {
             mode: "time", 
             timeformat: "%d %b %Y", /*"%d %b %Y"*/
-            minTickSize: [1, "day"]
+            minTickSize: [1, "day"],
+            axisLabel: 'Date',
+            axisLabelUseCanvas: true,
+            axisLabelFontSizePixels: 10,
+            axisLabelPadding: 6
         },
         yaxis: {
             axisLabel: 'Hours',

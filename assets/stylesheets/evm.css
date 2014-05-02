@@ -6,15 +6,13 @@
 
 #evm-subtitle{ color: gray; }
 
-/****bars****/
-
-
+/****Sidebar Indicator Bars****/
 .indicators-container{
   overflow: auto;
   margin-right: 10px;
-  padding: 0 10px 0 10px;
-  float:left;
-} 
+  padding-left: 15px;
+  float: left;
+}
 
 .indicators-container p{ 
   line-height: 15px; 
@@ -25,10 +23,6 @@
 .evm-bars-container{
   width: 80px;
   height: 100px;
-  -moz-transform:rotate(180deg);
-  -webkit-transform:rotate(180deg);
-  -o-transform:rotate(180deg);
-  -ms-transform:rotate(180deg);
 }
 
 #spi-pv-bar{ background-color: #0f75bc; }
@@ -38,47 +32,47 @@
 
 .bars{
   width: 40px;
-  text-align: center;
+  height: 100px;
   float: left;
-  -moz-transform:rotate(180deg);
-  -webkit-transform:rotate(180deg);
-  -o-transform:rotate(180deg);
-  -ms-transform:rotate(180deg);
-  
+  text-align: center;  
+  position: relative;
 }
 
-/********** Summary Box **********/
-#evm-summary{
-    height: 200px;
+.bars > p{
+  position: absolute;
+  width: 40px;
+  padding: 0;
+  margin: 0;
+  bottom: 0;
+  z-index: 100;
 }
+
+.bar{
+  position: absolute;
+  width: 40px;
+  bottom: 0;
+  z-index: 50;
+}
+
+/********** Sidebar Summary Box **********/
+#evm-summary{ height: 200px; }
 
 #evm-summary-indicators{
-    background: #3d454d;
-    color: white;
-    padding: 10px;
-    overflow: auto;
-    /*overflow-x: scroll;
-    white-space: nowrap; /*keeps inline forever*/
+  background: #3d454d;
+  overflow: auto;
+  padding: 10px;
+  color: white;
 }
 
-/**********Dropdown box********/
+/********** Dropdown Box ********/
 #baseline_id{ border-radius: 0; }
-#baseline_id option{ color: grey; }
+#baseline_id option{ color: gray; }
 
-/***********Charts***********/
-#evm-charts-wrapper{
-  margin: auto;
-}
+/*********** Charts ***********/
+#evm-charts-wrapper{ margin: auto; }
+#evm-main-chart{ padding: 40px 0 40px 0; }
 
-#evm-main-chart{
-  padding: 40px 0 40px 0;
-}
-
-#evm-versions-charts{
-  
-}
-
-/*********Chart legend + info********/
+/********* Chart legend + Info ********/
 #evm-legend-info{
   border: lightgray 1px solid;
   margin: 10px;
@@ -87,14 +81,14 @@
 #evm-legend-content{
   margin: auto;
   width: 950px;
-  overflow:auto;
+  overflow: auto;
 }
 
 #evm-legend-content div{
   display: inline-block;
   padding: 20px;
   color: dimgray;
-  line-height: 5px
+  line-height: 5px;
 }
 
 #evm-legend-ev{
