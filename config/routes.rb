@@ -4,5 +4,5 @@
 resources :baselines
 resources :projects do 
 	resources :baselines
-	resources :evms, only: :index
+  get '/current_baseline', to: 'baselines#current_baseline' 
 end
