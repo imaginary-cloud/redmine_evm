@@ -22,7 +22,7 @@ class BaselinesController < ApplicationController
     @baseline = Baseline.new(params[:baseline])
     @baseline.project = @project
     @baseline.state = l(:label_current_baseline)
-    @baseline.start_date = @project.start_date || @project.created_on.to_date
+    @baseline.start_date = @project.get_start_date
 
     if @baseline.save
 
