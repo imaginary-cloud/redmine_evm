@@ -4,69 +4,75 @@
   padding-top: 17px; 
 }
 
-/****bars****/
-.evm-bars-container{
-  width: 80px;
-  height: 100px;
-}
+#evm-subtitle{ color: gray; }
 
-/***gauge*****/
-.evm-gauge{
-	width: 90px;
-}
-.gauge-container{
+/****Sidebar Indicator Bars****/
+.indicators-container{
   overflow: auto;
   margin-right: 10px;
-  padding: 0 10px 0 10px;
-} 
+  padding-left: 15px;
+  float: left;
+}
 
-.gauge-container p{ 
+.indicators-container p{ 
   line-height: 15px; 
   padding: 15px 0 15px 0;
   font-size: 12px;
 }
 
-#evm-subtitle{
-    color: gray;
+.evm-bars-container{
+  width: 80px;
+  height: 100px;
 }
 
-/**********Summary box**********/
-#evm-summary{
-    height: 200px;
+#spi-pv-bar{ background-color: #0f75bc; }
+#spi-ev-bar{ background-color: #8cc63f; }
+#cpi-ev-bar{ background-color: #8cc63f; }
+#cpi-ac-bar{ background-color: #fcb040; }
+
+.bars{
+  width: 40px;
+  height: 100px;
+  float: left;
+  text-align: center;  
+  position: relative;
 }
+
+.bars > p{
+  position: absolute;
+  width: 40px;
+  padding: 0;
+  margin: 0;
+  bottom: 0;
+  z-index: 100;
+}
+
+.bar{
+  position: absolute;
+  width: 40px;
+  bottom: 0;
+  z-index: 50;
+}
+
+/********** Sidebar Summary Box **********/
+#evm-summary{ height: 200px; }
 
 #evm-summary-indicators{
-    background: #3d454d;
-    color: white;
-    padding: 10px;
-    overflow: auto;
-    /*overflow-x: scroll;
-    white-space: nowrap; /*keeps inline forever*/
+  background: #3d454d;
+  overflow: auto;
+  padding: 10px;
+  color: white;
 }
 
-/**********Dropdown box********/
-#baseline_id{
-    border-radius: 0; 
-}
+/********** Dropdown Box ********/
+#baseline_id{ border-radius: 0; }
+#baseline_id option{ color: gray; }
 
-#baseline_id option{
-    color: grey;
-}
+/*********** Charts ***********/
+#evm-charts-wrapper{ margin: auto; }
+#evm-main-chart{ padding: 40px 0 40px 0; }
 
-/***********Charts***********/
-#evm-charts-wrapper{
-  margin: auto;
-}
-
-#evm-main-chart{
-  padding: 40px 0 40px 0;
-}
-
-#evm-versions-charts{
-  
-}
-
-/*********Chart legend +info********/
+/********* Chart legend + Info ********/
 #evm-legend-info{
   border: lightgray 1px solid;
   margin: 10px;
@@ -75,14 +81,14 @@
 #evm-legend-content{
   margin: auto;
   width: 950px;
-  overflow:auto;
+  overflow: auto;
 }
 
 #evm-legend-content div{
   display: inline-block;
   padding: 20px;
   color: dimgray;
-  line-height: 5px
+  line-height: 5px;
 }
 
 #evm-legend-ev{
@@ -99,24 +105,3 @@
   padding-top: 20px;
   color: #0f75bc ;
 }
-/*
-.styled-select select {
-   background: transparent;
-   width: 570px;
-    background-color: lightgrey;
-   padding: 5px;
-   color gray;
-   line-height: 1;
-   border: 0;
-   border-radius: 0;
-   -webkit-appearance: none;
-}
-*/
-
-/********remove summarybox min width**********
-@media all and (max-width: 1100px){
-  #evm-summary{
-    display: none;
-  }
-}
-*/

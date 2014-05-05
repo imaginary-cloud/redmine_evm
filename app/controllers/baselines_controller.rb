@@ -1,6 +1,8 @@
 class BaselinesController < ApplicationController
   unloadable
 
+  helper :baselines
+
   model_object Baseline
 
   before_filter :find_model_object, :except => [:new, :create]
@@ -8,24 +10,8 @@ class BaselinesController < ApplicationController
   before_filter :find_project_with_project_id, :only => [:new, :create]
   before_filter :authorize
 
-  def show 
-    project_evm_data = [@baseline.planned_value_by_week, @project.actual_cost_by_week, @project.earned_value_by_week(@baseline.id)]
-    versions_evm_data = []
-    evm_data = []
-
-    baseline_versions = @baseline.baseline_versions 
-    project_versions = @project.versions            
-
-    project_versions.each do |version|
-      version_evm_data = []
-      baseline_version = baseline_versions.where(original_version_id: version.id).first
-
-      baseline_version.nil? ? 0 : version_evm_data.push(baseline_version.planned_value_by_week)
-      
-      version_evm_data = [version.actual_cost_by_week, version.earned_value_by_week(@baseline.id)]
-      versions_evm_data.push(version_evm_data)
-    end
-    evm_data = [project_evm_data,versions_evm_data].to_json
+  def show
+    @baseline = Baseline.find(params[:id])
   end
 
   def new

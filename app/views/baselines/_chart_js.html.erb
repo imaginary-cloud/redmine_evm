@@ -1,0 +1,6 @@
+<script>
+  var projectChartData = <%= project_chart_data %>;
+  var mainChartHtmlElement = 'evm-graph-lines-' + <%=@baseline.id%>;
+  drawChart(projectChartData, mainChartHtmlElement); //from drawchart.js
+</script>
+
