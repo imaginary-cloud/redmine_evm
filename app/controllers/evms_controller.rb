@@ -17,7 +17,7 @@ class EvmsController < ApplicationController
     data_to_chart = {}
     data_to_chart['pv'] = convert_to_chart(baseline.planned_value_by_week)
     data_to_chart['ac'] = convert_to_chart(@project.actual_cost_by_week)
-    data_to_chart['ev'] = convert_to_chart(@project.earned_value_by_week)
+    data_to_chart['ev'] = convert_to_chart(@project.earned_value_by_week(baseline.id))
 
     respond_to do |format|
       format.json { render :json => data_to_chart }
@@ -40,7 +40,7 @@ class EvmsController < ApplicationController
         data_to_chart['pv'] = convert_to_chart(baseline_version.planned_value_by_week)
       end
       data_to_chart['ac'] = convert_to_chart(version.actual_cost_by_week)
-      data_to_chart['ev'] = convert_to_chart(version.earned_value_by_week)
+      data_to_chart['ev'] = convert_to_chart(version.earned_value_by_week(baseline.id))
       versions_data_to_chart[version.id] = data_to_chart
     end
 

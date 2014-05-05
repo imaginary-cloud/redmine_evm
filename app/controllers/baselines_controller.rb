@@ -8,13 +8,13 @@ class BaselinesController < ApplicationController
   before_filter :find_project_with_project_id, :only => [:new, :create]
   before_filter :authorize
 
-  def show
-    project_evm_data = [@baseline.planned_value_by_week, @project.actual_cost_by_week, @project.earned_value_by_week]
+  def show 
+    project_evm_data = [@baseline.planned_value_by_week, @project.actual_cost_by_week, @project.earned_value_by_week(@baseline.id)]
     versions_evm_data = []
     evm_data = []
 
-    baseline_versions = @baseline.baseline_versions #Baseline Versions
-    project_versions = @project.versions            #Versions
+    baseline_versions = @baseline.baseline_versions 
+    project_versions = @project.versions            
 
     project_versions.each do |version|
       version_evm_data = []
@@ -22,7 +22,7 @@ class BaselinesController < ApplicationController
 
       baseline_version.nil? ? 0 : version_evm_data.push(baseline_version.planned_value_by_week)
       
-      version_evm_data = [version.actual_cost_by_week, version.earned_value_by_week]
+      version_evm_data = [version.actual_cost_by_week, version.earned_value_by_week(@baseline.id)]
       versions_evm_data.push(version_evm_data)
     end
     evm_data = [project_evm_data,versions_evm_data].to_json
@@ -36,7 +36,7 @@ class BaselinesController < ApplicationController
     @baseline = Baseline.new(params[:baseline])
     @baseline.project = @project
     @baseline.state = l(:label_current_baseline)
-    @baseline.start_date = @project.start_date || @project.created_on.to_date
+    @baseline.start_date = @project.get_start_date
 
     if @baseline.save
 
