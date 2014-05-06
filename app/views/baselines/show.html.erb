@@ -68,7 +68,7 @@
       <div id='evm-graph-lines-<%=@baseline.id%>' style="width:70%;height:350px;margin:auto;"></div>
       <% project_chart_data  = [convert_to_chart(@baseline.planned_value_by_week),
                                 convert_to_chart(@project.actual_cost_by_week), 
-                                convert_to_chart(@project.earned_value_by_week)] %>
+                                convert_to_chart(@project.earned_value_by_week(@baseline.id))] %>
 
       <%= render :partial => '/baselines/chart_js', :locals => { project_chart_data: project_chart_data } %>
     </div>
@@ -83,7 +83,7 @@
           <% version_chart_data << convert_to_chart(baseline_version.planned_value_by_week) %>
         <% end %>
         <% version_chart_data << convert_to_chart(version.actual_cost_by_week) %>
-        <% version_chart_data << convert_to_chart(version.earned_value_by_week) %>
+        <% version_chart_data << convert_to_chart(version.earned_value_by_week@baseline.id) %>
         <%= render :partial => '/baselines/version_chart_js', :locals => { version_chart_data: version_chart_data, baseline_version: baseline_version } %>
       <% end %>
     </div> 
@@ -109,7 +109,7 @@
   <script>
     var plannedValue = <%= @baseline.planned_value%>;
     var actualCost   = <%= @project.actual_cost   %>;
-    var earnedValue  = <%= @project.earned_value  %>;
+    var earnedValue  = <%= @project.earned_value(@baseline.id)  %>;
     
     //Bar indicators from sidebar.---------------------------------------------------------------------------
     var maxValue = Math.max(plannedValue, actualCost, earnedValue);

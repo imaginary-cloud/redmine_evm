@@ -22,8 +22,8 @@
 
     module EarnedValueInstanceMethods
 
-      def earned_value
-        self.instance_of?(Project) ? issues = self.issues : issues = fixed_issues
+      def earned_value baseline_id
+        issues = get_issues baseline_id
 
         sum_earned_value = 0
         issues.each do |issue|
@@ -60,20 +60,12 @@
           unless issues.nil?
             i = issues.select {|i| i.due_date == key}
             i.each do |issue|
-              if issue.instance_of?(Issue)
-                unless issue.estimated_hours.nil?
-                  done_ratio = issue.done_ratio / 100.0
-                  earned_value += issue.estimated_hours * done_ratio  
-                end  
-              else
-                unless issue.estimated_time.nil?
-                  done_ratio = issue.done_ratio / 100.0
-                  earned_value += issue.estimated_time * done_ratio  
-                end
-              end
+              unless issue.estimated_hours.nil?
+                done_ratio = issue.done_ratio / 100.0
+                earned_value += issue.estimated_hours * done_ratio  
+              end  
             end
           end
-          puts earned_value
           done_ratio_by_weeks[key.beginning_of_week] = earned_value
         end
         done_ratio_by_weeks

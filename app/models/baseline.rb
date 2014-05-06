@@ -35,14 +35,14 @@ class Baseline < ActiveRecord::Base
         baseline_issue = BaselineIssue.new(original_issue_id: issue.id, done_ratio: issue.done_ratio)
         if(Project.find(project_id).baselines.count >1)
           if(issue.done_ratio == 100 || issue.status.name == "Rejected")
-            baseline_issue.estimated_time = issue.total_spent_hours
+            baseline_issue.estimated_hours = issue.total_spent_hours
             issue.due_date.nil? ? baseline_issue.due_date = issue.time_entries.maximum('spent_on') : baseline_issue.due_date = issue.due_date
           else
-            baseline_issue.estimated_time = issue.estimated_hours || 0
+            baseline_issue.estimated_hours = issue.estimated_hours || 0
             issue.due_date = issue.due_date 
           end
         else
-          baseline_issue.estimated_time = issue.estimated_hours || 0
+          baseline_issue.estimated_hours = issue.estimated_hours || 0
           issue.due_date = issue.due_date 
         end 
         baseline_issue.save
