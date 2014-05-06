@@ -34,45 +34,46 @@
         sum_earned_value
       end
 
-      def get_issues key, baseline_id
-        if self.instance_of?(Project)
-          issues = self.issues  
-          baselines = self.baselines
-        else
-          issues = self.fixed_issues 
-          baselines = Project.find(self.project_id).baselines
+      def get_issues baseline_id
+        self.instance_of?(Project) ? issues = self.issues : issues = self.fixed_issues 
+        issues_with_done_ratio = Baseline.find(baseline_id).baseline_issues.where("done_ratio = 100")
+        oii = issues_with_done_ratio.map{ |bi| bi.original_issue_id }
+        normal_issues = issues.select{ |i| i.done_ratio > 0 && oii.exclude?(i.id)  }
+        normal_issues.each do |issue|
+          issue.due_date.nil? ? issue.due_date = issue.time_entries.maximum('spent_on') : nil
         end
-        bi = baselines.find(baseline_id).baseline_issues
-        oii = bi.map{ |bi| bi.original_issue_id }
-        issues_with_original_issue_id_on_baseline_issue = issues.select{ |i| oii.include? i.id }
-        issues_with_key = issues_with_original_issue_id_on_baseline_issue.select{ |i| i.time_entries.maximum('spent_on') == key }
-        issues_with_key.each{ |i| i.estimated_hours = i.spent_hours }
-        issues_with_key += issues.select{|i| i.time_entries.maximum('spent_on') == key && !oii.include?(i.id)  }
+        unless normal_issues.nil?
+          issues_with_done_ratio += normal_issues  
+        end
+        issues_with_done_ratio
 
-        # issues_with_key
-        # if self.instance_of?(Project) 
-        #   Issue.find_by_sql(['SELECT i.done_ratio, i.estimated_hours  FROM redmine.issues i join redmine.time_entries t on( i.id = t.issue_id) where i.project_id = :id group by i.id having max(spent_on) = :key;', id: id, key: key])
-        # else
-        #   Issue.find_by_sql(['SELECT i.done_ratio, i.estimated_hours  FROM redmine.issues i join redmine.time_entries t on( i.id = t.issue_id) where i.fixed_version_id = :id group by i.id having max(spent_on) = :key;', id: id, key: key])
-        # end
       end
 
       def earned_value_by_week baseline_id
         done_ratio_by_weeks = {}
         done_ratio = 0
         earned_value = 0
+        baseline_issueseste = get_issues baseline_id
+        issues = get_issues baseline_id
 
         (get_start_date.to_date..end_date.to_date).each do |key| 
-          issues = get_issues key, baseline_id
           unless issues.nil?
-            issues.each do |issue|
-              unless issue.estimated_hours.nil?
-                done_ratio = issue.done_ratio / 100.0
-                earned_value += issue.estimated_hours * done_ratio  
-              end  
+            i = issues.select {|i| i.due_date == key}
+            i.each do |issue|
+              if issue.instance_of?(Issue)
+                unless issue.estimated_hours.nil?
+                  done_ratio = issue.done_ratio / 100.0
+                  earned_value += issue.estimated_hours * done_ratio  
+                end  
+              else
+                unless issue.estimated_time.nil?
+                  done_ratio = issue.done_ratio / 100.0
+                  earned_value += issue.estimated_time * done_ratio  
+                end
+              end
             end
           end
-          
+          puts earned_value
           done_ratio_by_weeks[key.beginning_of_week] = earned_value
         end
         done_ratio_by_weeks
