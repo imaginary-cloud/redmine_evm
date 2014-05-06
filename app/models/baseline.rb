@@ -32,37 +32,24 @@ class Baseline < ActiveRecord::Base
   def create_issues issues
     unless issues.nil?
       issues.each do |issue|
-        baseline_issue = BaselineIssue.new(original_issue_id: issue.id,  due_date: issue.due_date,
-                                              done_ratio: issue.done_ratio, subject: issue.subject, description: issue.description, tracker_id: issue.tracker_id,start_date: issue.start_date)
-
-        baseline_version = self.baseline_versions.find_by_original_version_id(issue.fixed_version_id)
-
-        Project.find(project_id).baselines.count >= 1 ?  baseline_issue.estimated_time = issue.spent_hours || issue.estimated_hours || 0 : baseline_issue.estimated_time = issue.estimated_hours || 0 
-        
-        unless baseline_version.nil?
-          baseline_issue.baseline_version_id = baseline_version.id
-        end
+        baseline_issue = BaselineIssue.new(original_issue_id: issue.id, done_ratio: issue.done_ratio)
+        if(Project.find(project_id).baselines.count >1)
+          if(issue.done_ratio == 100 || issue.status.name == "Rejected")
+            baseline_issue.estimated_time = issue.total_spent_hours
+            issue.due_date.nil? ? baseline_issue.due_date = issue.time_entries.maximum('spent_on') : baseline_issue.due_date = issue.due_date
+          else
+            baseline_issue.estimated_time = issue.estimated_hours || 0
+            issue.due_date = issue.due_date 
+          end
+        else
+          baseline_issue.estimated_time = issue.estimated_hours || 0
+          issue.due_date = issue.due_date 
+        end 
         baseline_issue.save
         baseline_issues << baseline_issue
       end
     end
   end
-
-  # def create_issues issues
-  #   unless issues.nil?
-  #     issues.each do |issue|
-  #       baseline_issue = BaselineIssue.create(original_issue_id: issue.id, estimated_time: issue.estimated_hours || 0, due_date: issue.due_date,
-  #                                             done_ratio: issue.done_ratio, subject: issue.subject, description: issue.description, tracker_id: issue.tracker_id,start_date: issue.start_date)
-
-  #       baseline_version = self.baseline_versions.find_by_original_version_id(issue.fixed_version_id)
-        
-  #       unless baseline_version.nil?
-  #         baseline_issue.baseline_version_id = baseline_version.id
-  #       end
-  #       baseline_issues << baseline_issue
-  #     end
-  #   end
-  # end
 
   def update_baseline_status status, project_id
       project = Project.find(project_id) 
