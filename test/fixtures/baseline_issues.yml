@@ -1,7 +1,7 @@
 baseline_issues_001:
   id: 1
   original_issue_id: 1
-  estimated_time: 10
+  estimated_hours: 10
   due_date: 2006-07-30
   baseline_version_id: 1
   time_week:
@@ -15,7 +15,7 @@ baseline_issues_001:
 baseline_issues_002:
   id: 2
   original_issue_id: 2
-  estimated_time: 9
+  estimated_hours: 9
   due_date: 2006-08-15
   baseline_version_id: 1
   time_week:
@@ -29,7 +29,7 @@ baseline_issues_002:
 baseline_issues_003:
   id: 3
   original_issue_id: 1
-  estimated_time: 10
+  estimated_hours: 10
   due_date: 2006-07-30
   baseline_version_id: 3
   time_week:
@@ -43,7 +43,7 @@ baseline_issues_003:
 baseline_issues_004:
   id: 4
   original_issue_id: 2
-  estimated_time: 9
+  estimated_hours: 9
   due_date: 2006-08-15
   baseline_version_id: 3
   time_week:
@@ -57,7 +57,7 @@ baseline_issues_004:
 baseline_issues_005:
   id: 5
   original_issue_id: 3
-  estimated_time: 3
+  estimated_hours: 3
   due_date: 2006-08-15
   baseline_version_id: 2
   time_week:
@@ -71,7 +71,7 @@ baseline_issues_005:
 baseline_issues_006:
   id: 6
   original_issue_id: 3
-  estimated_time: 3
+  estimated_hours: 3
   due_date: 2006-08-15
   baseline_version_id: 4
   time_week:
