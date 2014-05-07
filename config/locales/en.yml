@@ -20,3 +20,5 @@ en:
 
   label_project_cost: Project Cost
   label_project_schedule: Project Schedule
+
+  error_no_baseline: Please set a baseline before proceeding.

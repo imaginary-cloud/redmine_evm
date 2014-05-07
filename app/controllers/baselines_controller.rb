@@ -57,8 +57,13 @@ class BaselinesController < ApplicationController
   end
 
   def current_baseline
-    baseline_id = @project.baselines.where(state: 'current').first.id
-    redirect_to baseline_path(baseline_id)
+    if @project.baselines.any?
+      baseline_id = @project.baselines.where(state: 'current').first.id
+      redirect_to baseline_path(baseline_id)
+    else 
+      flash[:error] = l(:error_no_baseline)
+      redirect_to settings_project_path(@project, :tab => 'baselines')
+    end
   end
 
 end
