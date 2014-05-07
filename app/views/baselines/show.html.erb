@@ -11,173 +11,166 @@
 <% html_title('EVM Indicators') %>
 <p id="evm-subtitle"><%=l(:subtitle_evm_tab)%></p>
 
-<% if @project.baselines.any? %>
-
-  <% content_for :sidebar do %>
-    <div id="evm-summary">
-      <h3><%= l(:subtitle_evm_summary) %></h3>
-      <div id="evm-summary-indicators">
-        <div class="indicators-container">
-          <h5><%= l(:label_project_schedule) %></h5> 
-          <div id="evm-spi-bars-container" class="evm-bars-container">
-            <div id="evm-spi-pv-bar-container" class="bars">
-              <p>PV</p>
-              <div id="spi-pv-bar" class="bar"></div>
-            </div>    
-            <div id="evm-spi-ev-bar-container" class="bars">
-              <p>EV</p>
-              <div id="spi-ev-bar" class="bar"></div>
-            </div>
+<% content_for :sidebar do %>
+  <div id="evm-summary">
+    <h3><%= l(:subtitle_evm_summary) %></h3>
+    <div id="evm-summary-indicators">
+      <div class="indicators-container">
+        <h5><%= l(:label_project_schedule) %></h5> 
+        <div id="evm-spi-bars-container" class="evm-bars-container">
+          <div id="evm-spi-pv-bar-container" class="bars">
+            <p>PV</p>
+            <div id="spi-pv-bar" class="bar"></div>
+          </div>    
+          <div id="evm-spi-ev-bar-container" class="bars">
+            <p>EV</p>
+            <div id="spi-ev-bar" class="bar"></div>
           </div>
-          <p><b>The project is <span id="evm-spi-status-percentage"></span></b>
-          <br><span id='evm-spi-status-label'></span> schedule</p>
         </div>
-        <div class="indicators-container">
-          <h5><%= l(:label_project_cost) %></h5>
-          <div id="evm-cpi-bars-container" class="evm-bars-container">
-            <div id="evm-cpi-ev-bar-container" class="bars">
-              <p>EV</p>
-              <div id="cpi-ev-bar" class="bar"></div>
-            </div>
-            <div id="evm-cpi-ac-bar-container" class="bars">
-              <p>AC</p>
-              <div id="cpi-ac-bar" class="bar"></div>
-            </div>
+        <p><b>The project is <span id="evm-spi-status-percentage"></span></b>
+        <br><span id='evm-spi-status-label'></span> schedule</p>
+      </div>
+      <div class="indicators-container">
+        <h5><%= l(:label_project_cost) %></h5>
+        <div id="evm-cpi-bars-container" class="evm-bars-container">
+          <div id="evm-cpi-ev-bar-container" class="bars">
+            <p>EV</p>
+            <div id="cpi-ev-bar" class="bar"></div>
           </div>
-          <div id="evm-cpi-barchart"></div>
-          <p><b>The project is <span id="evm-cpi-status-percentage"></span></b>
-          <br><span id='evm-cpi-status-label'></span> budget</p>
+          <div id="evm-cpi-ac-bar-container" class="bars">
+            <p>AC</p>
+            <div id="cpi-ac-bar" class="bar"></div>
+          </div>
         </div>
-
+        <div id="evm-cpi-barchart"></div>
+        <p><b>The project is <span id="evm-cpi-status-percentage"></span></b>
+        <br><span id='evm-cpi-status-label'></span> budget</p>
       </div>
-    </div>
-  <% end %>
 
-  <!-- Dropdown for baselines -->
-  <fieldset id="filters" class="collapsible">
-    <legend onclick="toggleFieldset(this);"><%= l(:label_baseline_plural) %></legend>
-    <br>
-    <div class="styled-select">
-      <%= collection_select :baseline, :id, @project.baselines.order('created_on DESC'), :id, :name %>
-    </div>
-  </fieldset>
-
-  <div id="evm-charts-wrapper">
-    <!-- Main Chart -->
-    <div id="evm-main-chart">
-      <div id='evm-graph-lines-<%=@baseline.id%>' style="width:70%;height:350px;margin:auto;"></div>
-      <% project_chart_data  = [convert_to_chart(@baseline.planned_value_by_week),
-                                convert_to_chart(@project.actual_cost_by_week), 
-                                convert_to_chart(@project.earned_value_by_week(@baseline.id))] %>
-
-      <%= render :partial => '/baselines/chart_js', :locals => { project_chart_data: project_chart_data } %>
-    </div>
-    <!-- Versions Charts -->
-    <div id="evm-versions-charts">
-      <% @project.versions.each do |version|%>
-        <h5><%= version.name %></h5>
-        <div id='evm-graph-lines-version-<%= version.id %>' style="width:70%;height:350px;margin:auto;margin-top:40px;margin-bottom:40px;"></div>
-        <% version_chart_data = [] %>
-        <% baseline_version = @baseline.baseline_versions.where(original_version_id: version.id).first %>
-        <% unless baseline_version.nil? %>
-          <% version_chart_data << convert_to_chart(baseline_version.planned_value_by_week) %>
-        <% end %>
-        <% version_chart_data << convert_to_chart(version.actual_cost_by_week) %>
-        <% version_chart_data << convert_to_chart(version.earned_value_by_week@baseline.id) %>
-        <%= render :partial => '/baselines/version_chart_js', :locals => { version_chart_data: version_chart_data, baseline_version: baseline_version } %>
-      <% end %>
-    </div> 
-  </div>
-
-  <div id="evm-legend-info">
-    <div id="evm-legend-content">
-      <div>
-        <h3 id="evm-legend-pv">Planned Value</h3>
-        <p>total cost of the work scheduled/planned</p>
-      </div>
-      <div>
-        <h3 id="evm-legend-ev">Earned Value</h3>
-        <p>total cost of the work completed/performed</p>
-      </div>
-      <div>
-        <h3 id="evm-legend-ac">Actual Cost</h3>
-        <p>total cost taken to complete the work</p>
-      </div>
     </div>
   </div>
-
-  <script>
-    var plannedValue = <%= @baseline.planned_value%>;
-    var actualCost   = <%= @project.actual_cost   %>;
-    var earnedValue  = <%= @project.earned_value(@baseline.id)  %>;
-    
-    //Bar indicators from sidebar.---------------------------------------------------------------------------
-    var maxValue = Math.max(plannedValue, actualCost, earnedValue);
-    var barMaxHeight = 100;
-
-    var spiPlannedValueBarHeight = Math.floor((plannedValue * barMaxHeight) / maxValue);
-    var earnedValueBarHeight     = Math.floor((earnedValue  * barMaxHeight) / maxValue);
-    var cpiActualCostBarHeight   = Math.floor((actualCost   * barMaxHeight) / maxValue);
-
-    $('#spi-pv-bar').height(spiPlannedValueBarHeight);
-    $('#spi-ev-bar').height(earnedValueBarHeight);
-    $('#cpi-ev-bar').height(earnedValueBarHeight);
-    $('#cpi-ac-bar').height(cpiActualCostBarHeight);
-
-    var minHeightForFont = parseInt($('.bars p').css("font-size"));
-     
-    if(spiPlannedValueBarHeight < minHeightForFont)
-      $('#evm-spi-pv-bar-container p').css("padding-bottom", "" + spiPlannedValueBarHeight + "px");
-    else $('#evm-spi-pv-bar-container p').css("line-height", "" + spiPlannedValueBarHeight + "px"); //Alinha o "PV" no bar
-    if(earnedValueBarHeight < minHeightForFont){
-      $('#evm-spi-ev-bar-container p').css("padding-bottom", "" + earnedValueBarHeight     + "px");
-      $('#evm-cpi-ev-bar-container p').css("padding-bottom", "" + earnedValueBarHeight     + "px");
-    } else {
-      $('#evm-spi-ev-bar-container p').css("line-height", "" + earnedValueBarHeight     + "px");
-      $('#evm-cpi-ev-bar-container p').css("line-height", "" + earnedValueBarHeight     + "px");
-    }
-    if(cpiActualCostBarHeight < minHeightForFont)
-      $('#evm-cpi-ac-bar-container p').css("padding-bottom", "" + cpiActualCostBarHeight   + "px");
-    else $('#evm-cpi-ac-bar-container p').css("line-height", "" + cpiActualCostBarHeight   + "px");
-
-    //Sidebar Percentage and Status.--------------------------------------------------------------------------
-    var evmSpiStatusLabel      = $('#evm-spi-status-label');        //
-    var evmSpiStatusPercentage = $('#evm-spi-status-percentage');   //Side bar indicator percentage and status
-    var evmCpiStatusLabel      = $('#evm-cpi-status-label');        //
-    var evmCpiStatusPercentage = $('#evm-cpi-status-percentage');   //
-
-    var spi = earnedValue / plannedValue;
-    var cpi = earnedValue / actualCost;
-    var scheduleVariance = earnedValue - plannedValue;
-    var costVariance     = earnedValue - actualCost;
-
-    if(scheduleVariance < 0){
-        evmSpiStatusLabel.html("behind");
-        evmSpiStatusPercentage.html(((1 - spi) * 100).toFixed(0) + '%'); 
-        //index is 0.200. 1 - 0.200 = 0.800 * 100 = 80%
-    }else{   
-        evmSpiStatusLabel.html("ahead");
-        evmSpiStatusPercentage.html(((spi - 1) * 100).toFixed(0) + '%'); 
-        //index is 1.500 - 1 = 0.500 * 100 = 50%
-    }
-    if(costVariance < 0){
-        evmCpiStatusLabel.html("over");
-        evmCpiStatusPercentage.html(((1 - cpi) * 100).toFixed(0) + '%');
-    }else{ 
-        evmCpiStatusLabel.html("under");
-        evmCpiStatusPercentage.html(((cpi - 1) * 100).toFixed(0) + '%');
-    }
-  </script>
-
-  <!-- This script redirects to baseline from dropdown box -->
-  <script>
-    var dropdownMenu = $('#baseline_id');               //Dropdown element from html.
-    dropdownMenu.change(function() {                    //When selected.
-      window.location = '/baselines/' + $(this).val();  //Redirect to selected baseline.
-    });
-  </script>
-
-<% else %>
-<p class="nodata"><%= l(:label_no_data) %> <%= link_to l(:label_baseline_set), new_project_baseline_path(@project, :back_url => ''), :class => 'icon icon-add' %></p>
 <% end %>
 
+<!-- Dropdown for baselines -->
+<fieldset id="filters" class="collapsible">
+  <legend onclick="toggleFieldset(this);"><%= l(:label_baseline_plural) %></legend>
+  <br>
+  <div class="styled-select">
+    <%= collection_select :baseline, :id, @project.baselines.order('created_on DESC'), :id, :name %>
+  </div>
+</fieldset>
+
+<div id="evm-charts-wrapper">
+  <!-- Main Chart -->
+  <div id="evm-main-chart">
+    <div id='evm-graph-lines-<%=@baseline.id%>' style="width:70%;height:350px;margin:auto;"></div>
+    <% project_chart_data  = [convert_to_chart(@baseline.planned_value_by_week),
+                              convert_to_chart(@project.actual_cost_by_week), 
+                              convert_to_chart(@project.earned_value_by_week(@baseline.id))] %>
+
+    <%= render :partial => '/baselines/chart_js', :locals => { project_chart_data: project_chart_data } %>
+  </div>
+  <!-- Versions Charts -->
+  <div id="evm-versions-charts">
+    <% @project.versions.each do |version|%>
+      <h5><%= version.name %></h5>
+      <div id='evm-graph-lines-version-<%= version.id %>' style="width:70%;height:350px;margin:auto;margin-top:40px;margin-bottom:40px;"></div>
+      <% version_chart_data = [] %>
+      <% baseline_version = @baseline.baseline_versions.where(original_version_id: version.id).first %>
+      <% unless baseline_version.nil? %>
+        <% version_chart_data << convert_to_chart(baseline_version.planned_value_by_week) %>
+      <% end %>
+      <% version_chart_data << convert_to_chart(version.actual_cost_by_week) %>
+      <% version_chart_data << convert_to_chart(version.earned_value_by_week@baseline.id) %>
+      <%= render :partial => '/baselines/version_chart_js', :locals => { version_chart_data: version_chart_data, baseline_version: baseline_version } %>
+    <% end %>
+  </div> 
+</div>
+
+<div id="evm-legend-info">
+  <div id="evm-legend-content">
+    <div>
+      <h3 id="evm-legend-pv">Planned Value</h3>
+      <p>total cost of the work scheduled/planned</p>
+    </div>
+    <div>
+      <h3 id="evm-legend-ev">Earned Value</h3>
+      <p>total cost of the work completed/performed</p>
+    </div>
+    <div>
+      <h3 id="evm-legend-ac">Actual Cost</h3>
+      <p>total cost taken to complete the work</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  var plannedValue = <%= @baseline.planned_value%>;
+  var actualCost   = <%= @project.actual_cost   %>;
+  var earnedValue  = <%= @project.earned_value(@baseline.id)  %>;
+  
+  //Bar indicators from sidebar.---------------------------------------------------------------------------
+  var maxValue = Math.max(plannedValue, actualCost, earnedValue);
+  var barMaxHeight = 100;
+
+  var spiPlannedValueBarHeight = Math.floor((plannedValue * barMaxHeight) / maxValue);
+  var earnedValueBarHeight     = Math.floor((earnedValue  * barMaxHeight) / maxValue);
+  var cpiActualCostBarHeight   = Math.floor((actualCost   * barMaxHeight) / maxValue);
+
+  $('#spi-pv-bar').height(spiPlannedValueBarHeight);
+  $('#spi-ev-bar').height(earnedValueBarHeight);
+  $('#cpi-ev-bar').height(earnedValueBarHeight);
+  $('#cpi-ac-bar').height(cpiActualCostBarHeight);
+
+  var minHeightForFont = parseInt($('.bars p').css("font-size"));
+   
+  if(spiPlannedValueBarHeight < minHeightForFont)
+    $('#evm-spi-pv-bar-container p').css("padding-bottom", "" + spiPlannedValueBarHeight + "px");
+  else $('#evm-spi-pv-bar-container p').css("line-height", "" + spiPlannedValueBarHeight + "px"); //Alinha o "PV" no bar
+  if(earnedValueBarHeight < minHeightForFont){
+    $('#evm-spi-ev-bar-container p').css("padding-bottom", "" + earnedValueBarHeight     + "px");
+    $('#evm-cpi-ev-bar-container p').css("padding-bottom", "" + earnedValueBarHeight     + "px");
+  } else {
+    $('#evm-spi-ev-bar-container p').css("line-height", "" + earnedValueBarHeight     + "px");
+    $('#evm-cpi-ev-bar-container p').css("line-height", "" + earnedValueBarHeight     + "px");
+  }
+  if(cpiActualCostBarHeight < minHeightForFont)
+    $('#evm-cpi-ac-bar-container p').css("padding-bottom", "" + cpiActualCostBarHeight   + "px");
+  else $('#evm-cpi-ac-bar-container p').css("line-height", "" + cpiActualCostBarHeight   + "px");
+
+  //Sidebar Percentage and Status.--------------------------------------------------------------------------
+  var evmSpiStatusLabel      = $('#evm-spi-status-label');        //
+  var evmSpiStatusPercentage = $('#evm-spi-status-percentage');   //Side bar indicator percentage and status
+  var evmCpiStatusLabel      = $('#evm-cpi-status-label');        //
+  var evmCpiStatusPercentage = $('#evm-cpi-status-percentage');   //
+
+  var spi = earnedValue / plannedValue;
+  var cpi = earnedValue / actualCost;
+  var scheduleVariance = earnedValue - plannedValue;
+  var costVariance     = earnedValue - actualCost;
+
+  if(scheduleVariance < 0){
+      evmSpiStatusLabel.html("behind");
+      evmSpiStatusPercentage.html(((1 - spi) * 100).toFixed(0) + '%'); 
+      //index is 0.200. 1 - 0.200 = 0.800 * 100 = 80%
+  }else{   
+      evmSpiStatusLabel.html("ahead");
+      evmSpiStatusPercentage.html(((spi - 1) * 100).toFixed(0) + '%'); 
+      //index is 1.500 - 1 = 0.500 * 100 = 50%
+  }
+  if(costVariance < 0){
+      evmCpiStatusLabel.html("over");
+      evmCpiStatusPercentage.html(((1 - cpi) * 100).toFixed(0) + '%');
+  }else{ 
+      evmCpiStatusLabel.html("under");
+      evmCpiStatusPercentage.html(((cpi - 1) * 100).toFixed(0) + '%');
+  }
+</script>
+
+<!-- This script redirects to baseline from dropdown box -->
+<script>
+  var dropdownMenu = $('#baseline_id');               //Dropdown element from html.
+  dropdownMenu.change(function() {                    //When selected.
+    window.location = '/baselines/' + $(this).val();  //Redirect to selected baseline.
+  });
+</script>

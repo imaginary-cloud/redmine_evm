@@ -24,20 +24,23 @@ module RedmineEvm
 
       def end_date
         if self.instance_of?(Project)
-          date = self.baselines.find_by_state("Current").due_date
-          issues = self.issues
+          date = self.baselines.find_by_state("Current").due_date #project get current baseline due_date
+          issues = self.issues                                    #get all issues from this project
         else
-          date = due_date || created_on.to_date 
-          issues = self.fixed_issues
+          date = due_date || created_on.to_date                   #version due_date or created_on if not
+          issues = self.fixed_issues                              #get all issues from this version
         end
+    
+        max_due_date_from_issues = issues.select("max(due_date) as due_date").first.due_date 
+        max_spent_on_from_time_entries = issues.select("max(spent_on) as spent_on").
+                                                joins("left join time_entries te on (issues.id = te.issue_id)").first.spent_on 
+                                                #Left join because there are issues without time entries
 
-        issues.each do |issue|
-          unless issue.due_date.nil?
-            date = issue.due_date if issue.due_date > date
-          end
-          unless issue.time_entries.maximum('spent_on').nil?
-            date = issue.time_entries.maximum('spent_on') if (issue.time_entries.maximum('spent_on') > date)
-          end
+        unless max_due_date_from_issues.nil?
+          date = max_due_date_from_issues if max_due_date_from_issues  > date
+        end
+        unless max_spent_on_from_time_entries.nil?
+          date = max_spent_on_from_time_entries if max_spent_on_from_time_entries > date
         end
 
         date
