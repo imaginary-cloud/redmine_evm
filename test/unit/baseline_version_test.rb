@@ -20,23 +20,17 @@ class BaselineVersionTest < ActiveSupport::TestCase
     assert_equal Date.today, version2.end_date
   end
 
-  def test_if_planned_value_returns_value
-    b = Baseline.find(1)
-    baseline_version = b.baseline_versions.find(1)
-    assert_not_nil baseline_version.planned_value
-    assert_equal 19, baseline_version.planned_value
-  end
+  # def test_if_planned_value_returns_value
+  #   b = Baseline.find(1)
+  #   baseline_version = b.baseline_versions.find(1)
+  #   assert_not_nil baseline_version.planned_value
+  #   assert_equal 19, baseline_version.planned_value
+  # end
 
-  def test_if_planned_value_by_week_returns
-    b = Baseline.find(1)
-    baseline_version = b.baseline_versions.find(1)
-    assert_not_nil baseline_version.planned_value_by_week
-  end
-
-  def test_if_planned_value_for_chart_returns
-    b = Baseline.find(1)
-    baseline_version = b.baseline_versions.find(1)
-    assert_not_nil baseline_version.planned_value_by_week
-  end
+  # def test_if_planned_value_by_week_returns
+  #   b = Baseline.find(1)
+  #   baseline_version = b.baseline_versions.find(1)
+  #   assert_not_nil baseline_version.planned_value_by_week
+  # end
 
 end

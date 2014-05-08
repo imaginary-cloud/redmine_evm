@@ -1,6 +1,6 @@
 require File.expand_path('../../../test_helper', __FILE__)
 
-class ProjectActualCostPatchTest < ActiveSupport::TestCase
+class ActualCostPatchTest < ActiveSupport::TestCase
   fixtures :projects,
            :issues,
            :versions,

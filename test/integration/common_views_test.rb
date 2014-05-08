@@ -43,7 +43,7 @@ class CommonViewsTest < ActionController::IntegrationTest
 
   test "View evms" do
     log_user("admin", "admin")
-    get "/projects/ecookbook/evms"
+    get "/projects/ecookbook/current_baseline"
     assert_response :success
   end
 

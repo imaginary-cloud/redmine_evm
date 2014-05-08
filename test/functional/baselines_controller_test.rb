@@ -95,4 +95,12 @@ class BaselinesControllerTest < ActionController::TestCase
     assert_nil Baseline.find_by_id(1)
   end
 
+  def test_show_current_baseline
+    # log_user('admin', 'admin')
+    @request.session[:user_id] = 1
+
+    get :current_baseline, :project_id => 1
+    assert_response :success
+  end
+
 end
