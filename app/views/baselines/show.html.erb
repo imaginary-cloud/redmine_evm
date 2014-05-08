@@ -4,6 +4,7 @@
   <%= javascript_include_tag 'flot',          :plugin => 'redmine_evm' %>
   <%= javascript_include_tag 'flottime',      :plugin => 'redmine_evm' %>
   <%= javascript_include_tag 'flotlabel',     :plugin => 'redmine_evm' %>
+  <%= javascript_include_tag 'flottooltip',   :plugin => 'redmine_evm' %>
   <%= javascript_include_tag 'drawchart',     :plugin => 'redmine_evm' %>
 <% end %>
 
@@ -12,10 +13,19 @@
 <p id="evm-subtitle"><%=l(:subtitle_evm_tab)%></p>
 
 <% content_for :sidebar do %>
+
+  <% pv = @baseline.planned_value %> 
+  <% ac = @project.actual_cost %>
+  <% ev = @project.earned_value(@baseline.id) %>
+  <% spi = ev / pv %>
+  <% cpi = ev / ac %>
+  <% schedule_variance = ev - pv %>
+  <% cost_variance = ev - ac %>
+
   <div id="evm-summary">
     <h3><%= l(:subtitle_evm_summary) %></h3>
-    <div id="evm-summary-indicators">
-      <div class="indicators-container">
+    <div id="evm-summary-indicators" class="sidebar-boxes">
+      <div id="evm-summary-indicators-container" class="indicators-container">
         <h5><%= l(:label_project_schedule) %></h5> 
         <div id="evm-spi-bars-container" class="evm-bars-container">
           <div id="evm-spi-pv-bar-container" class="bars">
@@ -27,8 +37,12 @@
             <div id="spi-ev-bar" class="bar"></div>
           </div>
         </div>
-        <p><b>The project is <span id="evm-spi-status-percentage"></span></b>
-        <br><span id='evm-spi-status-label'></span> schedule</p>
+        <p><b><%= l(:label_the_project_is)%>
+        <% if schedule_variance < 0 %>
+          <%= ((1 - spi) * 100).floor %>%</b><br> <%= l(:label_behind_schedule)%></p>
+        <% else %>
+          <%= ((spi - 1) * 100).floor %>%</b><br> <%= l(:label_ahead_schedule)%></p>
+        <% end %>
       </div>
       <div class="indicators-container">
         <h5><%= l(:label_project_cost) %></h5>
@@ -43,12 +57,40 @@
           </div>
         </div>
         <div id="evm-cpi-barchart"></div>
-        <p><b>The project is <span id="evm-cpi-status-percentage"></span></b>
-        <br><span id='evm-cpi-status-label'></span> budget</p>
+        <p><b><%= l(:label_the_project_is)%>
+        <% if cost_variance < 0 %>
+          <%= ((1 - cpi) * 100).floor %>%</b><br> <%= l(:label_above_budget)%></p>
+        <% else %>
+          <%= ((cpi - 1) * 100).floor %>%</b><br> <%= l(:label_under_budget)%></p>
+        <% end %>
       </div>
-
     </div>
   </div>
+
+  <% bac = pv %>
+  <% eac = bac / cpi %> 
+  <!-- there are other ways to calculate EAC -->
+  <!-- try EAC = AC + (BAC-EV) / (CPI*SPI) -->
+  <% etc = eac - ac %>
+  <% vac = bac - eac %>
+  <% completed_actual = ac / eac %>
+
+  <div id="evm-forecast">
+    <h3><%= l(:subtitle_evm_forecast) %></h3>
+    <div id="evm-forecast-indicators" class="sidebar-boxes" >
+      <div id="evm-forecast-indicators-container" class="indicators-container">
+        <p><b>The project is now <%= (completed_actual * 100).floor %>% done</b><br> according to estimate</p>
+        <p><b><%= etc.to_i %> hours are needed</b><br> to finish the project</p>
+        <p><b>The project is estimated to need</b><br> 
+        <% if vac < 0 %>
+          <%= vac.floor.abs %> hours more than planned</p>
+        <%else%>
+          <%= vac.floor.abs %> hours less than planned</p>
+        <%end%>
+      </div>
+    </div>
+  </div>
+
 <% end %>
 
 <!-- Dropdown for baselines -->
@@ -137,34 +179,6 @@
   if(cpiActualCostBarHeight < minHeightForFont)
     $('#evm-cpi-ac-bar-container p').css("padding-bottom", "" + cpiActualCostBarHeight   + "px");
   else $('#evm-cpi-ac-bar-container p').css("line-height", "" + cpiActualCostBarHeight   + "px");
-
-  //Sidebar Percentage and Status.--------------------------------------------------------------------------
-  var evmSpiStatusLabel      = $('#evm-spi-status-label');        //
-  var evmSpiStatusPercentage = $('#evm-spi-status-percentage');   //Side bar indicator percentage and status
-  var evmCpiStatusLabel      = $('#evm-cpi-status-label');        //
-  var evmCpiStatusPercentage = $('#evm-cpi-status-percentage');   //
-
-  var spi = earnedValue / plannedValue;
-  var cpi = earnedValue / actualCost;
-  var scheduleVariance = earnedValue - plannedValue;
-  var costVariance     = earnedValue - actualCost;
-
-  if(scheduleVariance < 0){
-      evmSpiStatusLabel.html("behind");
-      evmSpiStatusPercentage.html(((1 - spi) * 100).toFixed(0) + '%'); 
-      //index is 0.200. 1 - 0.200 = 0.800 * 100 = 80%
-  }else{   
-      evmSpiStatusLabel.html("ahead");
-      evmSpiStatusPercentage.html(((spi - 1) * 100).toFixed(0) + '%'); 
-      //index is 1.500 - 1 = 0.500 * 100 = 50%
-  }
-  if(costVariance < 0){
-      evmCpiStatusLabel.html("over");
-      evmCpiStatusPercentage.html(((1 - cpi) * 100).toFixed(0) + '%');
-  }else{ 
-      evmCpiStatusLabel.html("under");
-      evmCpiStatusPercentage.html(((cpi - 1) * 100).toFixed(0) + '%');
-  }
 </script>
 
 <!-- This script redirects to baseline from dropdown box -->

@@ -20,6 +20,11 @@
   font-size: 12px;
 }
 
+#evm-forecast-indicators-container{ margin-top: 10px; }
+#evm-forecast-indicators-container p{
+  padding: 0;
+}
+
 .evm-bars-container{
   width: 80px;
   height: 100px;
@@ -55,9 +60,11 @@
 }
 
 /********** Sidebar Summary Box **********/
-#evm-summary{ height: 200px; }
+/*#evm-summary{ margin-bottom: 10px; }
 
-#evm-summary-indicators{
+#evm-forecast{  margin-top: 10px;}*/
+
+.sidebar-boxes{
   background: #3d454d;
   overflow: auto;
   padding: 10px;
@@ -71,6 +78,16 @@
 /*********** Charts ***********/
 #evm-charts-wrapper{ margin: auto; }
 #evm-main-chart{ padding: 40px 0 40px 0; }
+
+/*Tooltip*/
+#flot_chart_tooltip{
+    position: absolute;
+    display: none;
+    border: 1px solid #ddd;
+    padding: 2px;
+    background-color: #eee;
+    opacity: 0.80;
+}
 
 /********* Chart legend + Info ********/
 #evm-legend-info{
