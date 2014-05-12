@@ -1,6 +1,7 @@
 <script>
+  var actualWeek = <%= Time.now.beginning_of_week.to_i * 1000 %>;
   var projectChartData = <%= project_chart_data %>;
   var mainChartHtmlElement = 'evm-graph-lines-' + <%=@baseline.id%>;
-  drawChart(projectChartData, mainChartHtmlElement); //from drawchart.js
+  drawChart(projectChartData, mainChartHtmlElement, actualWeek); //from drawchart.js
 </script>
 

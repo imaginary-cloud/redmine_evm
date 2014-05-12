@@ -43,6 +43,11 @@ module RedmineEvm
           date = max_spent_on_from_time_entries if max_spent_on_from_time_entries > date
         end
 
+        date_today = Date.today
+        if date > date_today      #If it is not a old project
+          date = date_today
+        end
+
         date
       end
 
