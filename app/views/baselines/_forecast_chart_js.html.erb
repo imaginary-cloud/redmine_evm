@@ -1,0 +1,6 @@
+<script>
+  var actualWeek = <%= Time.now.beginning_of_week.to_i * 1000 %>;
+  var forecastChartData = <%= forecast_chart_data %>;
+  var mainChartHtmlElement = 'evm-forecast-graph-lines';
+  drawChart(forecastChartData, mainChartHtmlElement, actualWeek); //from drawchart.js
+</script>

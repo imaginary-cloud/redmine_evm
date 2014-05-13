@@ -13,15 +13,6 @@
 <p id="evm-subtitle"><%=l(:subtitle_evm_tab)%></p>
 
 <% content_for :sidebar do %>
-
-  <% @planned_value = @baseline.planned_value %> 
-  <% @actual_cost   = @project.actual_cost %>
-  <% @earned_value  = @project.earned_value(@baseline.id) %>
-  <% spi = @earned_value / @planned_value %>
-  <% cpi = @earned_value / @actual_cost %>
-  <% schedule_variance = @earned_value - @planned_value %>
-  <% cost_variance     = @earned_value - @actual_cost %>
-
   <div id="evm-summary">
     <h3><%= l(:subtitle_evm_summary) %></h3>
     <div id="evm-summary-indicators" class="sidebar-boxes">
@@ -38,10 +29,10 @@
           </div>
         </div>
         <p><b><%= l(:label_the_project_is)%>
-        <% if schedule_variance < 0 %>
-          <%= ((1 - spi) * 100).floor %>%</b><br> <%= l(:label_behind_schedule)%></p>
+        <% if @schedule_variance < 0 %>
+          <%= ((1 - @spi) * 100).floor %>%</b><br> <%= l(:label_behind_schedule)%></p>
         <% else %>
-          <%= ((spi - 1) * 100).floor %>%</b><br> <%= l(:label_ahead_schedule)%></p>
+          <%= ((@spi - 1) * 100).floor %>%</b><br> <%= l(:label_ahead_schedule)%></p>
         <% end %>
       </div>
       <div class="indicators-container">
@@ -58,39 +49,32 @@
         </div>
         <div id="evm-cpi-barchart"></div>
         <p><b><%= l(:label_the_project_is)%>
-        <% if cost_variance < 0 %>
-          <%= ((1 - cpi) * 100).floor %>%</b><br> <%= l(:label_above_budget)%></p>
+        <% if @cost_variance < 0 %>
+          <%= ((1 - @cpi) * 100).floor %>%</b><br> <%= l(:label_above_budget)%></p>
         <% else %>
-          <%= ((cpi - 1) * 100).floor %>%</b><br> <%= l(:label_under_budget)%></p>
+          <%= ((@cpi - 1) * 100).floor %>%</b><br> <%= l(:label_under_budget)%></p>
         <% end %>
       </div>
     </div>
   </div>
 
+  <%#Add forecast%>
   <% unless (@earned_value == 0) %>
-
-    <% @bac = @planned_value %>
-    <% @eac = @bac / cpi %> <%# There are other ways to calculate EAC %>
-    <% @etc = @eac - @actual_cost %>
-    <% vac  = @bac - @eac %>
-    <% completed_actual = @actual_cost / @eac %>
-
-    <div id="evm-forecast">
+    <div id="evm-forecast" style="display: none">
       <h3><%= l(:subtitle_evm_forecast) %></h3>
       <div id="evm-forecast-indicators" class="sidebar-boxes" >
         <div id="evm-forecast-indicators-container" class="indicators-container">
-          <p><b>The project is now <%= (completed_actual * 100).floor %>% done</b><br> according to estimate</p>
+          <p><b>The project is now <%= (@completed_actual * 100).floor %>% done</b><br> according to estimate</p>
           <p><b><%= @etc.to_i %> hours are needed</b><br> to finish the project</p>
           <p><b>The project is estimated to need</b><br> 
-          <% if vac < 0 %>
-            <%= vac.floor.abs %> hours more than planned</p>
+          <% if @vac < 0 %>
+            <%= @vac.floor.abs %> hours more than planned</p>
           <%else%>
-            <%= vac.floor.abs %> hours less than planned</p>
+            <%= @vac.floor.abs %> hours less than planned</p>
           <%end%>
         </div>
       </div>
     </div>
-
   <% end %>
 
 <% end %>
@@ -106,43 +90,22 @@
 <fieldset id="filters" class="collapsible">
   <legend onclick="toggleFieldset(this);"><%= l(:label_options) %></legend>
   <div style="display: none;">
-    <%= check_box 'query', 'draw_progress_line', :id => 'draw_progress_line' %>
+    <input type="checkbox" id="evm-forecast-checkbox">
+    <label for="foo_bar">Add Forecast</label>
   </div>
 </fieldset>
 
 <div id="evm-charts-wrapper">
   <!-- Main Chart -->
   <div id="evm-main-chart">
-    <div id='evm-graph-lines-<%=@baseline.id%>' style="width:70%;height:350px;margin:auto;"></div>
+    <div id='evm-graph-lines' class='evm-main-chart' style="width:70%;height:350px;margin:auto;"></div>
+    <%= render :partial => '/baselines/chart_js', :locals => { project_chart_data: @project_chart_data } %>
 
-    <% project_chart_data  = [convert_to_chart(@baseline.planned_value_by_week),
-                              convert_to_chart(@project.actual_cost_by_week), 
-                              convert_to_chart(@project.earned_value_by_week(@baseline.id))] %>
-    <%# Add forecast%>
-    <% unless @earned_value == 0 %>
-      <% work_hours_per_week = 40 %>
-      <% num_of_work_weeks = @etc / work_hours_per_week %>
-      <% eac_line_chart = [[ Time.now.beginning_of_week, @project.actual_cost ], [ num_of_work_weeks.week.from_now, @eac]] %> 
-      <% project_chart_data << convert_to_chart(eac_line_chart) %>
-
-      <% start_date = @project.get_start_date.beginning_of_week%>
-      <%if @project.end_date > @baseline.end_date %>
-      <% end_date = @project.end_date %>
-      <%else%>
-      <% end_date = @baseline.end_date %>
-      <%end%> 
-      <% bac_top_line = [[start_date, @bac],[end_date, @bac]]%>
-      <% eac_top_line = [[start_date, @eac],[end_date, @eac]]%>
-      <% project_chart_data << convert_to_chart(bac_top_line) %>
-      <% project_chart_data << convert_to_chart(eac_top_line) %>
-
-    <%end%>
-    <%= render :partial => '/baselines/chart_js', :locals => { project_chart_data: project_chart_data } %>
-
+    <div id='evm-forecast-graph-lines' class='evm-main-chart' style="width:70%;height:350px;margin:auto;"></div>
+    <%= render :partial => '/baselines/forecast_chart_js', :locals => { forecast_chart_data: @forecast_chart_data } %>
   </div>
   <!-- Versions Charts -->
   <div id="evm-versions-charts">
-
     <% @project.versions.each do |version|%>
       <h5><%= version.name %></h5>
       <div id='evm-graph-lines-version-<%= version.id %>' style="width:70%;height:350px;margin:auto;margin-top:40px;margin-bottom:40px;"></div>
@@ -155,7 +118,6 @@
       <% version_chart_data << convert_to_chart(version.earned_value_by_week@baseline.id) %>
       <%= render :partial => '/baselines/version_chart_js', :locals => { version_chart_data: version_chart_data, baseline_version: baseline_version } %>
     <% end %>
-
   </div> 
 </div>
 
@@ -196,6 +158,7 @@
 
   var minHeightForFont = parseInt($('.bars p').css("font-size"));
    
+  //This aligns the Label inside the bars correctly when these its too small.
   if(spiPlannedValueBarHeight < minHeightForFont)
     $('#evm-spi-pv-bar-container p').css("padding-bottom", "" + spiPlannedValueBarHeight + "px");
   else $('#evm-spi-pv-bar-container p').css("line-height", "" + spiPlannedValueBarHeight + "px"); //Alinha o "PV" no bar
@@ -211,11 +174,16 @@
   else $('#evm-cpi-ac-bar-container p').css("line-height", "" + cpiActualCostBarHeight   + "px");
 </script>
 
-<!-- This script redirects to baseline from dropdown box -->
 <script>
   var dropdownMenu = $('#baseline_id');               //Dropdown element from html.
   dropdownMenu.change(function() {                    //When selected.
     window.location = '/baselines/' + $(this).val();  //Redirect to selected baseline.
+  });
+
+  $('#evm-forecast-graph-lines').hide();              //Hides the forecast chart.     
+  $('#evm-forecast-checkbox').on('click', function(){ //When checkbox forecast is checked.
+    $('#evm-forecast').toggle();                      //Toggle forecast sidebar
+    $('.evm-main-chart').toggle();                    //Toggle chart
   });
 </script>
 

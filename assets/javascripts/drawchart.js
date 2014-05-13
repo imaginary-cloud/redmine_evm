@@ -53,7 +53,8 @@ function drawChart(dataToChart, placeholder, actualWeek){
     var plot = $.plot(chartHtmlElement, graphData, {
         series: {
             points: { show: false },
-            shadowSize: 0
+            shadowSize: 0,
+            lines: { lineWidth: 3 }
         },
         grid: {
           markings: markings,
@@ -81,7 +82,7 @@ function drawChart(dataToChart, placeholder, actualWeek){
     });
 
     //Remove the 0 in the y axis.
-    $('.flot-y-axis .tickLabel').first().html("");
+    //$('.flot-y-axis .tickLabel').first().html("");
 
     //The marker 'project is here'.
     if (actualWeek < endDate) {

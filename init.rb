@@ -10,7 +10,6 @@ Redmine::Plugin.register :redmine_evm do
 
 
   project_module :evm do
-  	permission :view_evms, { :evms => [:index, :chart_data, :versions_chart_data, :evm_variables] }
   	permission :view_baselines, { :baselines => [:index, :show, :current_baseline] }
     permission :manage_baselines, { :baselines => [:edit, :destroy, :new, :create, :update, :current_baseline]}
   end
