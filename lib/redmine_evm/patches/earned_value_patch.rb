@@ -35,12 +35,16 @@
       end
 
       def get_issues baseline_id
-        self.instance_of?(Project) ? issues = self.issues : issues = self.fixed_issues 
-        issues_with_done_ratio = Baseline.find(baseline_id).baseline_issues.where("done_ratio = 100")
-        oii = issues_with_done_ratio.map{ |bi| bi.original_issue_id }
-        normal_issues = issues.select{ |i| i.done_ratio > 0 && oii.exclude?(i.id)  }
+        self.instance_of?(Project) ? issues = self.issues : issues = self.fixed_issues                  # get issues from projects : versions.
+        issues_with_done_ratio = Baseline.find(baseline_id).baseline_issues.where("done_ratio = 100")   # get issues from baseline where done ratio = 100.
+        oii = issues_with_done_ratio.map{ |bi| bi.original_issue_id }                                   # get only ids from baseline issues with done ratio = 100.
+        normal_issues = issues.select{ |i| i.done_ratio > 0 && oii.exclude?(i.id)  }                    # select only issues from project :versions with done ratio > 0 and ignore if its the same as baseline.
         normal_issues.each do |issue|
-          issue.due_date.nil? ? issue.due_date = issue.time_entries.maximum('spent_on') : nil
+          if issue.done_ratio = 50
+            issue.due_date = issue.time_entries.maximum('spent_on')
+          else
+            issue.due_date.nil? ? issue.due_date = issue.time_entries.maximum('spent_on') : nil  
+          end         # substitui a due_date pelo maximo das time entries. 
         end
         unless normal_issues.nil?
           issues_with_done_ratio += normal_issues  
