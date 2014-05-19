@@ -24,7 +24,7 @@ module RedmineEvm
 
       def end_date
         if self.instance_of?(Project)
-          date = self.baselines.find_by_state("Current").due_date #project get current baseline due_date
+          date = self.baselines.last.due_date #project get current baseline due_date
           issues = self.issues                                    #get all issues from this project
         else
           date = due_date || created_on.to_date                   #version due_date or created_on if not
