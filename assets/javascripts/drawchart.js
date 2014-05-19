@@ -18,34 +18,34 @@ function drawChart(dataToChart, placeholder, actualWeek){
     else endDate = earnedEndDate;
 
     if (actualWeek < endDate) { 
-        var markings = [{ color: "#e0e0e0", lineWidth: 1, xaxis: { from: actualWeek , to: actualWeek } }]; //This is the marker to the "Project is here" marking today date.
+        var markings = [{ color: "#E0E0E0", lineWidth: 1, xaxis: { from: actualWeek , to: actualWeek } }]; //This is the marker to the "Project is here" marking today date.
         eacLine = data[3];
     }
 
     var graphData = [{
         data: eacLine ,
         label:"Estimate at Complete",
-        color: "#ffe2b8"
+        color: "#FCB040", dashes: { show: true, lineWidth: 3 }
     },{ 
         data: data[4],
         label:"Budget at Complete Top Line", 
-        color: "#cee8fa", dashes: { show: true }
+        color: "#CEE8FA", dashes: { show: true, lineWidth: 1 }
     },{ 
         data: data[5] ,
         label: "Estimated at Complete Top Line",
-        color: "#ffe2b8", dashes: { show: true }       
+        color: "#FFE2B8", dashes: { show: true, lineWidth: 1 }       
     },{
         data: data[0],
         label: "Planned Value",
-        color: '#0f75bc'
+        color: '#0F75BC'
     },{ 
         data: data[1],
         label: "Acutal Cost",
-        color: '#fcb040'
+        color: '#FBC040'
     },{  
         data: data[2],
         label: "Earned Value",
-        color: '#8cc63f'
+        color: '#8CC63F'
     }];
 
 
@@ -59,7 +59,7 @@ function drawChart(dataToChart, placeholder, actualWeek){
         grid: {
           markings: markings,
           color: 'transparent',
-          borderColor: { bottom: "#bfbfbf", left: "#bfbfbf" },
+          borderColor: { bottom: "#BFBFBF", left: "#BFBFBF" },
           borderWidth: 1,
           hoverable: true
         },
@@ -81,12 +81,13 @@ function drawChart(dataToChart, placeholder, actualWeek){
         legend: { show: false }
     });
 
-    //Remove the 0 in the y axis.
-    //$('.flot-y-axis .tickLabel').first().html("");
+    
 
     //The marker 'project is here'.
     if (actualWeek < endDate) {
-        var o = plot.pointOffset({ x: actualWeek, y: 25}); // TODO y
-        chartHtmlElement.append("<div id='marker-label-chart' class='markers' style='left:" + (o.left - 80) + "px;top:" + o.top + "px;'>Project is here</div>");  
+        
+        var o = plot.pointOffset({ x: actualWeek, y: 30}); // TODO y
+        chartHtmlElement.append("<div id='marker-label-chart' class='markers' style='left:" + (o.left - 85) + "px;top:" + o.top + "px;'>Project is here</div>");  
     }
+
 }
