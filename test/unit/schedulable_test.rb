@@ -9,7 +9,6 @@ class SchedulableTest < ActiveSupport::TestCase
      :baseline_versions,
      ])
 
-
   def setup
     @baseline = baselines(:baselines_001)
     @baseline_version = baseline_versions(:baseline_versions_001)

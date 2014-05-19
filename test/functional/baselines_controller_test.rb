@@ -100,7 +100,7 @@ class BaselinesControllerTest < ActionController::TestCase
     @request.session[:user_id] = 1
 
     get :current_baseline, :project_id => 1
-    assert_response :success
+    assert_response :redirect
   end
 
 end

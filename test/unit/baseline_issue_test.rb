@@ -11,6 +11,4 @@ class BaselineIssueTest < ActiveSupport::TestCase
   	assert_not_nil issue2.end_date
   end
 
-
-
 end

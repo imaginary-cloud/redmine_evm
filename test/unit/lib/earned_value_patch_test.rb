@@ -11,7 +11,7 @@ class EarnedValuePatchTest < ActiveSupport::TestCase
     project = Project.find(1)
     baseline_id = project.baselines.first.id
     project.issues.second.estimated_hours = 10
-    assert_equal 3, project.earned_value(baseline_id)
+    assert_equal 5.0, project.earned_value(baseline_id)
   end
 
   def test_if_earned_value_by_week_returns_correct_hash

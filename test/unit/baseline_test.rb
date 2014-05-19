@@ -47,12 +47,68 @@ class BaselineTest < ActiveSupport::TestCase
     baseline = new_baseline
     baseline.create_issues(projects(:projects_001).issues)
     baseline_issue = baseline.baseline_issues.first
-    assert_equal 1, baseline_issue.id
+    assert_not_nil baseline_issue
   end
 
   def test_if_destroy_deletes_associated_data
     @baseline.destroy 
     assert_equal [], @baseline.baseline_issues
+  end
+
+  def test_if_earned_value_returns_value
+    assert_equal 0, @baseline.earned_value 
+  end
+
+  def test_if_actual_cost_returns_value
+    assert_equal 155.25, @baseline.actual_cost
+  end
+
+  def test_if_schedule_performance_index_returns_value
+    assert_equal 0.0, @baseline.schedule_performance_index
+  end
+
+  def test_if_cost_performance_index_returns_value
+    assert_equal 0.0, @baseline.cost_performance_index
+  end
+
+  def test_if_schedule_variance_returns_value
+    assert_equal -19.0, @baseline.schedule_variance
+  end
+
+  def test_if_cost_variance_returns_value
+    assert_equal -155.25, @baseline.cost_variance
+  end
+
+  def test_if_budget_at_completion_returns_value
+    assert_equal 19.0, @baseline.budget_at_completion
+  end
+
+  def test_if_estimate_at_completion_cost_returns_value
+    assert_equal 19.0, @baseline.estimate_at_completion_cost
+  end
+
+  def test_if_estimate_to_complete_returns_value
+    assert_equal -136.25, @baseline.estimate_to_complete
+  end
+
+  def test_if_variance_at_completion_returns_value
+    assert_equal 0.0 , @baseline.variance_at_completion
+  end
+
+  def test_if_planned_duration_returns_value
+    assert_equal 409, @baseline.planned_duration
+  end
+
+  def test_if_actual_duration_returns_value
+    assert_equal 409, @baseline.actual_duration  
+  end
+
+  def test_if_earned_duration_returns_value
+    assert_equal 0.0, @baseline.earned_duration
+  end
+
+  def test_if_estimate_at_completion_duration_returns_value
+    assert_equal 409.0, @baseline.estimate_at_completion_duration
   end
 
 end
