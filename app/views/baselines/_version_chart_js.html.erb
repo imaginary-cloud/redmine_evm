@@ -1,5 +1,5 @@
 <script>
   var versionChartData = <%= version_chart_data %>;     //Get the versions Data from array
-  verisonChartHtmlElement = 'evm-graph-lines-version-' + <%= baseline_version.original_version_id %>;
+  verisonChartHtmlElement = 'evm-graph-lines-version-' + <%= version.id%>;
   drawChart(versionChartData, verisonChartHtmlElement); //from drawchart.js
 </script>
