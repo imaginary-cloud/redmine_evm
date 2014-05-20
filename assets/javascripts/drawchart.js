@@ -81,13 +81,14 @@ function drawChart(dataToChart, placeholder, actualWeek){
         legend: { show: false }
     });
 
-    
 
     //The marker 'project is here'.
     if (actualWeek < endDate) {
+        var maxYValue = parseInt($('.flot-y-axis .tickLabel').last().text());
+        var o = plot.pointOffset({ x: actualWeek, y: maxYValue * 0.1}); // TODO y
+
+        chartHtmlElement.append("<div id='marker-label-chart' class='markers' style='left:" + (o.left + 5) + "px;top:" + o.top + "px;'>Project is here</div>");
         
-        var o = plot.pointOffset({ x: actualWeek, y: 30}); // TODO y
-        chartHtmlElement.append("<div id='marker-label-chart' class='markers' style='left:" + (o.left - 85) + "px;top:" + o.top + "px;'>Project is here</div>");  
     }
 
 }
