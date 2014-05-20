@@ -33,6 +33,12 @@ class Baseline < ActiveRecord::Base
     unless issues.nil?
       issues.each do |issue|
         baseline_issue = BaselineIssue.new(original_issue_id: issue.id, done_ratio: issue.done_ratio)
+
+        baseline_version = self.baseline_versions.find_by_original_version_id(issue.fixed_version_id)
+        unless baseline_version.nil?
+          baseline_issue.baseline_version_id = baseline_version.id
+        end
+
         if(Project.find(project_id).baselines.count > 1)
           if(issue.done_ratio == 100 || issue.status.name == "Rejected")
             baseline_issue.estimated_hours = issue.total_spent_hours
