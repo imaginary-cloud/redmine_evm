@@ -6,14 +6,15 @@
   <%= javascript_include_tag 'flottooltip',       :plugin => 'redmine_evm' %>
   <%= javascript_include_tag 'flotdashes',        :plugin => 'redmine_evm' %>
   <%= javascript_include_tag 'drawchart',         :plugin => 'redmine_evm' %>
+  <%= javascript_include_tag '../../../javascripts/select_list_move', :plugin => 'redmine_evm' %>
 <% end %>
 
 <h2 id="evm-title"><%=l(:title_evm_tab)%></h2>
 <% html_title('EVM Indicators') %>
 <p id="evm-subtitle"><%=l(:subtitle_evm_tab)%></p>
 
-<% if @baseline.planned_value != 0 || @project.actual_cost != 0 %> <%#If this project has no planned_value or actual_cost, the is no point showing data%>
-  <% if @baseline.earned_value != 0 %><%# Sidebar only avaliable if there is earned_value %>
+<% if @baseline.planned_value != 0 %> 
+  <% if @baseline.earned_value != 0 %> <%# Sidebar only avaliable if there is earned_value %>
     <% content_for :sidebar do %>
       <div id="evm-summary">
         <h3><%= l(:subtitle_evm_summary) %></h3>
@@ -84,23 +85,27 @@
   <% end %>
 
   <!-- Dropdown for baselines -->
-  <fieldset id="filters" class="collapsible">
-    <legend onclick="toggleFieldset(this);"><%= l(:label_baseline_plural) %></legend>
-    <div class="styled-select">
-      <%= collection_select :baseline, :id, @project.baselines.order('created_on DESC'), :id, :name %>
-    </div>
-  </fieldset>
-    
-  <fieldset id="filters" class="collapsible">
-    <legend onclick="toggleFieldset(this);"><%= l(:label_options) %></legend>
-    <div style="display: none;">
-      <!--
-      <input type="checkbox" id="evm-forecast-checkbox">
-      <label for="foo_bar">Add Forecast</label>
-      -->
-      <%= link_to 'Add Forecast', :controller => :baselines, :action => :show, forecast: true%>
-    </div>
-  </fieldset>
+  <%= form_tag baseline_path, method: :get, id: 'query_form' do %>
+    <fieldset id="filters" class="collapsible">
+      <legend onclick="toggleFieldset(this);"><%= l(:label_baseline_plural) %></legend>
+      <div class="styled-select">
+        <%= collection_select :baseline, :id, @project.baselines.order('created_on DESC'), :id, :name %>
+      </div>
+    </fieldset>
+      
+    <fieldset id="filters" class="collapsible">
+      <legend onclick="toggleFieldset(this);"><%= l(:label_options) %></legend>
+      <div style="display: none;">
+        <%= check_box_tag 'forecast', 'true', @forecast_is_enabled  %>
+        <%= label_tag 'Forecast' %>
+      </div>
+    </fieldset>
+
+    <p class="buttons">
+      <%= link_to_function l(:button_apply), 'submit_query_form("query_form")', :class => 'icon icon-checked' %>
+      <!-- submit_query_form is from aplication.js -->
+    </p>
+  <% end %>
 
   <div id="evm-charts-wrapper">
     <!-- Main Chart -->
@@ -119,7 +124,6 @@
           <% version_chart_data << convert_to_chart(baseline_version.planned_value_by_week) %>
           <% version_chart_data << convert_to_chart(version.actual_cost_by_week) %>
           <% version_chart_data << convert_to_chart(version.earned_value_by_week@baseline.id) %>
-          PV = <%=version_chart_data[2]%>
           <%= render :partial => '/baselines/version_chart_js', :locals => { version_chart_data: version_chart_data, version: version } %>
         <% end %>
         
@@ -184,14 +188,6 @@
     var dropdownMenu = $('#baseline_id');               //Dropdown element from html.
     dropdownMenu.change(function() {                    //When selected.
       window.location = '/baselines/' + $(this).val();  //Redirect to selected baseline.
-    });
-
-    //$('#evm-forecast').css("display","none");
-
-    //$('#evm-forecast-graph-lines').hide();              //Hides the forecast chart.     
-    $('#evm-forecast-checkbox').on('click', function(){ //When checkbox forecast is checked.
-      //$('#evm-forecast').toggle();                      //Toggle forecast sidebar
-      //$('.evm-main-chart').toggle();                    //Toggle chart
     });
   </script>
 
