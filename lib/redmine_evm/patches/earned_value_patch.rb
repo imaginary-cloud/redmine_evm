@@ -34,6 +34,8 @@
         sum_earned_value
       end
 
+
+
       def get_issues baseline_id
         self.instance_of?(Project) ? issues = self.issues : issues = self.fixed_issues                  # get issues from projects : versions.
         issues_with_done_ratio = Baseline.find(baseline_id).baseline_issues.where("done_ratio = 100")   # get issues from baseline where done ratio = 100.
@@ -73,7 +75,9 @@
           done_ratio_by_weeks[key.beginning_of_week] = earned_value
         end
         done_ratio_by_weeks
-      end    
+      end
+
+          
         
     end
 

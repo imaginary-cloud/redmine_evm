@@ -12,28 +12,19 @@ class BaselinesController < ApplicationController
   before_filter :authorize
 
   def show
-    @baseline = Baseline.find(params[:id])    
+    @baseline = Baseline.find(params[:id])  
+    @baselines = @project.baselines.order('created_on DESC')
+    @forecast_is_enabled = params[:forecast] #this is in a variable because of forecast div and checkbox.
+
     @project_chart_data  = [convert_to_chart(@baseline.planned_value_by_week),
                             convert_to_chart(@project.actual_cost_by_week), 
                             convert_to_chart(@project.earned_value_by_week(@baseline.id))]
 
-    @forecast_is_enabled = params[:forecast]
     if(@forecast_is_enabled)
-      #Forecasts line and top lines  
-      num_of_work_weeks = @baseline.estimate_at_completion_duration.abs.floor
-      eac_forecast_line = [[ Time.now.beginning_of_week, @baseline.actual_cost ], [ num_of_work_weeks.week.from_now.beginning_of_week, @baseline.estimate_at_completion_cost ]] #The estimated line after actual cost
-      start_date = @project.get_start_date.beginning_of_week
-      if(@baseline.end_date.beginning_of_week < Date.today.beginning_of_week) #This if is for old projects
-        end_date = [@project.end_date.beginning_of_week, @baseline.end_date.beginning_of_week].max
-      else
-        end_date = [@project.end_date.beginning_of_week, @baseline.end_date.beginning_of_week, num_of_work_weeks.week.from_now].max 
-      end
-      bac_top_line = [[start_date, @baseline.budget_at_completion],[end_date, @baseline.budget_at_completion]] 
-      eac_top_line = [[start_date, @baseline.estimate_at_completion_cost],[end_date, @baseline.estimate_at_completion_cost]]
-
-      @project_chart_data << convert_to_chart(eac_forecast_line)
-      @project_chart_data << convert_to_chart(bac_top_line)
-      @project_chart_data << convert_to_chart(eac_top_line)
+      @project_chart_data << convert_to_chart(@baseline.actual_cost_forecast_line)
+      @project_chart_data << convert_to_chart(@baseline.earned_value_forecast_line)
+      @project_chart_data << convert_to_chart(@baseline.bac_top_line)
+      @project_chart_data << convert_to_chart(@baseline.eac_top_line)
     end
   end
 
@@ -41,7 +32,7 @@ class BaselinesController < ApplicationController
     @baseline = Baseline.new
 
     if @project.issues.empty?
-      flash[:error] = "Define a issue first"
+      flash[:error] = l(:error_no_issues)
       redirect_to settings_project_path(@project, :tab => 'baselines')
     end
   end

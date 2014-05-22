@@ -96,19 +96,51 @@ class BaselineTest < ActiveSupport::TestCase
   end
 
   def test_if_planned_duration_returns_value
-    assert_equal 409, @baseline.planned_duration
+    assert_equal 408, @baseline.planned_duration
   end
 
   def test_if_actual_duration_returns_value
     assert_equal 409, @baseline.actual_duration  
   end
 
-  def test_if_earned_duration_returns_value
-    assert_equal 0.0, @baseline.earned_duration
-  end
+  # def test_if_earned_duration_returns_value
+  #   assert_equal 0.0, @baseline.earned_duration
+  # end
 
   def test_if_estimate_at_completion_duration_returns_value
-    assert_equal 409.0, @baseline.estimate_at_completion_duration
+    assert_equal 408.0, @baseline.estimate_at_completion_duration
+  end
+
+  def test_if_earned_schedule_returns_value
+    assert_equal 0.0, @baseline.earned_schedule
+  end
+
+  def test_if_actual_forecast_line_returns_array
+    forecast_line = @baseline.actual_cost_forecast_line
+    assert_not_nil forecast_line
+  end
+
+  # def test_if_earned_forecast_line_returns_array
+  #   forecast_line = @baseline.earned_value_forecast_line
+  #   assert_not_nil forecast_line
+  # end
+
+  def test_if_end_date_for_top_line_returns_value
+    assert_not_nil @baseline.end_date_for_top_line
+  end
+
+  def test_if_bac_top_line_returns_array
+    bac_top_line = @baseline.bac_top_line
+    assert_not_nil bac_top_line
+    assert_equal 19.0, bac_top_line[0][1]
+    assert_equal 19.0, bac_top_line[1][1]
+  end
+    
+  def test_if_eac_top_line_returns_array
+    eac_top_line = @baseline.eac_top_line
+    assert_not_nil eac_top_line
+    assert_equal 19.0, eac_top_line[0][1]
+    assert_equal 19.0, eac_top_line[1][1]
   end
 
 end

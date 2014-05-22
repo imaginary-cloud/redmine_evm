@@ -29,4 +29,5 @@ en:
   label_above_budget: above budget
   label_under_budget: under budget
 
-  error_no_baseline: Please set a baseline before proceeding.
+  error_no_baseline: Please set a baseline before proceeding
+  error_no_issues: Please set a issue before proceeding
