@@ -87,14 +87,14 @@
 
 <!-- Dropdown for baselines -->
 <%= form_tag baseline_path, method: :get, id: 'query_form' do %>
-  <fieldset id="filters" class="collapsible">
+  <fieldset id="filters" class="collapsible ">
     <legend onclick="toggleFieldset(this);"><%= l(:label_baseline_plural) %></legend>
-    <div class="styled-select">
+    <div>
       <%= collection_select :baseline, :id, @baselines, :id, :name %>
     </div>
   </fieldset>
     
-  <fieldset id="filters" class="collapsible">
+  <fieldset id="filters" class="collapsible collapsed">
     <legend onclick="toggleFieldset(this);"><%= l(:label_options) %></legend>
     <div style="display: none;">
       <%= check_box_tag 'forecast', 'true', @forecast_is_enabled  %>
@@ -124,7 +124,7 @@
         <div id='evm-graph-lines-version-<%= version.id %>' style="width:70%;height:350px;margin:auto;margin-top:40px;margin-bottom:40px;"></div>
         <% version_chart_data << convert_to_chart(baseline_version.planned_value_by_week) %>
         <% version_chart_data << convert_to_chart(version.actual_cost_by_week) %>
-        <% version_chart_data << convert_to_chart(version.earned_value_by_week@baseline.id) %>
+        <% version_chart_data << convert_to_chart(version.earned_value_by_week(@baseline.id)) %>
         <%= render :partial => '/baselines/version_chart_js', :locals => { version_chart_data: version_chart_data, version: version } %>
       <% end %>
       
