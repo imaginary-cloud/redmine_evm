@@ -121,7 +121,7 @@ class Baseline < ActiveRecord::Base
   #Estimate at Completion (EAC$) Yaxis
   def estimate_at_completion_cost
     if cost_performance_index == 0 #when there is still no earned_value, done_ratio
-      budget_at_completion
+      actual_cost
     else
       budget_at_completion / cost_performance_index
     end
@@ -167,7 +167,7 @@ class Baseline < ActiveRecord::Base
   #Earned Schedule (ES) from http://www.pmknowledgecenter.com/node/163
   def earned_schedule
     #ev = earned_value 
-    ev = Project.find(project_id).earned_value_by_week(self.id).to_a.last[1] #Earned_value function can be higher than current sometimes
+    ev = Project.find(project_id).earned_value_by_week(self.id).to_a.last[1] #Earned_value function can be higher than current sometimes, is this correct?
     pv_line = planned_value_by_week
 
     week = pv_line.first[0]
@@ -177,10 +177,15 @@ class Baseline < ActiveRecord::Base
     previous_key = pv_line.first[0] 
 
     pv_line.each do |key, value|
+      #puts "#{previous_value} >= #{ev} <  #{value}"
       if( ev >= previous_value && ev < value)            #Each key is a week, in what week is the ev equal to pv?
-        # puts "#{previous_value} >= #{ev} <  #{value}"
+        #puts "#{previous_value} >= #{ev} <  #{value}"
         # puts "Yes!"
         week =  previous_key
+        next_week = key
+      elsif( ev == previous_value && ev == value) #THIS elseif is here when both are equal until the end of the project, generaly when the project is finished.
+        # puts "Yes! Equal"
+        week =  key
         next_week = key
       end
       previous_key = key
@@ -197,6 +202,8 @@ class Baseline < ActiveRecord::Base
     # puts "PVt+1 = #{pv_line[next_week]}"
     # puts "PVt = #{pv_line[week]}"
     # puts "Number of weeks #{num_of_weeks}"
+    # puts "planned_duration = #{planned_duration}"
+
     # puts "ES #{num_of_weeks + ((ev - pv_line[week]) / (pv_line[next_week] - pv_line[week]))}"
 
     if  (pv_line[next_week] - pv_line[week]) == 0 #Prevent from divide by zero
@@ -209,7 +216,8 @@ class Baseline < ActiveRecord::Base
   #Estimate at Completion Duration (EACt)
   #Method using Earned Schedule (ES) from http://www.pmknowledgecenter.com/dynamic_scheduling/control/earned-value-management-forecasting-time
   def estimate_at_completion_duration
-    planned_duration - earned_schedule
+    # puts "EACt #{planned_duration - earned_schedule}"
+    return planned_duration - earned_schedule
   end
 
   def actual_cost_forecast_line
@@ -227,8 +235,9 @@ class Baseline < ActiveRecord::Base
 
   def end_date_for_top_line
     project = Project.find(project_id)
+    puts end_date.beginning_of_week
 
-    if(end_date.beginning_of_week < Date.today.beginning_of_week) #This if is for old projects
+    if(end_date < Date.today) #This if is for old projects
       end_date_for_top_line = [project.end_date.beginning_of_week, self.end_date.beginning_of_week].max
     else
       end_date_for_top_line = [project.end_date.beginning_of_week, self.end_date.beginning_of_week, estimate_at_completion_duration.week.from_now].max
