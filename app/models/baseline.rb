@@ -42,8 +42,6 @@ class Baseline < ActiveRecord::Base
         if(Project.find(project_id).baselines.count > 1)
           if(issue.done_ratio == 100 || issue.status.name == "Rejected")
             baseline_issue.estimated_hours = issue.total_spent_hours
-            # puts issue.due_date
-            # puts issue.time_entries.maximum('spent_on')
             issue.due_date.nil? ? baseline_issue.due_date = issue.time_entries.maximum('spent_on') : baseline_issue.due_date = issue.due_date
           else
             baseline_issue.estimated_hours = issue.estimated_hours || 0
@@ -235,7 +233,6 @@ class Baseline < ActiveRecord::Base
 
   def end_date_for_top_line
     project = Project.find(project_id)
-    puts end_date.beginning_of_week
 
     if(end_date < Date.today) #This if is for old projects
       end_date_for_top_line = [project.end_date.beginning_of_week, self.end_date.beginning_of_week].max

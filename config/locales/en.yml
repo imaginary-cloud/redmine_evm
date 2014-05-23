@@ -29,5 +29,14 @@ en:
   label_above_budget: above budget
   label_under_budget: under budget
 
+  label_the_project_is_now: The project is now 
+  label_the_project_is_estimated: The project is estimated to need
+  label_to_finish_the_project: to finish the project
+  label_hours_less_than_planned: hours less than planned 
+  label_hours_more_than_planned: hours more than planned
+  label_done: done 
+  label_hours_are_needed: hours are needed 
+  label_according_to_estimate: according to estimated
+
   error_no_baseline: Please set a baseline before proceeding
   error_no_issues: Please set a issue before proceeding

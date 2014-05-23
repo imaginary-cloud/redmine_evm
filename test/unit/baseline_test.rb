@@ -1,7 +1,32 @@
 require File.expand_path('../../test_helper', __FILE__)
 
 class BaselineTest < ActiveSupport::TestCase
-  fixtures :projects, :baselines, :baseline_issues, :baseline_versions, :versions, :issues
+  fixtures :projects,
+           :baselines,
+           :baseline_issues, 
+           :baseline_versions, 
+           :versions,
+           :users,
+           :roles,
+           :members,
+           :member_roles,
+           :issues,
+           :issue_statuses,
+           :trackers,
+           :projects_trackers,
+           :issue_categories,
+           :enabled_modules,
+           :enumerations,
+           :attachments,
+           :workflows,
+           :custom_fields,
+           :custom_values,
+           :custom_fields_projects,
+           :custom_fields_trackers,
+           :time_entries,
+           :journals,
+           :journal_details,
+           :queries
 
   ActiveRecord::Fixtures.create_fixtures(Redmine::Plugin.find(:redmine_evm).directory + '/test/fixtures/',
                                          [:baselines,
@@ -84,15 +109,15 @@ class BaselineTest < ActiveSupport::TestCase
   end
 
   def test_if_estimate_at_completion_cost_returns_value
-    assert_equal 19.0, @baseline.estimate_at_completion_cost
+    assert_equal 155.25, @baseline.estimate_at_completion_cost
   end
 
   def test_if_estimate_to_complete_returns_value
-    assert_equal -136.25, @baseline.estimate_to_complete
+    assert_equal 0.0, @baseline.estimate_to_complete
   end
 
   def test_if_variance_at_completion_returns_value
-    assert_equal 0.0 , @baseline.variance_at_completion
+    assert_equal -136.25 , @baseline.variance_at_completion
   end
 
   def test_if_planned_duration_returns_value
@@ -139,8 +164,8 @@ class BaselineTest < ActiveSupport::TestCase
   def test_if_eac_top_line_returns_array
     eac_top_line = @baseline.eac_top_line
     assert_not_nil eac_top_line
-    assert_equal 19.0, eac_top_line[0][1]
-    assert_equal 19.0, eac_top_line[1][1]
+    assert_equal 155.25, eac_top_line[0][1]
+    assert_equal 155.25, eac_top_line[1][1]
   end
 
 end

@@ -24,16 +24,7 @@ function drawChart(dataToChart, placeholder, actualWeek){
         earnedValueEstimateLine = data[4];
     }
 
-    var graphData = [{
-        data: actualCostEstimateLine ,
-        label:"Actual Cost Forecast",
-        color: "#FCB040", dashes: { show: true, lineWidth: 3 }, points: { show: true, radius: 0.5 }
-    },
-    { 
-        data: earnedValueEstimateLine ,
-        label: "Earned Value Forecast",
-        color: "#8CC63F", dashes: { show: true, lineWidth: 3 }, points: { show: true, radius: 0.5 }       
-    },
+    var graphData = [
     { 
         data: data[5],
         label:"Budget at Complete", 
@@ -43,9 +34,17 @@ function drawChart(dataToChart, placeholder, actualWeek){
         label: "Estimated at Complete",
         color: "#FFE2B8", dashes: { show: true, lineWidth: 1 }     
     },{
+        data: actualCostEstimateLine ,
+        label:"Actual Cost Forecast",
+        color: "#FCB040", dashes: { show: true, lineWidth: 3 }, points: { show: true, fill: true, fillColor: "#FCB040" }
+    },{ 
+        data: earnedValueEstimateLine ,
+        label: "Earned Value Forecast",
+        color: "#8CC63F", dashes: { show: true, lineWidth: 3 }, points: { show: true, fill: true, fillColor: "#8CC63F" }       
+    },{
         data: data[0],
         label: "Planned Value",
-        color: '#0F75BC', 
+        color: '#0F75BC'
     },{ 
         data: data[1],
         label: "Acutal Cost",
@@ -80,6 +79,7 @@ function drawChart(dataToChart, placeholder, actualWeek){
             axisLabelPadding: 6
         },
         yaxis: {
+            min: 0,
             axisLabel: 'Hours',
             axisLabelUseCanvas: true,
             axisLabelFontSizePixels: 10,

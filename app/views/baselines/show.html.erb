@@ -69,13 +69,16 @@
           <h3><%= l(:subtitle_evm_forecast) %></h3>
           <div id="evm-forecast-indicators" class="sidebar-boxes" >
             <div id="evm-forecast-indicators-container" class="indicators-container">
-              <p><b>The project is now <%= (@baseline.completed_actual * 100).floor %>% done</b><br> according to estimate</p>
-              <p><b><%= @baseline.estimate_to_complete.to_i %> hours are needed</b><br> to finish the project</p>
-              <p><b>The project is estimated to need</b><br> 
+              <p><b><%=l(:label_the_project_is_now)%> <%= (@baseline.completed_actual * 100).floor %>% <%= l(:label_done)%></b>
+              <br> <%=l(:label_according_to_estimate)%></p>
+
+              <p><b><%= @baseline.estimate_to_complete.to_i %> hours are needed</b><br> <%=l(:label_to_finish_the_project)%></p>
+
+              <p><b><%=l(:label_the_project_is_estimated)%></b><br> 
               <% if @baseline.variance_at_completion < 0 %>
-                <%= @baseline.variance_at_completion.floor.abs %> hours more than planned</p>
+                <%= @baseline.variance_at_completion.floor.abs %> <%=l(:label_hours_more_than_planned)%></p>
               <%else%>
-                <%= @baseline.variance_at_completion.floor.abs %> hours less than planned</p>
+                <%= @baseline.variance_at_completion.floor.abs %> <%=l(:label_hours_less_than_planned)%></p>
               <%end%>
             </div>
           </div>
