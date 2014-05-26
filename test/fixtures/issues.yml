@@ -1,0 +1,54 @@
+issues_015:
+  id: 15
+  root_id: 15
+  created_on: <%= 18.days.ago.to_s(:db) %>
+  project_id: 1
+  updated_on: <%= 18.days.ago.to_s(:db) %>
+  priority_id: 5
+  subject: Test issue
+  fixed_version_id: 
+  category_id: 
+  description: This is a test issue
+  tracker_id: 1
+  author_id: 2
+  status_id: 1
+  done_ratio: 50
+  estimated_hours: 40
+  lft: 1
+  rgt: 2
+issues_016:
+  id: 16
+  root_id: 16
+  created_on: <%= 10.days.ago.to_s(:db) %>
+  project_id: 1
+  updated_on: <%= 10.days.ago.to_s(:db) %>
+  priority_id: 4
+  subject: Test issue 2
+  fixed_version_id: 
+  category_id: 
+  description: This is a test issue 2
+  tracker_id: 1
+  author_id: 2
+  status_id: 1
+  done_ratio: 0
+  estimated_hours: 20
+  lft: 1
+  rgt: 2
+issues_017:
+  id: 17
+  root_id: 17
+  created_on: <%= 1.days.ago.to_s(:db) %>
+  project_id: 1
+  updated_on: <%= 1.days.ago.to_s(:db) %>
+  priority_id: 3
+  subject: Test issue 3
+  fixed_version_id: 
+  category_id: 
+  description: This is a test issue 3
+  tracker_id: 1
+  author_id: 2
+  status_id: 1
+  done_ratio: 100
+  estimated_hours: 10
+  lft: 1
+  rgt: 2

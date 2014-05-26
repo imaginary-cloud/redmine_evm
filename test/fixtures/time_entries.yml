@@ -1,0 +1,14 @@
+time_entries_006: 
+  created_on:  <%= 1.days.ago.to_s(:db) %>
+  tweek: 12
+  tmonth: 3
+  project_id: 1
+  comments: Test hours
+  updated_on:  <%= 1.days.ago.to_s(:db) %>
+  activity_id: 9
+  spent_on: 2007-03-23
+  issue_id: 15
+  id: 6
+  hours: 35
+  user_id: 2
+  tyear: 2014

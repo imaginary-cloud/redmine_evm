@@ -32,6 +32,8 @@ class BaselineTest < ActiveSupport::TestCase
                                          [:baselines,
                                          :baseline_issues,
                                          :baseline_versions,
+                                         :issues,
+                                         :time_entries
                                          ])
 
   should belong_to(:project)
@@ -81,27 +83,27 @@ class BaselineTest < ActiveSupport::TestCase
   end
 
   def test_if_earned_value_returns_value
-    assert_equal 0, @baseline.earned_value 
+    assert_equal 30.0, @baseline.earned_value 
   end
 
   def test_if_actual_cost_returns_value
-    assert_equal 155.25, @baseline.actual_cost
+    assert_equal 35.0, @baseline.actual_cost
   end
 
   def test_if_schedule_performance_index_returns_value
-    assert_equal 0.0, @baseline.schedule_performance_index
+    assert_equal 1.5789473684210527, @baseline.schedule_performance_index
   end
 
   def test_if_cost_performance_index_returns_value
-    assert_equal 0.0, @baseline.cost_performance_index
+    assert_equal 0.8571428571428571, @baseline.cost_performance_index
   end
 
   def test_if_schedule_variance_returns_value
-    assert_equal -19.0, @baseline.schedule_variance
+    assert_equal 11.0, @baseline.schedule_variance
   end
 
   def test_if_cost_variance_returns_value
-    assert_equal -155.25, @baseline.cost_variance
+    assert_equal -5.0, @baseline.cost_variance
   end
 
   def test_if_budget_at_completion_returns_value
@@ -109,15 +111,15 @@ class BaselineTest < ActiveSupport::TestCase
   end
 
   def test_if_estimate_at_completion_cost_returns_value
-    assert_equal 155.25, @baseline.estimate_at_completion_cost
+    assert_equal 22.166666666666668, @baseline.estimate_at_completion_cost
   end
 
   def test_if_estimate_to_complete_returns_value
-    assert_equal 0.0, @baseline.estimate_to_complete
+    assert_equal -12.833333333333332, @baseline.estimate_to_complete
   end
 
   def test_if_variance_at_completion_returns_value
-    assert_equal -136.25 , @baseline.variance_at_completion
+    assert_equal -3.166666666666668, @baseline.variance_at_completion
   end
 
   def test_if_planned_duration_returns_value
@@ -164,8 +166,8 @@ class BaselineTest < ActiveSupport::TestCase
   def test_if_eac_top_line_returns_array
     eac_top_line = @baseline.eac_top_line
     assert_not_nil eac_top_line
-    assert_equal 155.25, eac_top_line[0][1]
-    assert_equal 155.25, eac_top_line[1][1]
+    assert_equal 22.166666666666668, eac_top_line[0][1]
+    assert_equal 22.166666666666668, eac_top_line[1][1]
   end
 
 end
