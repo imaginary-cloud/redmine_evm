@@ -42,14 +42,18 @@ class Baseline < ActiveRecord::Base
         if(Project.find(project_id).baselines.count > 1)
           if(issue.done_ratio == 100 || issue.status.name == "Rejected")
             baseline_issue.estimated_hours = issue.total_spent_hours
-            issue.due_date.nil? ? baseline_issue.due_date = issue.time_entries.maximum('spent_on') : baseline_issue.due_date = issue.due_date
+              issue.time_entries.empty? ? baseline_issue.due_date = issue.updated_on.to_date : baseline_issue.due_date = issue.time_entries.maximum('spent_on')
           else
             baseline_issue.estimated_hours = issue.estimated_hours || 0
             issue.due_date.nil? ? baseline_issue.due_date = issue.time_entries.maximum('spent_on') : baseline_issue.due_date = issue.due_date
           end
         else
           baseline_issue.estimated_hours = issue.estimated_hours || 0
-          issue.due_date.nil? ? baseline_issue.due_date = issue.time_entries.maximum('spent_on') : baseline_issue.due_date = issue.due_date
+          if(issue.done_ratio == 100 || issue.status.name == "Rejected")
+            issue.time_entries.empty? ? baseline_issue.due_date = issue.updated_on.to_date : baseline_issue.due_date = issue.time_entries.maximum('spent_on')
+          else
+            issue.due_date.nil? ? baseline_issue.due_date = issue.time_entries.maximum('spent_on') : baseline_issue.due_date = issue.due_date
+          end
         end 
         baseline_issue.save
         baseline_issues << baseline_issue
@@ -225,10 +229,8 @@ class Baseline < ActiveRecord::Base
 
   def earned_value_forecast_line
     project = Project.find(project_id)
-    ev_line = project.earned_value_by_week(self.id)
-    actual_earned_value = ev_line.to_a.last[1]
 
-    [[ Time.now.beginning_of_week, actual_earned_value ], [ estimate_at_completion_duration.week.from_now.beginning_of_week, budget_at_completion]]
+    [[ Time.now.beginning_of_week, earned_value ], [ estimate_at_completion_duration.week.from_now.beginning_of_week, budget_at_completion]]
   end
 
   def end_date_for_top_line
