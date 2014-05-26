@@ -5,12 +5,11 @@ class RemoveColumnsFromBaselineIssues < ActiveRecord::Migration
     remove_column :baseline_issues, :tracker_id
     remove_column :baseline_issues, :start_date
   end
-
   def down
-    add_column :baseline_issues, :subject
-    add_column :baseline_issues, :description
-    add_column :baseline_issues, :tracker_id
-    add_column :baseline_issues, :start_date
+    add_column :baseline_issues, :subject, :string
+    add_column :baseline_issues, :description, :string
+    add_column :baseline_issues, :tracker_id, :integer
+    add_column :baseline_issues, :start_date, :date
   end
 end
 
