@@ -18,9 +18,13 @@ module RedmineEvm
 
     module ActualCostInstanceMethods
 
-
       def actual_cost
-        self.instance_of?(Project) ? time_entries.sum(:hours) : spent_hours 
+        #self.instance_of?(Project) ? time_entries.sum(:hours) : spent_hours 
+        if self.instance_of?(Project)
+          issues.select('sum(hours) as sum_hours').joins('join time_entries ti on( issues.id = ti.issue_id)').where("spent_on BETWEEN '#{get_start_date}' AND '#{end_date}'").first.sum_hours
+        else
+          spent_hours
+        end
       end
 
       def get_summed_time_entries
@@ -28,9 +32,11 @@ module RedmineEvm
           # result = Issue.find_by_sql(['SELECT max(spent_on) as spent_on, sum(hours) as sum_hours
           #                              FROM issues i join time_entries ti on(i.id = ti.issue_id) 
           #                              WHERE i.project_id = :id group by spent_on;', id: id]).collect { |issue| [issue.spent_on, issue.sum_hours] }
+          # result = time_entries.select('MAX(spent_on) AS spent_on, SUM(hours) AS sum_hours').group('spent_on').collect { |time_entrie| [time_entrie.spent_on, time_entrie.sum_hours] }
           result = issues.select('MAX(spent_on) AS spent_on, SUM(hours) AS sum_hours').
                           joins('join time_entries ti ON(issues.id = ti.issue_id)').
                           group('spent_on').collect { |issue| [issue.spent_on, issue.sum_hours] }
+
         else
           # result = Issue.find_by_sql(['SELECT max(spent_on) as spent_on, sum(hours) as sum_hours
           #                              FROM issues i join time_entries ti on(i.id = ti.issue_id) 
@@ -63,6 +69,14 @@ module RedmineEvm
         end
 
         actual_cost_by_weeks
+      end
+
+      def has_time_entries_with_no_issue
+        time_entries.where('issue_id IS NULL').count > 0
+      end
+
+      def has_time_entries_before_start_date
+        time_entries.where("spent_on NOT BETWEEN '#{get_start_date}' AND '#{end_date}'").count > 0
       end
 
     end

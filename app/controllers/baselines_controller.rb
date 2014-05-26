@@ -26,6 +26,13 @@ class BaselinesController < ApplicationController
       @project_chart_data << convert_to_chart(@baseline.bac_top_line)
       @project_chart_data << convert_to_chart(@baseline.eac_top_line)
     end
+
+    if(@project.has_time_entries_with_no_issue)
+      flash[:warning] = l(:warning_log_time_with_no_issue)
+    end
+    if(@project.has_time_entries_before_start_date)
+      flash[:warning] = l(:warning_log_time_before_start_date)
+    end
   end
 
   def new
