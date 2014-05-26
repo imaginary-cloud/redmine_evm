@@ -169,7 +169,7 @@ class Baseline < ActiveRecord::Base
   #Earned Schedule (ES) from http://www.pmknowledgecenter.com/node/163
   def earned_schedule
     #ev = earned_value 
-    ev = Project.find(project_id).earned_value_by_week(self.id).to_a.last[1] #Earned_value function can be higher than current sometimes, is this correct?
+    ev = Project.find(project_id).earned_value_by_week(self.id).to_a.last[1].to_i #Earned_value function can be higher than current sometimes, is this correct?
     pv_line = planned_value_by_week
 
     week = pv_line.first[0]
@@ -179,19 +179,19 @@ class Baseline < ActiveRecord::Base
     previous_key = pv_line.first[0] 
 
     pv_line.each do |key, value|
-      #puts "#{previous_value} >= #{ev} <  #{value}"
-      if( ev >= previous_value && ev < value)            #Each key is a week, in what week is the ev equal to pv?
-        #puts "#{previous_value} >= #{ev} <  #{value}"
+      # puts "#{previous_value} >= #{ev} <  #{value}"
+      if( ev >= previous_value.to_i && ev < value.to_i)            #Each key is a week, in what week is the ev equal to pv?
+        # puts "#{previous_value} >= #{ev} <  #{value}"
         # puts "Yes!"
         week =  previous_key
         next_week = key
-      elsif( ev == previous_value && ev == value) #THIS elseif is here when both are equal until the end of the project, generaly when the project is finished.
+      elsif( ev == previous_value.to_i && ev == value.to_i) #THIS elseif is here when both are equal until the end of the project, generaly when the project is finished.
         # puts "Yes! Equal"
         week =  key
         next_week = key
       end
       previous_key = key
-      previous_value = value
+      previous_value = value.to_i
     end
 
     pv_t = pv_line[week]
@@ -254,5 +254,4 @@ class Baseline < ActiveRecord::Base
     eac_top_line = [[start_date.beginning_of_week, eac],[end_date_for_top_line, eac]]
   end
 
-  
 end
