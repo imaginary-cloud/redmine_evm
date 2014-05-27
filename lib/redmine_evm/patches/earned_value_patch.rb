@@ -34,7 +34,11 @@
       end
 
       def get_issues baseline_id
-        issues_with_done_ratio = Baseline.find(baseline_id).baseline_issues.where("done_ratio = 100")   # get issues from baseline where done ratio = 100.
+        if self.instance_of?(Project)
+          issues_with_done_ratio = Baseline.find(baseline_id).baseline_issues.where("done_ratio = 100")   # get issues from baseline where done ratio = 100.
+        else
+          issues_with_done_ratio = Baseline.find(baseline_id).baseline_versions.where("original_version_id = #{self.id}").first.baseline_issues.where("done_ratio = 100")   # get issues from baseline where done ratio = 100.
+        end
         oii = issues_with_done_ratio.map{ |bi| bi.original_issue_id }                                   # get only ids from baseline issues with done ratio = 100.
         
         self.instance_of?(Project) ? issues = self.issues : issues = self.fixed_issues                  # get issues from projects : versions.
@@ -60,7 +64,13 @@
         earned_value = 0
         issues = get_issues baseline_id
 
-        (get_start_date.to_date..end_date.to_date).each do |key| 
+        final_date = end_date
+        date_today = Date.today
+        if final_date > date_today      #If it is not a old project
+          final_date = date_today
+        end
+
+        (get_start_date.to_date..final_date.to_date).each do |key| 
           unless issues.nil?
             i = issues.select {|i| i.due_date == key}
             i.each do |issue|
