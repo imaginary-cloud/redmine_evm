@@ -101,7 +101,7 @@
 /********* Chart legend + Info ********/
 #evm-legend-info{
   border: lightgray 1px solid;
-  margin: 10px;
+  margin: 10px 10px 5px 10px;
 }
 
 #evm-legend-content{
@@ -130,4 +130,13 @@
 #evm-legend-pv{
   padding-top: 20px;
   color: #0f75bc ;
+}
+
+.evm-legend-lines{
+  margin-bottom: 10px;
+}
+
+.evm-legend-lines > * {
+  display: inline;
+  margin-right: 5px;
 }
