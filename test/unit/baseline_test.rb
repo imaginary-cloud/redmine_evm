@@ -44,6 +44,7 @@ class BaselineTest < ActiveSupport::TestCase
 
   def setup
     @baseline = baselines(:baselines_001)
+    @project = projects(:projects_001)
   end
 
   def new_baseline
@@ -83,7 +84,7 @@ class BaselineTest < ActiveSupport::TestCase
   end
 
   def test_if_earned_value_returns_value
-    assert_equal 30.0, @baseline.earned_value 
+    assert_equal 40.0, @baseline.earned_value 
   end
 
   def test_if_actual_cost_returns_value
@@ -91,11 +92,11 @@ class BaselineTest < ActiveSupport::TestCase
   end
 
   def test_if_schedule_performance_index_returns_value
-    assert_equal 1.5789473684210527, @baseline.schedule_performance_index
+    assert_equal 1.3793103448275863, @baseline.schedule_performance_index
   end
 
   def test_if_cost_performance_index_returns_value
-    assert_equal 0.8571428571428571, @baseline.cost_performance_index
+    assert_equal 1.1428571428571428, @baseline.cost_performance_index
   end
 
   def test_if_schedule_variance_returns_value
@@ -103,23 +104,23 @@ class BaselineTest < ActiveSupport::TestCase
   end
 
   def test_if_cost_variance_returns_value
-    assert_equal -5.0, @baseline.cost_variance
+    assert_equal 5.0, @baseline.cost_variance
   end
 
   def test_if_budget_at_completion_returns_value
-    assert_equal 19.0, @baseline.budget_at_completion
+    assert_equal 29.0, @baseline.budget_at_completion
   end
 
   def test_if_estimate_at_completion_cost_returns_value
-    assert_equal 22.166666666666668, @baseline.estimate_at_completion_cost
+    assert_equal 25.375, @baseline.estimate_at_completion_cost
   end
 
   def test_if_estimate_to_complete_returns_value
-    assert_equal -12.833333333333332, @baseline.estimate_to_complete
+    assert_equal -9.625, @baseline.estimate_to_complete
   end
 
   def test_if_variance_at_completion_returns_value
-    assert_equal -3.166666666666668, @baseline.variance_at_completion
+    assert_equal 3.625, @baseline.variance_at_completion
   end
 
   def test_if_planned_duration_returns_value
@@ -159,15 +160,33 @@ class BaselineTest < ActiveSupport::TestCase
   def test_if_bac_top_line_returns_array
     bac_top_line = @baseline.bac_top_line
     assert_not_nil bac_top_line
-    assert_equal 19.0, bac_top_line[0][1]
-    assert_equal 19.0, bac_top_line[1][1]
+    assert_equal 29.0, bac_top_line[0][1]
+    assert_equal 29.0, bac_top_line[1][1]
   end
     
   def test_if_eac_top_line_returns_array
     eac_top_line = @baseline.eac_top_line
     assert_not_nil eac_top_line
-    assert_equal 22.166666666666668, eac_top_line[0][1]
-    assert_equal 22.166666666666668, eac_top_line[1][1]
+    assert_equal 25.375, eac_top_line[0][1]
+    assert_equal 25.375, eac_top_line[1][1]
+  end
+
+  def test_if_actual_cost_is_equal_to_actual_cost_by_week
+    actual_cost_by_week = @project.actual_cost_by_week.to_a.last[1]
+    actual_cost = @baseline.actual_cost
+    assert_equal actual_cost, actual_cost_by_week
+  end
+
+  def test_if_earned_value_is_equal_to_earned_value_by_week
+    earned_value_by_week = @project.earned_value_by_week(@baseline.id).to_a.last[1]
+    earned_value = @baseline.earned_value
+    assert_equal earned_value, earned_value_by_week
+  end
+
+  def test_if_palnned_value_is_equal_to_planned_value_by_week
+    planned_value_by_week = @baseline.planned_value_by_week.to_a.last[1]
+    planned_value = @baseline.planned_value
+    assert_equal planned_value, planned_value_by_week
   end
 
 end

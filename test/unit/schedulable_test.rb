@@ -11,29 +11,29 @@ class SchedulableTest < ActiveSupport::TestCase
 
   def setup
     @baseline = baselines(:baselines_001)
-    @baseline_version = baseline_versions(:baseline_versions_001)
   end
 
   def test_if_baseline_planned_value_returns_value
     assert_not_nil @baseline.planned_value
-    assert_equal 19 , @baseline.planned_value
+    assert_equal 29.0 , @baseline.planned_value
   end
 
   def test_if_baseline_planned_value_by_week_returns_correct_hash
     planned_value_by_week = @baseline.planned_value_by_week
     assert_not_nil planned_value_by_week
-    assert_equal 10, planned_value_by_week[Time.new(2006,07,30).to_date.beginning_of_week]
+    assert_equal 29.0, planned_value_by_week.to_a.last[1]
   end
 
   def test_if_baseline_version_planned_value_returns_value
-    assert_not_nil @baseline_version.planned_value
-    assert_equal 19 , @baseline.planned_value
+    baseline_version = @baseline.baseline_versions.first
+    assert_not_nil baseline_version.planned_value
+    assert_equal 0 , baseline_version.planned_value
   end
 
   def test_if_baseline_version_planned_value_by_week_returns_correct_hash
-    planned_value_by_week = @baseline_version.planned_value_by_week
-    assert_not_nil planned_value_by_week
-    assert_equal 10, planned_value_by_week[Time.new(2006,07,30).to_date.beginning_of_week]
+    baseline_version = @baseline.baseline_versions.first
+    assert_not_nil baseline_version.planned_value_by_week
+    assert_equal 0, baseline_version.planned_value_by_week.to_a.last[1]
   end
 
 end

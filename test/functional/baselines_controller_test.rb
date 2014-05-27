@@ -21,10 +21,7 @@ class BaselinesControllerTest < ActionController::TestCase
            :custom_values,
            :custom_fields_projects,
            :custom_fields_trackers,
-           :time_entries,
-           :journals,
-           :journal_details,
-           :queries
+           :time_entries
 
   ActiveRecord::Fixtures.create_fixtures(File.dirname(__FILE__) + '/../fixtures/',
     [:baselines, :roles])
