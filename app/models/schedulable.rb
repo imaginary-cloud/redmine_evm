@@ -5,7 +5,7 @@ module Schedulable
     baseline_issues.sum(:estimated_hours)
   end
 
-  #Returns the planned value by weeks.
+  # #Returns the planned value by weeks.
   # def planned_value_by_week
   #   planned_value_by_weeks = {}
   #   time = 0
@@ -25,7 +25,7 @@ module Schedulable
 
     planned_value_by_weeks = {}
     time = 0
-    (start_date.to_date..end_date.to_date).each do |key|
+    (start_date.beginning_of_week..end_date).each do |key|
       unless summed_baseline_issues[key].nil?
         time += summed_baseline_issues[key]
       end

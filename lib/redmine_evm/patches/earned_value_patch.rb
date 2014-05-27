@@ -70,7 +70,7 @@
           final_date = date_today
         end
 
-        (get_start_date.to_date..final_date.to_date).each do |key| 
+        (get_start_date.to_date.beginning_of_week..final_date.to_date).each do |key| 
           unless issues.nil?
             i = issues.select {|i| i.due_date == key}
             i.each do |issue|
