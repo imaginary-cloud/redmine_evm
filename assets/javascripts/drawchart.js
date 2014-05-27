@@ -18,7 +18,7 @@ function drawChart(dataToChart, placeholder, actualWeek){
         endDate = plannedEndDate;
     else endDate = earnedEndDate;
 
-    if (actualWeek < endDate) { //For OLD Projects
+    if (actualWeek <= endDate) { //For OLD Projects
         var markings = [{ color: "#E0E0E0", lineWidth: 1, xaxis: { from: actualWeek , to: actualWeek } }]; //This is the marker to the "Project is here" marking today date.
         actualCostEstimateLine = data[3];
         earnedValueEstimateLine = data[4];
@@ -60,7 +60,8 @@ function drawChart(dataToChart, placeholder, actualWeek){
     var plot = $.plot(chartHtmlElement, graphData, {
         series: {
             shadowSize: 0,
-            lines: { lineWidth: 3 }
+            lines: { lineWidth: 3 },
+            points: { radius: 2 }
         },
         grid: {
           markings: markings,
@@ -118,7 +119,7 @@ function drawChart(dataToChart, placeholder, actualWeek){
     });
 
     //The marker 'project is here'.
-    if (actualWeek < endDate) {
+    if (actualWeek <= endDate) {
         var maxYValue = parseInt($('.flot-y-axis .tickLabel').last().text());
         var o = plot.pointOffset({ x: actualWeek, y: maxYValue * 0.1});
         chartHtmlElement.append("<div id='marker-label-chart' class='markers' style='left:" + (o.left + 5) + "px;top:" + o.top + "px;'>Project is here</div>");
