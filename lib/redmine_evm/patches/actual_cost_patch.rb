@@ -61,7 +61,13 @@ module RedmineEvm
 
         summed_time_entries = get_summed_time_entries
 
-        (get_start_date.to_date..end_date.to_date).each do |key|
+        final_date = end_date
+        date_today = Date.today
+        if final_date > date_today      #If it is not a old project
+          final_date = date_today
+        end
+
+        (get_start_date.to_date..final_date.to_date).each do |key|
           unless summed_time_entries[key].nil?
             time += summed_time_entries[key]
           end
