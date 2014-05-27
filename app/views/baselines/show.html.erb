@@ -98,12 +98,14 @@
     </div>
   </fieldset>
 
-  <% unless @baseline.actual_cost.nil? %> <%#IF ACTUAL COST IS NIL%>  
+   
   <fieldset id="filters" class="collapsible collapsed">
     <legend onclick="toggleFieldset(this);"><%= l(:label_options) %></legend>
     <div style="display: none;">
+      <% unless @baseline.actual_cost.nil? %> <%#IF ACTUAL COST IS NIL%> 
       <%= check_box_tag 'forecast', 'true', @forecast_is_enabled  %>
       <%= label_tag 'Forecast' %>
+      <% end %>
     </div>
   </fieldset>
 
@@ -111,7 +113,7 @@
     <%= link_to_function l(:button_apply), 'submit_query_form("query_form")', :class => 'icon icon-checked' %>
     <!-- submit_query_form is from application.js -->
   </p>
-  <% end %>
+  
 
 <% end %>
 
