@@ -35,9 +35,9 @@
           </div>
           <p><b><%= l(:label_the_project_is)%>
           <% if @baseline.schedule_variance < 0 %>
-            <%= ((1 - @baseline.schedule_performance_index) * 100).floor %>%</b><br> <%= l(:label_behind_schedule)%></p>
+            <%= ((1 - @baseline.schedule_performance_index) * 100).round %>%</b><br> <%= l(:label_behind_schedule)%></p>
           <% else %>
-            <%= ((@baseline.schedule_performance_index - 1) * 100).floor %>%</b><br> <%= l(:label_ahead_schedule)%></p>
+            <%= ((@baseline.schedule_performance_index - 1) * 100).round %>%</b><br> <%= l(:label_ahead_schedule)%></p>
           <% end %>
         </div>
         <div class="indicators-container">
@@ -55,9 +55,9 @@
           <div id="evm-cpi-barchart"></div>
           <p><b><%= l(:label_the_project_is)%>
           <% if @baseline.cost_variance < 0 %>
-            <%= ((1 - @baseline.cost_performance_index) * 100).floor %>%</b><br> <%= l(:label_above_budget)%></p>
+            <%= ((1 - @baseline.cost_performance_index) * 100).round %>%</b><br> <%= l(:label_above_budget)%></p>
           <% else %>
-            <%= ((@baseline.cost_performance_index - 1) * 100).floor %>%</b><br> <%= l(:label_under_budget)%></p>
+            <%= ((@baseline.cost_performance_index - 1) * 100).round %>%</b><br> <%= l(:label_under_budget)%></p>
           <% end %>
         </div>
       </div>
@@ -70,16 +70,16 @@
           <h3><%= l(:subtitle_evm_forecast) %></h3>
           <div id="evm-forecast-indicators" class="sidebar-boxes" >
             <div id="evm-forecast-indicators-container" class="indicators-container">
-              <p><b><%=l(:label_the_project_is_now)%> <%= (@baseline.completed_actual * 100).floor %>% <%= l(:label_done)%></b>
+              <p><b><%=l(:label_the_project_is_now)%> <%= (@baseline.completed_actual * 100).round %>% <%= l(:label_done)%></b>
               <br> <%=l(:label_according_to_estimate)%></p>
 
               <p><b><%= @baseline.estimate_to_complete.to_i %> hours are needed</b><br> <%=l(:label_to_finish_the_project)%></p>
 
               <p><b><%=l(:label_the_project_is_estimated)%></b><br> 
               <% if @baseline.variance_at_completion < 0 %>
-                <%= @baseline.variance_at_completion.floor.abs %> <%=l(:label_hours_more_than_planned)%></p>
+                <%= @baseline.variance_at_completion.round.abs %> <%=l(:label_hours_more_than_planned)%></p>
               <%else%>
-                <%= @baseline.variance_at_completion.floor.abs %> <%=l(:label_hours_less_than_planned)%></p>
+                <%= @baseline.variance_at_completion.round.abs %> <%=l(:label_hours_less_than_planned)%></p>
               <%end%>
             </div>
           </div>

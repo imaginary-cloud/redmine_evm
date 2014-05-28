@@ -170,7 +170,7 @@ class Baseline < ActiveRecord::Base
 
   #Earned Schedule (ES) from http://www.pmknowledgecenter.com/node/163
   def earned_schedule
-    ev = earned_value                       #Current Earned Value
+    ev = earned_value.round               #Current Earned Value
     pv_line = planned_value_by_week         #Planned value by week to see in what week EV is the same as PV.
 
     week = pv_line.first[0]                 #PVt week
@@ -181,18 +181,18 @@ class Baseline < ActiveRecord::Base
 
     pv_line.each do |key, value|
       # puts "#{previous_value} >= #{ev} <  #{value}"
-      if( ev >= previous_value.to_i && ev < value.to_i)  #Each key is a week, in what week does the EV equal to PV?
+      if( ev >= previous_value.round && ev < value.round)  #Each key is a week, in what week does the EV equal to PV?
         # puts "#{previous_value} >= #{ev} <  #{value}"
         # puts "Yes!"
         week = previous_key
         next_week = key
-      elsif( ev == previous_value.to_i && ev == value.to_i) #THIS elseif is here when both are equal until the end of the project, e.g. when the project is finished.
+      elsif( ev == previous_value.round && ev == value.round) #THIS elseif is here when both are equal until the end of the project, e.g. when the project is finished.
         # puts "Yes! Equal"
         week =  key
         next_week = key
       end
       previous_key = key
-      previous_value = value.to_i
+      previous_value = value.round
     end
 
     pv_t = pv_line[week]                   #PVt value
