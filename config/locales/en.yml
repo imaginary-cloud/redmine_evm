@@ -43,3 +43,5 @@ en:
 
   warning_log_time_with_no_issue: Actual cost is not accurate. There are log times with no issue associated.
   warning_log_time_before_start_date: Actual cost is not accurate. There are log times before the project start date.
+
+  label_not_avaliable: Not Avaliable
