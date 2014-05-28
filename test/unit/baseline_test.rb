@@ -112,15 +112,15 @@ class BaselineTest < ActiveSupport::TestCase
   end
 
   def test_if_estimate_at_completion_cost_returns_value
-    assert_equal 25.375, @baseline.estimate_at_completion_cost
+    assert_equal 24.0, @baseline.estimate_at_completion_cost
   end
 
   def test_if_estimate_to_complete_returns_value
-    assert_equal -9.625, @baseline.estimate_to_complete
+    assert_equal -11.0, @baseline.estimate_to_complete
   end
 
   def test_if_variance_at_completion_returns_value
-    assert_equal 3.625, @baseline.variance_at_completion
+    assert_equal 5.0, @baseline.variance_at_completion
   end
 
   def test_if_planned_duration_returns_value
@@ -167,8 +167,8 @@ class BaselineTest < ActiveSupport::TestCase
   def test_if_eac_top_line_returns_array
     eac_top_line = @baseline.eac_top_line
     assert_not_nil eac_top_line
-    assert_equal 25.375, eac_top_line[0][1]
-    assert_equal 25.375, eac_top_line[1][1]
+    assert_equal 24.0, eac_top_line[0][1]
+    assert_equal 24.0, eac_top_line[1][1]
   end
 
   def test_if_actual_cost_is_equal_to_actual_cost_by_week

@@ -92,7 +92,7 @@ class Baseline < ActiveRecord::Base
   #Schedule Performance Index (SPI)
   def schedule_performance_index
     if self.planned_value != 0
-      earned_value / self.planned_value
+      earned_value.to_f / self.planned_value
     else
       return 0
     end
@@ -100,8 +100,9 @@ class Baseline < ActiveRecord::Base
 
   #Cost Performance Index (CPI)
   def cost_performance_index
+    #NOTE: Actual cost is a decimal value.
     if actual_cost != 0
-      earned_value / actual_cost
+      earned_value.to_f / actual_cost
     else
       return 0
     end
@@ -123,13 +124,9 @@ class Baseline < ActiveRecord::Base
   end
 
   #Estimate at Completion (EAC$) Yaxis
-  #http://testeagle.com/blog/2012/03/how-to-calculate-estimate-at-completion-eac-for-the-pmp-exam/
+  #http://www.pmknowledgecenter.com/node/166
   def estimate_at_completion_cost
-    if cost_performance_index == 0 #when there is still no earned_value, done_ratio
-      actual_cost
-    else
-      budget_at_completion / cost_performance_index
-    end
+    actual_cost + (budget_at_completion - earned_value)
   end
 
   #Estimate to complete (ETC)
@@ -144,7 +141,7 @@ class Baseline < ActiveRecord::Base
 
   # % Completed
   def completed_actual
-    actual_cost / estimate_at_completion_cost
+    actual_cost.to_f / estimate_at_completion_cost
   end
 
   #Planned Duration (PD)
@@ -213,7 +210,7 @@ class Baseline < ActiveRecord::Base
     if  (pv_line[next_week] - pv_line[week]) == 0 #Prevent from divide by zero, when values are equal.
       num_of_weeks                                #This means that the line is flat. So use the previous value because (EV >= PVt and EV < PVt+1).
     else
-      num_of_weeks + ((ev - pv_line[week]) / (pv_line[next_week] - pv_line[week]))
+      num_of_weeks + ((ev - pv_line[week]).to_f / (pv_line[next_week] - pv_line[week]))
     end
   end
 
