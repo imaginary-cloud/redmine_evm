@@ -1,7 +1,7 @@
 <%= back_url_hidden_field_tag %>
 <%= error_messages_for 'baseline' %>
 
-<% default_date = @baseline.due_date || project.due_date || project.issues.order('due_date DESC').first.due_date || Date.today %>
+<% default_date = @baseline.due_date || project.issues.order('due_date DESC').first.due_date %>
 
 
 <div class="box tabular">
