@@ -123,6 +123,7 @@ class Baseline < ActiveRecord::Base
   end
 
   #Estimate at Completion (EAC$) Yaxis
+  #http://testeagle.com/blog/2012/03/how-to-calculate-estimate-at-completion-eac-for-the-pmp-exam/
   def estimate_at_completion_cost
     if cost_performance_index == 0 #when there is still no earned_value, done_ratio
       actual_cost

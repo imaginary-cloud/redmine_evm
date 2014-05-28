@@ -23,51 +23,43 @@
       <div id="evm-summary-indicators" class="sidebar-boxes">
         <div id="evm-summary-indicators-container" class="indicators-container">
           <h5><%= l(:label_project_schedule) %></h5>
-          <% unless @baseline.planned_value == 0 %>
-            <div id="evm-spi-bars-container" class="evm-bars-container">
-              <div id="evm-spi-pv-bar-container" class="bars">
-                <p>PV</p>
-                <div id="spi-pv-bar" class="bar"></div>
-              </div>    
-              <div id="evm-spi-ev-bar-container" class="bars">
-                <p>EV</p>
-                <div id="spi-ev-bar" class="bar"></div>
-              </div>
+          <div id="evm-spi-bars-container" class="evm-bars-container">
+            <div id="evm-spi-pv-bar-container" class="bars">
+              <p>PV</p>
+              <div id="spi-pv-bar" class="bar"></div>
+            </div>    
+            <div id="evm-spi-ev-bar-container" class="bars">
+              <p>EV</p>
+              <div id="spi-ev-bar" class="bar"></div>
             </div>
-            <p><b><%= l(:label_the_project_is)%>
-            <% if @baseline.schedule_variance < 0 %>
-              <%= ((1 - @baseline.schedule_performance_index) * 100).round %>%</b><br> <%= l(:label_behind_schedule)%></p>
-            <% else %>
-              <%= ((@baseline.schedule_performance_index - 1) * 100).round %>%</b><br> <%= l(:label_ahead_schedule)%></p>
-            <% end %>
+          </div>
+          <p><b><%= l(:label_the_project_is)%>
+          <% if @baseline.schedule_variance < 0 %>
+            <%= ((1 - @baseline.schedule_performance_index) * 100).round %>%</b><br> <%= l(:label_behind_schedule)%></p>
           <% else %>
-            <p><%=l(:label_not_avaliable)%></p> 
+            <%= ((@baseline.schedule_performance_index - 1) * 100).round %>%</b><br> <%= l(:label_ahead_schedule)%></p>
           <% end %>
         </div>
 
         <div class="indicators-container">
           <h5><%= l(:label_project_cost) %></h5>
-          <% unless @baseline.actual_cost.nil? %>
-            <div id="evm-cpi-bars-container" class="evm-bars-container">
-              <div id="evm-cpi-ev-bar-container" class="bars">
-                <p>EV</p>
-                <div id="cpi-ev-bar" class="bar"></div>
-              </div>
-              <div id="evm-cpi-ac-bar-container" class="bars">
-                <p>AC</p>
-                <div id="cpi-ac-bar" class="bar"></div>
-              </div>
+          <div id="evm-cpi-bars-container" class="evm-bars-container">
+            <div id="evm-cpi-ev-bar-container" class="bars">
+              <p>EV</p>
+              <div id="cpi-ev-bar" class="bar"></div>
             </div>
-            <div id="evm-cpi-barchart"></div>
-            <p><b><%= l(:label_the_project_is)%>
-            <% if @baseline.cost_variance < 0 %>
-              <%= ((1 - @baseline.cost_performance_index) * 100).round %>%</b><br> <%= l(:label_above_budget)%></p>
-            <% else %>
-              <%= ((@baseline.cost_performance_index - 1) * 100).round %>%</b><br> <%= l(:label_under_budget)%></p>
-            <% end %>
+            <div id="evm-cpi-ac-bar-container" class="bars">
+              <p>AC</p>
+              <div id="cpi-ac-bar" class="bar"></div>
+            </div>
+          </div>
+          <div id="evm-cpi-barchart"></div>
+          <p><b><%= l(:label_the_project_is)%>
+          <% if @baseline.cost_variance < 0 %>
+            <%= ((1 - @baseline.cost_performance_index) * 100).round %>%</b><br> <%= l(:label_above_budget)%></p>
           <% else %>
-            <p><%=l(:label_not_avaliable)%></p>  
-          <% end %>  
+            <%= ((@baseline.cost_performance_index - 1) * 100).round %>%</b><br> <%= l(:label_under_budget)%></p>
+          <% end %>
         </div>
       </div>
     </div>
@@ -112,7 +104,7 @@
   <fieldset id="filters" class="collapsible collapsed">
     <legend onclick="toggleFieldset(this);"><%= l(:label_options) %></legend>
     <div style="display: none;">
-      <% unless @baseline.actual_cost.nil? %> <%#IF ACTUAL COST IS NIL%> 
+      <% unless @baseline.actual_cost == 0 %>
       <%= check_box_tag 'forecast', 'true', @forecast_is_enabled  %>
       <%= label_tag 'Forecast' %>
       <% end %>
@@ -181,17 +173,17 @@
 </div>
 
 <script>
-  var plannedValue = <%= @baseline.planned_value%>;
-  var actualCost   = <%= @project.actual_cost   %>;
-  var earnedValue  = <%= @project.earned_value(@baseline.id)  %>;
+  var plannedValue = <%= @baseline.planned_value%>
+  var actualCost   = <%= @baseline.actual_cost   %>
+  var earnedValue  = <%= @baseline.earned_value  %>
   
   //Bar indicators and behavior from sidebar.---------------------------------------------------------------------------
   var maxValue = Math.max(plannedValue, actualCost, earnedValue);
   var barMaxHeight = 100;
 
-  var spiPlannedValueBarHeight = Math.floor((plannedValue * barMaxHeight) / maxValue);
-  var earnedValueBarHeight     = Math.floor((earnedValue  * barMaxHeight) / maxValue);
-  var cpiActualCostBarHeight   = Math.floor((actualCost   * barMaxHeight) / maxValue);
+  var spiPlannedValueBarHeight = Math.round((plannedValue * barMaxHeight) / maxValue);
+  var earnedValueBarHeight     = Math.round((earnedValue  * barMaxHeight) / maxValue);
+  var cpiActualCostBarHeight   = Math.round((actualCost   * barMaxHeight) / maxValue);
 
   $('#spi-pv-bar').height(spiPlannedValueBarHeight);
   $('#spi-ev-bar').height(earnedValueBarHeight);
