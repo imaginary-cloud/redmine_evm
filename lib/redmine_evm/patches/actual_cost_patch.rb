@@ -21,7 +21,7 @@ module RedmineEvm
       def actual_cost
         #self.instance_of?(Project) ? time_entries.sum(:hours) : spent_hours 
         if self.instance_of?(Project)
-          issues.select('sum(hours) as sum_hours').joins('join time_entries ti on( issues.id = ti.issue_id)').where("spent_on BETWEEN '#{get_start_date}' AND '#{end_date}'").first.sum_hours
+          issues.select('sum(hours) as sum_hours').joins('join time_entries ti on( issues.id = ti.issue_id)').where("spent_on BETWEEN '#{get_start_date.beginning_of_week}' AND '#{end_date}'").first.sum_hours
         else
           spent_hours
         end
@@ -82,7 +82,7 @@ module RedmineEvm
       end
 
       def has_time_entries_before_start_date
-        time_entries.where("spent_on NOT BETWEEN '#{get_start_date}' AND '#{end_date}'").count > 0
+        time_entries.where("spent_on NOT BETWEEN '#{get_start_date.beginning_of_week}' AND '#{end_date}'").count > 0
       end
 
     end
