@@ -29,7 +29,7 @@ ActiveRecord::Fixtures.create_fixtures(Redmine::Plugin.find(:redmine_evm).direct
     assert_equal false , project.has_time_entries_with_no_issue
   end
 
-  def test_when_time_entries_have__log_date_before_project_start_date
+  def test_when_time_entries_have_log_date_before_project_start_date
     project = Project.find(1)
     assert_equal false, project.has_time_entries_before_start_date
   end

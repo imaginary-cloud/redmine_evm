@@ -1,5 +1,6 @@
 module BaselinesHelper
 
+  #Convert the by_week functions to flot.js
   def convert_to_chart(hash_with_data)
     #flot.js uses milliseconds in the date axis.
     hash_converted = Hash[hash_with_data.map{ |k, v| [k.to_time.to_i * 1000, v] }]

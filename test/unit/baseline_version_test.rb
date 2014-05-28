@@ -1,14 +1,6 @@
 require File.expand_path('../../test_helper', __FILE__)
 
 class BaselineVersionTest < ActiveSupport::TestCase
-  # fixtures :projects,
-  #          :issues,
-  #          :versions
-
-  # ActiveRecord::Fixtures.create_fixtures(File.dirname(__FILE__) + '/../fixtures/',
-  #                                        [:baselines,
-  #                                         :baseline_issues,
-  #                                         :baseline_versions])
 
   def test_if_end_date_returns_value
     baseline = Baseline.create(name: "Teste", due_date: 5.days.from_now, project_id: 1)

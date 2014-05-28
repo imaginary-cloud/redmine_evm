@@ -75,6 +75,8 @@ class Baseline < ActiveRecord::Base
     due_date
   end
 
+  #EVM Metrics----------------------
+
   #Earned Value (EV)
   def earned_value
     project = Project.find(project_id)
@@ -168,24 +170,23 @@ class Baseline < ActiveRecord::Base
 
   #Earned Schedule (ES) from http://www.pmknowledgecenter.com/node/163
   def earned_schedule
-    #ev = earned_value 
-    ev = Project.find(project_id).earned_value_by_week(self.id).to_a.last[1].to_i #Earned_value function can be higher than current sometimes, is this correct?
-    pv_line = planned_value_by_week
+    ev = earned_value                       #Current Earned Value
+    pv_line = planned_value_by_week         #Planned value by week to see in what week EV is the same as PV.
 
-    week = pv_line.first[0]
-    next_week = pv_line.first[0]
+    week = pv_line.first[0]                 #PVt week
+    next_week = pv_line.first[0]            #PVt+1 week
 
-    previous_value = 0
-    previous_key = pv_line.first[0] 
+    previous_value = 0                      #Temp PVt value for loop
+    previous_key = pv_line.first[0]         #Temp PVt week for loop  
 
     pv_line.each do |key, value|
       # puts "#{previous_value} >= #{ev} <  #{value}"
-      if( ev >= previous_value.to_i && ev < value.to_i)            #Each key is a week, in what week is the ev equal to pv?
+      if( ev >= previous_value.to_i && ev < value.to_i)  #Each key is a week, in what week does the EV equal to PV?
         # puts "#{previous_value} >= #{ev} <  #{value}"
         # puts "Yes!"
-        week =  previous_key
+        week = previous_key
         next_week = key
-      elsif( ev == previous_value.to_i && ev == value.to_i) #THIS elseif is here when both are equal until the end of the project, generaly when the project is finished.
+      elsif( ev == previous_value.to_i && ev == value.to_i) #THIS elseif is here when both are equal until the end of the project, e.g. when the project is finished.
         # puts "Yes! Equal"
         week =  key
         next_week = key
@@ -194,10 +195,10 @@ class Baseline < ActiveRecord::Base
       previous_value = value.to_i
     end
 
-    pv_t = pv_line[week]
-    pv_t_next = pv_line[next_week]
+    pv_t = pv_line[week]                   #PVt value
+    pv_t_next = pv_line[next_week]         #PVt+1 value
 
-    num_of_weeks = pv_line.keys[0..pv_line.keys.index(week)].size - 1  #Get num of weeks until "week", t is number of weeks
+    num_of_weeks = pv_line.keys[0..pv_line.keys.index(week)].size - 1  #Get num of weeks until "week", t is number of weeks.
     
     # puts week
     # puts "EV = #{ev}"
@@ -208,8 +209,8 @@ class Baseline < ActiveRecord::Base
 
     # puts "ES #{num_of_weeks + ((ev - pv_line[week]) / (pv_line[next_week] - pv_line[week]))}"
 
-    if  (pv_line[next_week] - pv_line[week]) == 0 #Prevent from divide by zero
-      num_of_weeks
+    if  (pv_line[next_week] - pv_line[week]) == 0 #Prevent from divide by zero, when values are equal.
+      num_of_weeks                                #This means that the line is flat. So use the previous value because (EV >= PVt and EV < PVt+1).
     else
       num_of_weeks + ((ev - pv_line[week]) / (pv_line[next_week] - pv_line[week]))
     end
@@ -223,33 +224,33 @@ class Baseline < ActiveRecord::Base
   end
 
   def actual_cost_forecast_line
-
     [[ Time.now.beginning_of_week, actual_cost ], [ estimate_at_completion_duration.week.from_now.beginning_of_week, estimate_at_completion_cost ]] #The estimated line after actual cost
   end
 
   def earned_value_forecast_line
     project = Project.find(project_id)
-
     [[ Time.now.beginning_of_week, earned_value ], [ estimate_at_completion_duration.week.from_now.beginning_of_week, budget_at_completion]]
   end
 
+  #End date for top lines. Detects if it is an old project, so it does not go beyond baseline due_date.
   def end_date_for_top_line
     project = Project.find(project_id)
 
-    if(end_date < Date.today) #This if is for old projects
+    if(end_date < Date.today) #If it is an old project.
       end_date_for_top_line = [project.end_date.beginning_of_week, self.end_date.beginning_of_week].max
     else
       end_date_for_top_line = [project.end_date.beginning_of_week, self.end_date.beginning_of_week, estimate_at_completion_duration.week.from_now].max
     end
   end
 
+  #Ceiling line for the chart to indicate the project BAC value.
   def bac_top_line
     bac = budget_at_completion
     bac_top_line = [[start_date.beginning_of_week, bac],[end_date_for_top_line, bac]] 
   end
 
+  #Ceiling line for the chart to indicate the project EAC value.
   def eac_top_line
-    #start_date = @project.get_start_date.beginning_of_week
     eac = estimate_at_completion_cost
     eac_top_line = [[start_date.beginning_of_week, eac],[end_date_for_top_line, eac]]
   end

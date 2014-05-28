@@ -10,12 +10,13 @@
   <%= javascript_include_tag '../../../javascripts/select_list_move', :plugin => 'redmine_evm' %>
 <% end %>
 
+<!--Title-->
 <h2 id="evm-title"><%=l(:title_evm_tab)%></h2>
 <% html_title('EVM Indicators') %>
 <p id="evm-subtitle"><%=l(:subtitle_evm_tab)%></p>
 
-
-<% if @baseline.earned_value != 0 || @baseline.planned_value != 0 %> <%# Sidebar only avaliable if there is earned_value or planned_value %>
+<!--Sidebar-->
+<% if @baseline.earned_value != 0 || @baseline.planned_value != 0 %> <%# Sidebar only avaliable if there is EV or PV %>
   <% content_for :sidebar do %>
     <div id="evm-summary">
       <h3><%= l(:subtitle_evm_summary) %></h3>
@@ -64,7 +65,7 @@
 
     <%#Add forecast%>
     <% if @forecast_is_enabled %>
-      <% if @baseline.earned_value != 0 %>
+      <% if @baseline.earned_value != 0 %> <%#Only when there is EV%>
         <div id="evm-forecast" >
           <h3><%= l(:subtitle_evm_forecast) %></h3>
           <div id="evm-forecast-indicators" class="sidebar-boxes" >
@@ -111,12 +112,13 @@
 
   <p class="buttons">
     <%= link_to_function l(:button_apply), 'submit_query_form("query_form")', :class => 'icon icon-checked' %>
-    <!-- submit_query_form is from application.js -->
+    <!-- submit_query_form is from redmine application.js -->
   </p>
   
 
 <% end %>
 
+<!--Charts-->
 <div id="evm-charts-wrapper">
   <!-- Main Chart -->
   <div id="evm-main-chart">
@@ -141,6 +143,7 @@
   </div> 
 </div>
 
+<!--Legend-->
 <div id="evm-legend-info">
   <div id="evm-legend-content">
     <div>
