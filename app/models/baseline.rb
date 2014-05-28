@@ -126,7 +126,7 @@ class Baseline < ActiveRecord::Base
   #Estimate at Completion (EAC$) Yaxis
   #http://www.pmknowledgecenter.com/node/166
   def estimate_at_completion_cost
-    actual_cost + (budget_at_completion - earned_value)
+    actual_cost + (budget_at_completion - earned_value) / cost_performance_index
   end
 
   #Estimate to complete (ETC)
