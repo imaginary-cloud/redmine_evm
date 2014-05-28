@@ -106,7 +106,7 @@ function drawChart(dataToChart, placeholder, actualWeek){
             var x = item.datapoint[0].toFixed(2),
                 y = item.datapoint[1].toFixed(2);
 
-            var hours = parseInt(y)
+            var hours = y
             var date = moment(parseInt(x)).format("DD MMM YYYY")
 
             //Use moment.js lib!
