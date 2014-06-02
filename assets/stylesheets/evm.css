@@ -21,9 +21,7 @@
 }
 
 #evm-forecast-indicators-container{ margin-top: 10px; }
-#evm-forecast-indicators-container p{
-  padding: 0;
-}
+#evm-forecast-indicators-container p{ padding: 0; }
 
 .evm-bars-container{
   width: 80px;
@@ -106,7 +104,7 @@
 
 #evm-legend-content{
   margin: auto;
-  width: 950px;
+  width: 900px;
   overflow: auto;
 }
 
@@ -132,7 +130,20 @@
   color: #0f75bc ;
 }
 
+#evm-legend-forecast-container{
+  width: 410px;
+  margin: auto;
+}
+
+#evm-legend-forecast-container div{
+  display: inline-block;
+  padding: 20px;
+  color: dimgray;
+  line-height: 5px;
+}
+
 .evm-legend-lines{
+  margin: auto;
   margin-bottom: 10px;
 }
 

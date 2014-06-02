@@ -74,7 +74,7 @@
               <p><b><%=l(:label_the_project_is_now)%> <%= (@baseline.completed_actual * 100).round %>% <%= l(:label_done)%></b>
               <br> <%=l(:label_according_to_estimate)%></p>
 
-              <p><b><%= @baseline.estimate_to_complete.to_i %> hours are needed</b><br> <%=l(:label_to_finish_the_project)%></p>
+              <p><b><%= @baseline.estimate_to_complete.to_i %> <%=l(:label_hours_are_needed)%></b><br> <%=l(:label_to_finish_the_project)%></p>
 
               <p><b><%=l(:label_the_project_is_estimated)%></b><br> 
               <% if @baseline.variance_at_completion < 0 %>
@@ -119,6 +119,36 @@
 
 <% end %>
 
+<!--Legend-->
+<div id="evm-legend-info">
+  <div id="evm-legend-content">
+    <div>
+      <h3 id="evm-legend-pv"><%=l(:label_evm_legend_pv)%></h3>
+      <p><%=l(:label_evm_legend_pv_description)%></p>
+    </div>
+    <div>
+      <h3 id="evm-legend-ev"><%=l(:label_evm_legend_ev)%></h3>
+      <p><%=l(:label_evm_legend_ev_description)%></p>
+    </div>
+    <div>
+      <h3 id="evm-legend-ac"><%=l(:label_evm_legend_ac)%></h3>
+      <p><%=l(:label_evm_legend_ac_description)%></p>
+    </div>
+  </div>
+  <% if @forecast_is_enabled %>
+    <div id="evm-legend-forecast-container">
+      <div class="evm-legend-lines">
+        <div id="evm-legend-actual"  style="height:0px;width:50px;border-top:3px solid grey;padding:0;margin-bottom:4px;"></div>
+        <p><%=l(:label_evm_legend_actual)%></p>
+      </div>
+      <div class="evm-legend-lines">
+        <div id="evm-legend-predicted" style="height:0px;width:50px;border-top:3px dashed grey;padding:0;margin-bottom:4px;"></div>
+        <p><%=l(:label_evm_legend_predicted)%></p>
+      </div>
+    </div>
+  <% end %>
+</div>
+
 <!--Charts-->
 <div id="evm-charts-wrapper">
   <!-- Main Chart -->
@@ -142,34 +172,6 @@
       
     <% end %>
   </div> 
-</div>
-
-<!--Legend-->
-<div id="evm-legend-info">
-  <div id="evm-legend-content">
-    <div>
-      <h3 id="evm-legend-pv">Planned Value (PV)</h3>
-      <p>total cost of the work scheduled/planned</p>
-    </div>
-    <div>
-      <h3 id="evm-legend-ev">Earned Value (EV)</h3>
-      <p>total cost of the work completed/performed</p>
-    </div>
-    <div>
-      <h3 id="evm-legend-ac">Actual Cost (AC)</h3>
-      <p>total cost taken to complete the work</p>
-    </div>
-    <% if @forecast_is_enabled %>
-    <div class="evm-legend-lines">
-      <div id="evm-legend-actual"  style="height:0px;width:50px;border-top:3px solid grey;padding:0;margin-bottom:4px;"></div>
-      <p>Actual values</p>
-    </div>
-    <div class="evm-legend-lines">
-      <div id="evm-legend-predicted" style="height:0px;width:50px;border-top:3px dashed grey;padding:0;margin-bottom:4px;"></div>
-      <p>Predicted values</p>
-    </div>
-    <% end %>
-  </div>
 </div>
 
 <script>
