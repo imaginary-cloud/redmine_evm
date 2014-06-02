@@ -45,3 +45,13 @@ en:
   warning_log_time_before_start_date: Actual cost is not accurate. There are log times before the project start date.
 
   label_not_avaliable: Not Avaliable
+
+  label_evm_legend_pv: Planned Value (PV)
+  label_evm_legend_pv_description: total cost of the work scheduled/planned
+  label_evm_legend_ac: Actual Cost (AC)
+  label_evm_legend_ac_description: total cost of the work completed/performed 
+  label_evm_legend_ev: Earned Value (EV)
+  label_evm_legend_ev_description: total cost taken to complete the work
+  label_evm_legend_actual: Actual Values
+  label_evm_legend_predicted: Predicted values
+
