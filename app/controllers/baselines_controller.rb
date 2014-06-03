@@ -12,7 +12,7 @@ class BaselinesController < ApplicationController
   before_filter :authorize
 
   def show
-    @baseline = Baseline.find(params[:id])  
+    @baseline = Baseline.find(params[:id]) 
     @baselines = @project.baselines.order('created_on DESC')
     @forecast_is_enabled = params[:forecast] #this is in a variable because of forecast div and checkbox.
 
@@ -46,14 +46,16 @@ class BaselinesController < ApplicationController
 
   def create
     @baseline = Baseline.new(params[:baseline])
+    @excluded_versions = params[:excluded_versions]
     @baseline.project = @project
     @baseline.state = l(:label_current_baseline)
     @baseline.start_date = @project.get_start_date
 
     if @baseline.save 
+      @baseline.add_excluded_versions(@excluded_versions) #Add the excluded versions in BaselineExclusions table.
+      @baseline.create_versions(@project.versions)         #Add versions to BaselineVersions table.
+      @baseline.create_issues(@project.issues)            #Add issues to BaselineIssues table.
 
-      @baseline.create_versions(@project.versions)
-      @baseline.create_issues(@project.issues)
       flash[:notice] = l(:notice_successful_create)
       redirect_to settings_project_path(@project, :tab => 'baselines')
     else
