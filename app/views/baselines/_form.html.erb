@@ -1,8 +1,7 @@
 <%= back_url_hidden_field_tag %>
 <%= error_messages_for 'baseline' %>
 
-<% default_date = @baseline.due_date || project.issues.order('due_date DESC').first.due_date %>
-
+<% default_date = @baseline.due_date || project.due_date %>
 
 <div class="box tabular">
   <p><%= f.text_field :name, :size => 60, :required => true %></p>
@@ -11,9 +10,8 @@
   
   <p><%= label_tag "Exclude Versions"%><%= select_tag :excluded_versions, options_from_collection_for_select(project.versions, "id", "name"), :multiple => true %></p>
 
-
   <% @baseline.custom_field_values.each do |value| %>
-  <p><%= custom_field_tag_with_label :baseline, value %></p>
-<% end %>
+    <p><%= custom_field_tag_with_label :baseline, value %></p>
+  <% end %>
 
 </div>

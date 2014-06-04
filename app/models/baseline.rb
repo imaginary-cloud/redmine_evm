@@ -25,7 +25,7 @@ class Baseline < ActiveRecord::Base
       versions.each do |version|
         #Checks if it is a excluded version.
         if baseline_exclusions.where("version_id = ?",version.id).empty? 
-          self.baseline_versions.create(original_version_id: version.id, effective_date: version.end_date, start_date: version.get_start_date(self.id), name: version.name)
+          self.baseline_versions.create(original_version_id: version.id, effective_date: version.get_end_date(self.id), start_date: version.get_start_date(self.id), name: version.name)
         end
       end
     end
@@ -249,9 +249,9 @@ class Baseline < ActiveRecord::Base
     project = Project.find(project_id)
 
     if(end_date < Date.today) #If it is an old project.
-      end_date_for_top_line = [project.end_date.beginning_of_week, self.end_date.beginning_of_week].max
+      end_date_for_top_line = [project.get_end_date(self.id).beginning_of_week, self.end_date.beginning_of_week].max
     else
-      end_date_for_top_line = [project.end_date.beginning_of_week, self.end_date.beginning_of_week, estimate_at_completion_duration.week.from_now].max
+      end_date_for_top_line = [project.get_end_date(self.id).beginning_of_week, self.end_date.beginning_of_week, estimate_at_completion_duration.week.from_now].max
     end
   end
 

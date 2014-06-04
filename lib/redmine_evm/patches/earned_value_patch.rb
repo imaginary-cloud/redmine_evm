@@ -33,8 +33,10 @@ module RedmineEvm
         # get issues from projects : versions.
         #Filter issues if they are on a excluded version
         if self.instance_of?(Project)
+          #instance of project
           issues = self.issues.where("fixed_version_id IS NULL OR fixed_version_id NOT IN (SELECT version_id FROM baseline_exclusions WHERE baseline_id = ?)", baseline_id) #issues from project
         else
+          #instance of version
           issues = self.fixed_issues.where("fixed_version_id IS NULL OR fixed_version_id NOT IN (SELECT version_id FROM baseline_exclusions WHERE baseline_id = ?)", baseline_id) #Issues from version
         end
         
@@ -71,7 +73,7 @@ module RedmineEvm
         earned_value = 0
         issues = get_issues_for_earned_value(baseline_id)
 
-        final_date = end_date
+        final_date = get_end_date(baseline_id)
         date_today = Date.today
         if final_date > date_today      #If it is not a old project
           final_date = date_today
