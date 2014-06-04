@@ -18,13 +18,23 @@ module RedmineEvm
 
     module ChartDatesInstanceMethods
 
-      def get_start_date
-        start_date || created_on
+      def get_start_date baseline_id
+        if self.instance_of?(Project)
+          #instance of project
+          issues = self.issues.where("fixed_version_id IS NULL OR fixed_version_id NOT IN (SELECT version_id FROM baseline_exclusions WHERE baseline_id = ?)", baseline_id)
+        else
+          #instance of version
+          issues = self.fixed_issues.where("fixed_version_id IS NULL OR fixed_version_id NOT IN (SELECT version_id FROM baseline_exclusions WHERE baseline_id = ?)", baseline_id)
+        end
+
+        
+        start_date = issues.minimum('start_date') || created_on
+        #start_date || created_on
       end
 
       def end_date
         if self.instance_of?(Project)
-          date = self.baselines.last.due_date                     #project get current baseline due_date
+          date = self.baselines.last.due_date #project get current baseline due_date
           issues = self.issues                                    #get all issues from this project
         else
           date = due_date || created_on.to_date                   #version due_date or created_on if not

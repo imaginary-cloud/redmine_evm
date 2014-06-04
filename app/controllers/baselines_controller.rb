@@ -17,7 +17,7 @@ class BaselinesController < ApplicationController
     @forecast_is_enabled = params[:forecast] #this is in a variable because of forecast div and checkbox.
 
     @project_chart_data  = [convert_to_chart(@baseline.planned_value_by_week),
-                            convert_to_chart(@project.actual_cost_by_week), 
+                            convert_to_chart(@project.actual_cost_by_week(@baseline.id)), 
                             convert_to_chart(@project.earned_value_by_week(@baseline.id))]
 
     if(@forecast_is_enabled)
@@ -30,7 +30,7 @@ class BaselinesController < ApplicationController
     if(@project.has_time_entries_with_no_issue)
       flash[:warning] = l(:warning_log_time_with_no_issue)
     end
-    if(@project.has_time_entries_before_start_date)
+    if(@project.has_time_entries_before_start_date(@baseline.id))
       flash[:warning] = l(:warning_log_time_before_start_date)
     end
   end
@@ -49,10 +49,12 @@ class BaselinesController < ApplicationController
     @excluded_versions = params[:excluded_versions]
     @baseline.project = @project
     @baseline.state = l(:label_current_baseline)
-    @baseline.start_date = @project.get_start_date
+    
 
     if @baseline.save 
       @baseline.add_excluded_versions(@excluded_versions) #Add the excluded versions in BaselineExclusions table.
+      @baseline.start_date = @project.get_start_date(@baseline.id)
+      @baseline.save #Be carefull young one, your are still too green.
       @baseline.create_versions(@project.versions)         #Add versions to BaselineVersions table.
       @baseline.create_issues(@project.issues)            #Add issues to BaselineIssues table.
 

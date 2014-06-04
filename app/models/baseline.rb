@@ -23,22 +23,20 @@ class Baseline < ActiveRecord::Base
   def create_versions versions
     unless versions.nil?
       versions.each do |version|
-        if baseline_exclusions.where("version_id = ?",version.id).empty? #Checks if it is an excluded version.
-          baseline_version = BaselineVersion.create( original_version_id: version.id, effective_date: version.end_date,
-                                                     start_date: version.get_start_date, name: version.name)
-          baseline_versions << baseline_version
+        #Checks if it is a excluded version.
+        if baseline_exclusions.where("version_id = ?",version.id).empty? 
+          self.baseline_versions.create(original_version_id: version.id, effective_date: version.end_date, start_date: version.get_start_date(self.id), name: version.name)
         end
       end
     end
   end
 
   def create_issues issues
-
-
     unless issues.nil?
-
       issues.each do |issue|
-        unless baseline_exclusions.map(&:version_id).include?(issue.fixed_version_id) #If a issue is in a excluded version.
+        #If a issue belongs to a excluded version.
+        unless baseline_exclusions.map(&:version_id).include?(issue.fixed_version_id) 
+
           baseline_issue = BaselineIssue.new(original_issue_id: issue.id, done_ratio: issue.done_ratio)
 
           baseline_version = self.baseline_versions.find_by_original_version_id(issue.fixed_version_id)
@@ -79,9 +77,8 @@ class Baseline < ActiveRecord::Base
   end
 
   def update_baseline_status status, project_id
-      project = Project.find(project_id) 
-      baseline = project.baselines.last 
-
+    project = Project.find(project_id) 
+    baseline = project.baselines.last 
     if baseline 
       baseline.state = status 
       baseline.save
@@ -103,11 +100,11 @@ class Baseline < ActiveRecord::Base
   #Actual Cost (AC)
   def actual_cost
     project = Project.find(project_id)
-    project.actual_cost
+    project.actual_cost(self.id)
   end
 
   #Schedule Performance Index (SPI)
-  def schedule_performance_index
+  def schedule_performance_index 
     if self.planned_value != 0
       earned_value.to_f / self.planned_value
     else
@@ -132,7 +129,7 @@ class Baseline < ActiveRecord::Base
 
   #Cost Variance (CV)
   def cost_variance
-    earned_value - project.actual_cost
+    earned_value - self.actual_cost
   end
 
   #Budget at Completion (BAC)

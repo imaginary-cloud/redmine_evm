@@ -1,4 +1,4 @@
-  module RedmineEvm
+module RedmineEvm
   module Patches
 
     module EarnedValuePatch
@@ -22,18 +22,7 @@
 
     module EarnedValueInstanceMethods
 
-      def earned_value baseline_id
-        issues = get_issues baseline_id
-        sum_earned_value = 0
-        issues.each do |issue|
-          unless issue.estimated_hours.nil?
-            sum_earned_value += issue.estimated_hours * (issue.done_ratio / 100.0)
-          end
-        end
-        sum_earned_value
-      end
-
-      def get_issues baseline_id
+      def get_issues_for_earned_value baseline_id
         if self.instance_of?(Project)
           issues_with_done_ratio = Baseline.find(baseline_id).baseline_issues.where("done_ratio = 100")   # get issues from baseline where done ratio = 100.
         else
@@ -41,7 +30,14 @@
         end
         oii = issues_with_done_ratio.map{ |bi| bi.original_issue_id }                                   # get only ids from baseline issues with done ratio = 100.
         
-        self.instance_of?(Project) ? issues = self.issues : issues = self.fixed_issues                  # get issues from projects : versions.
+        # get issues from projects : versions.
+        #Filter issues if they are on a excluded version
+        if self.instance_of?(Project)
+          issues = self.issues.where("fixed_version_id IS NULL OR fixed_version_id NOT IN (SELECT version_id FROM baseline_exclusions WHERE baseline_id = ?)", baseline_id) #issues from project
+        else
+          issues = self.fixed_issues.where("fixed_version_id IS NULL OR fixed_version_id NOT IN (SELECT version_id FROM baseline_exclusions WHERE baseline_id = ?)", baseline_id) #Issues from version
+        end
+        
         normal_issues = issues.select{ |i| i.done_ratio > 0 && oii.exclude?(i.id)  }                    # select only issues from project :versions with done ratio > 0 and ignore if its the same as baseline.
         normal_issues.each do |issue|
           #if issue.done_ratio < 100
@@ -58,11 +54,22 @@
         issues_with_done_ratio
       end
 
+      def earned_value baseline_id
+        issues = get_issues_for_earned_value(baseline_id)
+        sum_earned_value = 0
+        issues.each do |issue|
+          unless issue.estimated_hours.nil?
+            sum_earned_value += issue.estimated_hours * (issue.done_ratio / 100.0)
+          end
+        end
+        sum_earned_value
+      end
+
       def earned_value_by_week baseline_id
         done_ratio_by_weeks = {}
         done_ratio = 0
         earned_value = 0
-        issues = get_issues baseline_id
+        issues = get_issues_for_earned_value(baseline_id)
 
         final_date = end_date
         date_today = Date.today
@@ -70,7 +77,7 @@
           final_date = date_today
         end
 
-        (get_start_date.to_date.beginning_of_week..final_date.to_date).each do |key| 
+        (get_start_date(baseline_id).to_date.beginning_of_week..final_date.to_date).each do |key| 
           unless issues.nil?
             i = issues.select {|i| i.due_date == key}
             i.each do |issue|

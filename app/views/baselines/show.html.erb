@@ -165,7 +165,7 @@
         <h5><%= version.name %></h5>
         <div id='evm-graph-lines-version-<%= version.id %>' style="width:70%;height:350px;margin:auto;margin-top:40px;margin-bottom:40px;"></div>
         <% version_chart_data << convert_to_chart(baseline_version.planned_value_by_week) %>
-        <% version_chart_data << convert_to_chart(version.actual_cost_by_week) %>
+        <% version_chart_data << convert_to_chart(version.actual_cost_by_week(@baseline.id)) %>
         <% version_chart_data << convert_to_chart(version.earned_value_by_week(@baseline.id)) %>
         <%= render :partial => '/baselines/version_chart_js', :locals => { version_chart_data: version_chart_data, version: version } %>
       <% end %>

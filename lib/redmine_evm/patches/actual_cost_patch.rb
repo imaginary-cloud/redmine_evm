@@ -18,31 +18,41 @@ module RedmineEvm
 
     module ActualCostInstanceMethods
 
-      def actual_cost
-        #self.instance_of?(Project) ? time_entries.sum(:hours) : spent_hours 
+      #Filter issues if they are on a excluded version
+      def get_issues_for_actual_cost baseline_id
         if self.instance_of?(Project)
-          result = issues.select('sum(hours) as sum_hours').joins('join time_entries ti on( issues.id = ti.issue_id)').where("spent_on BETWEEN '#{get_start_date.beginning_of_week}' AND '#{end_date}'").first.sum_hours
+          #instance of project
+          self.issues.where("fixed_version_id IS NULL OR fixed_version_id NOT IN (SELECT version_id FROM baseline_exclusions WHERE baseline_id = ?)", baseline_id)
+        else
+          #instance of version
+          self.fixed_issues.where("fixed_version_id IS NULL OR fixed_version_id NOT IN (SELECT version_id FROM baseline_exclusions WHERE baseline_id = ?)", baseline_id)
+        end
+      end
+
+      def actual_cost baseline_id
+        #Filter issues from excluded version.
+        issues = get_issues_for_actual_cost(baseline_id) 
+        
+        if self.instance_of?(Project)
+          result = issues.select('sum(hours) as sum_hours').joins('join time_entries ti on( issues.id = ti.issue_id)').where("spent_on BETWEEN '#{get_start_date(baseline_id).beginning_of_week}' AND '#{end_date}'").first.sum_hours
           result.nil? ? 0 : result
         else
           spent_hours
         end
       end
 
-      def get_summed_time_entries
+      def get_summed_time_entries baseline_id
+        #Filter issues from excluded version.
+        issues = get_issues_for_actual_cost(baseline_id)
+
         if self.instance_of?(Project)
-          # result = Issue.find_by_sql(['SELECT max(spent_on) as spent_on, sum(hours) as sum_hours
-          #                              FROM issues i join time_entries ti on(i.id = ti.issue_id) 
-          #                              WHERE i.project_id = :id group by spent_on;', id: id]).collect { |issue| [issue.spent_on, issue.sum_hours] }
-          # result = time_entries.select('MAX(spent_on) AS spent_on, SUM(hours) AS sum_hours').group('spent_on').collect { |time_entrie| [time_entrie.spent_on, time_entrie.sum_hours] }
+          #Project issues.
           result = issues.select('MAX(spent_on) AS spent_on, SUM(hours) AS sum_hours').
                           joins('join time_entries ti ON(issues.id = ti.issue_id)').
                           group('spent_on').collect { |issue| [issue.spent_on, issue.sum_hours] }
-
         else
-          # result = Issue.find_by_sql(['SELECT max(spent_on) as spent_on, sum(hours) as sum_hours
-          #                              FROM issues i join time_entries ti on(i.id = ti.issue_id) 
-          #                              WHERE i.fixed_version_id = :id group by spent_on;',id: id]).collect { |issue| [issue.spent_on, issue.sum_hours] }
-          result = Issue.select('MAX(spent_on) AS spent_on, SUM(hours) AS sum_hours').
+          #Version issues.
+          result = issues.select('MAX(spent_on) AS spent_on, SUM(hours) AS sum_hours').
                           joins('join time_entries ti on(issues.id = ti.issue_id)').
                           where('issues.fixed_version_id = ?', id).
                           group('spent_on').collect { |issue| [issue.spent_on, issue.sum_hours] }
@@ -52,15 +62,11 @@ module RedmineEvm
         return Hash[result] # => { 1=>2, 2=>4, 3=>6}
       end
 
-      def get_time_entries
-        self.instance_of?(Project) ? self.time_entries : TimeEntry.joins(:issue).where("#{Issue.table_name}.fixed_version_id = ?", id)
-      end
-
-      def actual_cost_by_week
+      def actual_cost_by_week baseline_id
         actual_cost_by_weeks = {}
         time = 0
 
-        summed_time_entries = get_summed_time_entries
+        summed_time_entries = get_summed_time_entries(baseline_id)
 
         final_date = end_date
         date_today = Date.today
@@ -68,7 +74,7 @@ module RedmineEvm
           final_date = date_today
         end
 
-        (get_start_date.to_date.beginning_of_week..final_date.to_date).each do |key|
+        (get_start_date(baseline_id).to_date.beginning_of_week..final_date.to_date).each do |key|
           unless summed_time_entries[key].nil?
             time += summed_time_entries[key]
           end
@@ -82,8 +88,9 @@ module RedmineEvm
         time_entries.where('issue_id IS NULL').count > 0
       end
 
-      def has_time_entries_before_start_date
-        time_entries.where("spent_on NOT BETWEEN '#{get_start_date.beginning_of_week}' AND '#{end_date}'").count > 0
+      #NOTE: get_start_date is not the real project start date! TODO
+      def has_time_entries_before_start_date baseline_id
+        time_entries.where("spent_on NOT BETWEEN '#{get_start_date(baseline_id).beginning_of_week}' AND '#{end_date}'").count > 0
       end
 
     end
