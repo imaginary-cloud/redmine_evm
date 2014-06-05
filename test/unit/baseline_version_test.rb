@@ -1,12 +1,25 @@
 require File.expand_path('../../test_helper', __FILE__)
 
 class BaselineVersionTest < ActiveSupport::TestCase
+  fixtures :projects
+
+  ActiveRecord::Fixtures.create_fixtures(Redmine::Plugin.find(:redmine_evm).directory + '/test/fixtures/',
+                                         [ :issues, 
+                                           :time_entries,
+                                           :time_entries,
+                                           :versions,
+                                           :baselines,
+                                           :baseline_issues,
+                                           :baseline_versions ])
+
+  def setup
+    @baseline = Baseline.first
+    @project = Project.find(1)
+  end   
 
   def test_if_end_date_returns_value
-    baseline = Baseline.create(name: "Teste", due_date: 5.days.from_now, project_id: 1)
-    version = BaselineVersion.create(baseline_id: baseline.id, effective_date: Date.today)
-    assert_not_nil version.end_date
-    assert_equal Date.today, version.end_date
+    assert_not_nil @baseline.baseline_versions.first.end_date
+    assert_equal Date.new(2013,05,31), @baseline.baseline_versions.first.end_date
   end
 
 end

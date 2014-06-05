@@ -1,0 +1,14 @@
+projects_007: 
+    id : 102
+    name : Clube de Voo Vertical
+    description : Implementar página para clube de voo vertical
+    homepage : 
+    is_public : 0
+    parent_id :
+    created_on : 2012-12-27 12:41:04
+    updated_on : 2012-12-27 12:41:04
+    identifier : voo-vertical
+    status : 1
+    lft : 27
+    rgt : 28
+    inherit_members : 0

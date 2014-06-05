@@ -1,14 +1,56 @@
-time_entries_006: 
-  created_on:  <%= 1.days.ago.to_s(:db) %>
-  tweek: 12
-  tmonth: 3
-  project_id: 1
-  comments: Test hours
-  updated_on:  <%= 1.days.ago.to_s(:db) %>
-  activity_id: 9
-  spent_on: 2007-03-23
-  issue_id: 15
-  id: 6
-  hours: 35
-  user_id: 2
-  tyear: 2014
+# time_entries_006: 
+#   created_on:  <%= 1.days.ago.to_s(:db) %>
+#   tweek: 12
+#   tmonth: 3
+#   project_id: 1
+#   comments: Test hours
+#   updated_on:  <%= 1.days.ago.to_s(:db) %>
+#   activity_id: 9
+#   spent_on: 2007-03-23
+#   issue_id: 15
+#   id: 6
+#   hours: 35
+#   user_id: 2
+#   tyear: 2014
+time_entries_007: 
+    id : 5633
+    project_id : 1
+    user_id : 59
+    issue_id : 4544
+    hours : 3
+    comments : Reunião inicial com Clube Vertical; 
+    activity_id : 12
+    spent_on : 2012-12-28
+    tyear : 2012
+    tmonth : 12
+    tweek : 52
+    created_on : 2012-12-28 19:15:06
+    updated_on : 2012-12-28 19:15:06
+time_entries_008: 
+    id : 5671
+    project_id : 1
+    user_id : 59
+    issue_id : 4530
+    hours : 1
+    comments : Theme search
+    activity_id : 8
+    spent_on : 2013-01-03
+    tyear : 2013
+    tmonth : 1
+    tweek : 1
+    created_on : 2013-01-04 17:07:48
+    updated_on : 2013-01-04 17:07:48
+time_entries_009: 
+    id : 5672
+    project_id : 1
+    user_id : 59
+    issue_id : 4530
+    hours : 3
+    comments : Theme search and proposal
+    activity_id : 8
+    spent_on : 2013-01-04
+    tyear : 2013
+    tmonth : 1
+    tweek : 1
+    created_on : 2013-01-04 17:08:19
+    updated_on : 2013-01-04 17:08:19

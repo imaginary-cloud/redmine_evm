@@ -1,54 +1,429 @@
-issues_015:
-  id: 15
-  root_id: 15
-  created_on: <%= 18.days.ago.to_s(:db) %>
-  project_id: 1
-  updated_on: <%= 18.days.ago.to_s(:db) %>
-  priority_id: 5
-  subject: Test issue
-  fixed_version_id: 
-  category_id: 
-  description: This is a test issue
-  tracker_id: 1
-  author_id: 2
-  status_id: 1
-  done_ratio: 50
-  estimated_hours: 40
-  lft: 1
-  rgt: 2
-issues_016:
-  id: 16
-  root_id: 16
-  created_on: <%= 10.days.ago.to_s(:db) %>
-  project_id: 1
-  updated_on: <%= 10.days.ago.to_s(:db) %>
-  priority_id: 4
-  subject: Test issue 2
-  fixed_version_id: 
-  category_id: 
-  description: This is a test issue 2
-  tracker_id: 1
-  author_id: 2
-  status_id: 1
-  done_ratio: 0
-  estimated_hours: 20
-  lft: 1
-  rgt: 2
-issues_017:
-  id: 17
-  root_id: 17
-  created_on: <%= 1.days.ago.to_s(:db) %>
-  project_id: 1
-  updated_on: <%= 1.days.ago.to_s(:db) %>
-  priority_id: 3
-  subject: Test issue 3
-  fixed_version_id: 
-  category_id: 
-  description: This is a test issue 3
-  tracker_id: 1
-  author_id: 2
-  status_id: 1
-  done_ratio: 100
-  estimated_hours: 10
-  lft: 1
-  rgt: 2
+# issues_015:
+#   id: 15
+#   root_id: 15
+#   created_on: <%= 18.days.ago.to_s(:db) %>
+#   project_id: 1
+#   updated_on: <%= 18.days.ago.to_s(:db) %>
+#   priority_id: 5
+#   subject: Test issue
+#   fixed_version_id: 
+#   category_id: 
+#   description: This is a test issue
+#   tracker_id: 1
+#   author_id: 2
+#   status_id: 1
+#   done_ratio: 50
+#   estimated_hours: 40
+#   lft: 1
+#   rgt: 2
+# issues_016:
+#   id: 16
+#   root_id: 16
+#   created_on: <%= 10.days.ago.to_s(:db) %>
+#   project_id: 1
+#   updated_on: <%= 10.days.ago.to_s(:db) %>
+#   priority_id: 4
+#   subject: Test issue 2
+#   fixed_version_id: 
+#   category_id: 
+#   description: This is a test issue 2
+#   tracker_id: 1
+#   author_id: 2
+#   status_id: 1
+#   done_ratio: 0
+#   estimated_hours: 20
+#   lft: 1
+#   rgt: 2
+# issues_017:
+#   id: 17
+#   root_id: 17
+#   created_on: <%= 1.days.ago.to_s(:db) %>
+#   project_id: 1
+#   updated_on: <%= 1.days.ago.to_s(:db) %>
+#   priority_id: 3
+#   subject: Test issue 3
+#   fixed_version_id: 
+#   category_id: 
+#   description: This is a test issue 3
+#   tracker_id: 1
+#   author_id: 2
+#   status_id: 1
+#   done_ratio: 100
+#   estimated_hours: 10
+#   lft: 1
+#   rgt: 2
+issues_018:
+  id : 4530
+  tracker_id : 3
+  project_id : 1
+  subject : Design do projecto     
+  description : Seleccionar 3 temas
+  due_date : 2013-01-02
+  category_id : 
+  status_id : 2
+  assigned_to_id : 59
+  priority_id : 4
+  fixed_version_id : 164
+  author_id : 59
+  lock_version : 4
+  created_on : 2012-12-27 19:48:42
+  updated_on : 2014-03-20 11:57:21
+  start_date : 2013-01-02
+  done_ratio : 50
+  estimated_hours : 12
+  parent_id : 
+  root_id : 4530
+  lft : 1
+  rgt : 2
+  is_private : 0
+  closed_on : 
+issues_019:
+  id : 4531
+  tracker_id : 3
+  project_id : 1
+  subject : Instalação do Sistema 
+  description : Instalar Joomla 2.5 no Hosting;
+  due_date : 
+  category_id : 
+  status_id : 1
+  assigned_to_id : 59
+  priority_id : 4
+  fixed_version_id : 165
+  author_id : 59
+  lock_version : 2
+  created_on : 2012-12-27 19:52:27
+  updated_on : 2012-12-27 20:02:41
+  start_date : 2013-01-07
+  done_ratio : 0
+  estimated_hours : 12
+  parent_id : 
+  root_id : 4531
+  lft : 1
+  rgt : 2
+  is_private : 0
+  closed_on : 
+issues_020:
+  id : 4532
+  tracker_id : 3
+  project_id : 1
+  subject : Implementar template e criação de estrutura de páginas
+  description : Instalar Template e estrutura de páginas e menus
+  due_date : 
+  category_id : 
+  status_id : 1
+  assigned_to_id : 59
+  priority_id : 4
+  fixed_version_id : 165
+  author_id : 59
+  lock_version : 2
+  created_on : 2012-12-27 19:55:01
+  updated_on : 2012-12-27 20:10:37
+  start_date : 2013-01-08
+  done_ratio : 0
+  estimated_hours : 24
+  parent_id : 
+  root_id : 4532
+  lft : 1
+  rgt : 2
+  is_private : 0
+  closed_on : 
+issues_021:
+  id : 4533
+  tracker_id : 3
+  project_id : 1
+  subject : Preparar Multilanguage
+  description : Preparar Joomla para multilanguage.
+  due_date : 
+  category_id : 
+  status_id : 1
+  assigned_to_id : 59
+  priority_id : 4
+  fixed_version_id : 165
+  author_id : 59
+  lock_version : 0
+  created_on : 2012-12-27 20:07:06
+  updated_on : 2012-12-27 20:07:06
+  start_date : 2013-01-08
+  done_ratio : 0
+  estimated_hours : 12
+  parent_id : 
+  root_id : 4533
+  lft : 1
+  rgt : 2
+  is_private : 0
+  closed_on : 
+issues_022:
+  id : 4534
+  tracker_id : 3
+  project_id : 1
+  subject : Implementar Perfis de Utilizador
+  description : Implementar 3 perfis de utilizador;\r\nAdmin;\r\nGestor / Criador de Conteúdos;\r\nSócios;\r\nDeverá ser criado um modo de acesso à gestão do perfil pelo utilizador;\r\n
+  due_date : 
+  category_id : 
+  status_id : 1
+  assigned_to_id : 59
+  priority_id : 4
+  fixed_version_id : 165
+  author_id : 59
+  lock_version : 0
+  created_on : 2012-12-27 20:10:18
+  updated_on : 2012-12-27 20:10:18
+  start_date : 2013-01-08
+  done_ratio : 0
+  estimated_hours : 24
+  parent_id : 
+  root_id : 4534
+  lft : 1
+  rgt : 2
+  is_private : 0
+  closed_on : 
+issues_023:
+  id : 4535
+  tracker_id : 3
+  project_id : 1
+  subject : Inserir conteúdos fornecidos na fase de design e migração de conteúdos
+  description : 
+  due_date : 
+  category_id : 
+  status_id : 1
+  assigned_to_id : 59
+  priority_id : 4
+  fixed_version_id : 165
+  author_id : 59
+  lock_version : 2
+  created_on : 2012-12-27 20:18:35
+  updated_on : 2012-12-27 20:22:25
+  start_date : 2013-01-14
+  done_ratio : 0
+  estimated_hours : 90
+  parent_id : 
+  root_id : 4535
+  lft : 1
+  rgt : 2
+  is_private : 0
+  closed_on : 
+issues_024:
+  id : 4536
+  tracker_id : 3
+  project_id : 1
+  subject : Integração com Twitter
+  description : Criar área com mensagens do Twitter;\r\nAberto a users do Twitter com a hastag do clube vertical;\r\n
+  due_date : 
+  category_id : 
+  status_id : 1
+  assigned_to_id : 59
+  priority_id : 4
+  fixed_version_id : 165
+  author_id : 59
+  lock_version : 0
+  created_on : 2012-12-27 20:22:02
+  updated_on : 2012-12-27 20:22:02
+  start_date : 2013-01-14
+  done_ratio : 0
+  estimated_hours : 16
+  parent_id : 
+  root_id : 4536
+  lft : 1
+  rgt : 2
+  is_private : 0
+  closed_on : 
+issues_025:
+  id : 4537
+  tracker_id : 3
+  project_id : 1
+  subject : Implementar Blog integrado no site
+  description : Os artigos do blog deverão possuir social buttons;\r\n
+  due_date : 
+  category_id : 
+  status_id : 1
+  assigned_to_id : 59
+  priority_id : 4
+  fixed_version_id : 165
+  author_id : 59
+  lock_version : 0
+  created_on : 2012-12-27 20:25:07
+  updated_on : 2012-12-27 20:25:07
+  start_date : 2013-01-14
+  done_ratio : 0
+  estimated_hours : 24
+  parent_id : 
+  root_id : 4537
+  lft : 1
+  rgt : 2
+  is_private : 0
+  closed_on : 
+issues_026:
+  id : 4538
+  tracker_id : 3
+  project_id : 1
+  subject : Criação de área com Videos do youtube
+  description : Criar área com videos relacionados com o Clube Vertical postados no Youtube;
+  due_date : 
+  category_id : 
+  status_id : 1
+  assigned_to_id : 59
+  priority_id : 4
+  fixed_version_id : 165
+  author_id : 59
+  lock_version : 0
+  created_on : 2012-12-27 20:26:52
+  updated_on : 2012-12-27 20:26:52
+  start_date : 2013-01-14
+  done_ratio : 0
+  estimated_hours : 16
+  parent_id : 
+  root_id : 4538
+  lft : 1
+  rgt : 2
+  is_private : 0
+  closed_on : 
+issues_027:
+  id : 4539
+  tracker_id : 3
+  project_id : 1
+  subject : Colocar mapa do google na página de contactos
+  description : Inserir mapa com localização na página de contactos;\r\n
+  due_date : 
+  category_id : 
+  status_id : 1
+  assigned_to_id : 59
+  priority_id : 4
+  fixed_version_id : 165
+  author_id : 59
+  lock_version : 0
+  created_on : 2012-12-27 20:28:40
+  updated_on : 2012-12-27 20:28:40
+  start_date : 2013-01-14
+  done_ratio : 0
+  estimated_hours : 4
+  parent_id : 
+  root_id : 4539
+  lft : 1
+  rgt : 2
+  is_private : 0
+  closed_on : 
+issues_028:
+  id : 4540
+  tracker_id : 3
+  project_id : 1
+  subject : Widget com ligação ao facebook
+  description : Criar área para exibição de conteúdos do grupo do facebook; 
+  due_date : 
+  category_id : 
+  status_id : 1
+  assigned_to_id : 59
+  priority_id : 4
+  fixed_version_id : 165
+  author_id : 59
+  lock_version : 0
+  created_on : 2012-12-27 20:30:25
+  updated_on : 2012-12-27 20:30:25
+  start_date : 2013-01-14
+  done_ratio : 0
+  estimated_hours : 16
+  parent_id : 
+  root_id : 4540
+  lft : 1
+  rgt : 2
+  is_private : 0
+  closed_on : 
+issues_029:
+  id : 4541
+  tracker_id : 3
+  project_id : 1
+  subject : Formação
+  description : Entrega do site e formação off-site;
+  due_date : 2013-01-14
+  category_id : 
+  status_id : 1
+  assigned_to_id : 59
+  priority_id : 4
+  fixed_version_id : 165
+  author_id : 59
+  lock_version : 1
+  created_on : 2012-12-27 20:31:37
+  updated_on : 2014-03-20 11:57:01
+  start_date : 2013-01-14
+  done_ratio : 0
+  estimated_hours : 2
+  parent_id : 
+  root_id : 4541
+  lft : 1
+  rgt : 2
+  is_private : 0
+  closed_on : 
+issues_030:
+  id : 4544
+  tracker_id : 3
+  project_id : 1
+  subject : Setup Projecto
+  description : Kick-off do projecto
+  due_date : 
+  category_id : 
+  status_id : 2
+  assigned_to_id : 59
+  priority_id : 4
+  fixed_version_id : 164
+  author_id : 59
+  lock_version : 0
+  created_on : 2012-12-28 19:14:09
+  updated_on : 2012-12-28 19:14:09
+  start_date : 2012-12-27
+  done_ratio : 50
+  estimated_hours : 9
+  parent_id : 
+  root_id : 4544
+  lft : 1
+  rgt : 2
+  is_private : 0
+  closed_on : 
+issues_031:
+  id : 4710
+  tracker_id : 2
+  project_id : 1
+  subject : Test Issue
+  description : 
+  due_date : 
+  category_id : 
+  status_id : 1
+  assigned_to_id : 
+  priority_id : 4
+  fixed_version_id : 168
+  author_id : 63
+  lock_version : 1
+  created_on : 2014-06-02 15:28:54
+  updated_on : 2014-06-02 15:44:19
+  start_date : 2014-06-02
+  done_ratio : 0
+  estimated_hours : 
+  parent_id : 
+  root_id : 4710
+  lft : 1
+  rgt : 2
+  is_private : 0
+  closed_on : 
+issues_032:
+  id : 4711
+  tracker_id : 2
+  project_id : 1
+  subject : Teste issue without version
+  description : 
+  due_date : 2014-06-07
+  category_id : 
+  status_id : 1
+  assigned_to_id : 
+  priority_id : 4
+  fixed_version_id : 
+  author_id : 63
+  lock_version : 1
+  created_on : 2014-06-02 15:44:32
+  updated_on : 2014-06-04 15:33:21
+  start_date : 2014-06-02
+  done_ratio : 0
+  estimated_hours : 10
+  parent_id : 
+  root_id : 4711
+  lft : 1
+  rgt : 2
+  is_private : 0
+  closed_on : 

@@ -1,56 +1,192 @@
-baseline_issues_001:
-  id: 1
-  original_issue_id: 1
-  estimated_hours: 10
-  due_date: 2006-07-30
-  created_on: 2014-01-05 21:00:33 +02:00
-  baseline_id: 1
-  done_ratio:
-baseline_issues_002:
-  id: 2
-  original_issue_id: 2
-  estimated_hours: 9
-  due_date: 2006-08-15
-  created_on: 2014-01-05 21:00:33 +02:00
-  baseline_id: 1
-  done_ratio:
-baseline_issues_003:
-  id: 3
-  original_issue_id: 1
-  estimated_hours: 10
-  due_date: 2006-07-30
-  baseline_version_id: 3
-  created_on: 2014-04-24 21:00:33 +02:00
-  baseline_id: 2
-  done_ratio:
-baseline_issues_004:
-  id: 4
-  original_issue_id: 2
-  estimated_hours: 9
-  due_date: 2006-08-15
-  created_on: 2014-04-24 21:00:33 +02:00
-  baseline_id: 2
-  done_ratio:
-baseline_issues_005:
-  id: 5
-  original_issue_id: 3
-  estimated_hours: 3
-  due_date: 2006-08-15
-  created_on: 2014-01-05 21:00:33 +02:00
-  baseline_id: 3
-  done_ratio: 50
-baseline_issues_006:
-  id: 6
-  original_issue_id: 3
-  estimated_hours: 3
-  due_date: 2006-08-15
-  created_on: 2014-04-24 21:00:33 +02:00
-  baseline_id: 4
-  done_ratio: 100
-baseline_issues_007:
-  id: 7
-  estimated_hours: 10
-  due_date: 2006-08-15
-  created_on: 2014-04-24 21:00:33 +02:00
-  baseline_id: 1
-  done_ratio: 100
+
+# baseline_issues_001:
+#   id: 1
+#   original_issue_id: 1
+#   estimated_hours: 10
+#   due_date: 2006-07-30
+#   created_on: 2014-01-05 21:00:33 +02:00
+#   baseline_id: 1
+#   done_ratio:
+# baseline_issues_002:
+#   id: 2
+#   original_issue_id: 2
+#   estimated_hours: 9
+#   due_date: 2006-08-15
+#   created_on: 2014-01-05 21:00:33 +02:00
+#   baseline_id: 1
+#   done_ratio:
+# baseline_issues_003:
+#   id: 3
+#   original_issue_id: 1
+#   estimated_hours: 10
+#   due_date: 2006-07-30
+#   baseline_version_id: 3
+#   created_on: 2014-04-24 21:00:33 +02:00
+#   baseline_id: 2
+#   done_ratio:
+# baseline_issues_004:
+#   id: 4
+#   original_issue_id: 2
+#   estimated_hours: 9
+#   due_date: 2006-08-15
+#   created_on: 2014-04-24 21:00:33 +02:00
+#   baseline_id: 2
+#   done_ratio:
+# baseline_issues_005:
+#   id: 5
+#   original_issue_id: 3
+#   estimated_hours: 3
+#   due_date: 2006-08-15
+#   created_on: 2014-01-05 21:00:33 +02:00
+#   baseline_id: 3
+#   done_ratio: 50
+# baseline_issues_006:
+#   id: 6
+#   original_issue_id: 3
+#   estimated_hours: 3
+#   due_date: 2006-08-15
+#   created_on: 2014-04-24 21:00:33 +02:00
+#   baseline_id: 4
+#   done_ratio: 100
+# baseline_issues_007:
+#   id: 7
+#   estimated_hours: 10
+#   due_date: 2006-08-15
+#   created_on: 2014-04-24 21:00:33 +02:00
+#   baseline_id: 1
+#   done_ratio: 100
+baseline_issues_008:
+    id : 601
+    original_issue_id : 4530
+    estimated_hours : 12
+    due_date : 2013-01-02
+    baseline_version_id : 95
+    created_on : 2014-06-05 14:27:03
+    baseline_id : 1
+    done_ratio : 50
+baseline_issues_009:
+    id : 602
+    original_issue_id : 4531
+    estimated_hours : 12
+    due_date : 
+    baseline_version_id : 93
+    created_on : 2014-06-05 14:27:04
+    baseline_id : 1
+    done_ratio : 0
+baseline_issues_010:
+    id : 603
+    original_issue_id : 4532
+    estimated_hours : 24
+    due_date : 
+    baseline_version_id : 93
+    created_on : 2014-06-05 14:27:04
+    baseline_id : 1
+    done_ratio : 0
+baseline_issues_011:
+    id : 604
+    original_issue_id : 4533
+    estimated_hours : 12
+    due_date : 
+    baseline_version_id : 93
+    created_on : 2014-06-05 14:27:04
+    baseline_id : 1
+    done_ratio : 0
+baseline_issues_012:
+    id : 605
+    original_issue_id : 4534
+    estimated_hours : 24
+    due_date : 
+    baseline_version_id : 93
+    created_on : 2014-06-05 14:27:04
+    baseline_id : 1
+    done_ratio : 0
+baseline_issues_013:
+    id : 606
+    original_issue_id : 4535
+    estimated_hours : 90
+    due_date : 
+    baseline_version_id : 93
+    created_on : 2014-06-05 14:27:04
+    baseline_id : 1
+    done_ratio : 0
+baseline_issues_014:
+    id : 607
+    original_issue_id : 4536
+    estimated_hours : 16
+    due_date : 
+    baseline_version_id : 93
+    created_on : 2014-06-05 14:27:04
+    baseline_id : 1
+    done_ratio : 0
+baseline_issues_015:
+    id : 608
+    original_issue_id : 4537
+    estimated_hours : 24
+    due_date : 
+    baseline_version_id : 93
+    created_on : 2014-06-05 14:27:04
+    baseline_id : 1
+    done_ratio : 0
+baseline_issues_016:
+    id : 609
+    original_issue_id : 4538
+    estimated_hours : 16
+    due_date : 
+    baseline_version_id : 93
+    created_on : 2014-06-05 14:27:04
+    baseline_id : 1
+    done_ratio : 0
+baseline_issues_017:
+    id : 610
+    original_issue_id : 4539
+    estimated_hours : 4
+    due_date : 
+    baseline_version_id : 93
+    created_on : 2014-06-05 14:27:04
+    baseline_id : 1
+    done_ratio : 0
+baseline_issues_018:
+    id : 611
+    original_issue_id : 4540
+    estimated_hours : 16
+    due_date : 
+    baseline_version_id : 93
+    created_on : 2014-06-05 14:27:04
+    baseline_id : 1
+    done_ratio : 0
+baseline_issues_019:
+    id : 612
+    original_issue_id : 4541
+    estimated_hours : 2
+    due_date : 2013-01-14
+    baseline_version_id : 93
+    created_on : 2014-06-05 14:27:04
+    baseline_id : 1
+    done_ratio : 0
+baseline_issues_020:
+    id : 613
+    original_issue_id : 4544
+    estimated_hours : 9
+    due_date : 2012-12-28
+    baseline_version_id : 95
+    created_on : 2014-06-05 14:27:04
+    baseline_id : 1
+    done_ratio : 50
+baseline_issues_021:
+    id : 614
+    original_issue_id : 4710
+    estimated_hours : 0
+    due_date : 
+    baseline_version_id : 94
+    created_on : 2014-06-05 14:27:04
+    baseline_id : 1
+    done_ratio : 0
+baseline_issues_022:
+    id : 615
+    original_issue_id : 4711
+    estimated_hours : 10
+    due_date : 2014-06-07
+    baseline_version_id : 
+    created_on : 2014-06-05 14:27:04
+    baseline_id : 1
+    done_ratio : 0
