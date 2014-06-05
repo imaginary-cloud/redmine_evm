@@ -76,6 +76,19 @@ class Baseline < ActiveRecord::Base
     end
   end
 
+  def update_baseline_exclusions excluded_versions
+    project = Project.find(project_id)
+    unless excluded_versions.nil?
+      self.baseline_exclusions.delete_all            #Need refactor
+      self.baseline_versions.delete_all
+      self.baseline_issues.delete_all
+
+      self.add_excluded_versions(excluded_versions)  #Add the excluded versions in BaselineExclusions table.
+      self.create_versions(project.versions)         #Add versions to BaselineVersions table.
+      self.create_issues(project.issues)             #Add issues to BaselineIssues table.
+    end
+  end
+
   def update_baseline_status status, project_id
     project = Project.find(project_id) 
     baseline = project.baselines.last 

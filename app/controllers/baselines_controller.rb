@@ -72,7 +72,12 @@ class BaselinesController < ApplicationController
     if request.put? && params[:baseline]
       attributes = params[:baseline].dup
       @baseline.safe_attributes = attributes
+      @excluded_versions = params[:excluded_versions]
+
       if @baseline.save
+        
+        @baseline.update_baseline_exclusions(@excluded_versions)
+
         flash[:notice] = l(:notice_successful_update)
         redirect_to settings_project_path(@project, :tab => 'baselines')
       else

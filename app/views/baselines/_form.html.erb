@@ -7,8 +7,7 @@
   <p><%= f.text_field :name, :size => 60, :required => true %></p>
   <p><%= f.text_field :description, :size => 60 %></p>
   <p><%= f.text_field :due_date, :size => 10, :required => true , :value => default_date %><%= calendar_for('baseline_due_date') %></p>
-  
-  <p><%= label_tag "Exclude Versions"%><%= select_tag :excluded_versions, options_from_collection_for_select(project.versions, "id", "name"), :multiple => true %></p>
+  <p><%= label_tag "Exclude Versions"%><%= select_tag :excluded_versions, options_from_collection_for_select(project.versions, "id", "name", @baseline.baseline_exclusions.collect {|be| be.version_id}), :multiple => true %></p>
 
   <% @baseline.custom_field_values.each do |value| %>
     <p><%= custom_field_tag_with_label :baseline, value %></p>
