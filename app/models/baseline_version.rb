@@ -8,4 +8,8 @@ class BaselineVersion < ActiveRecord::Base
   def end_date
     effective_date || baseline.due_date
   end
+
+  def is_excluded
+    self.exclude
+  end
 end

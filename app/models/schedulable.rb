@@ -18,6 +18,10 @@ module Schedulable
 
   #Returns the planned value by weeks.
   def planned_value_by_week
+    planned_value_by_weeks ||= planned_value_by
+  end
+  
+  def planned_value_by
     result = baseline_issues.select('due_date, sum(estimated_hours) as estimated_hours')
                             .group('due_date').having('sum(estimated_hours)<>0')
                             .collect { |baseline_issue| [baseline_issue.due_date, baseline_issue.estimated_hours] }

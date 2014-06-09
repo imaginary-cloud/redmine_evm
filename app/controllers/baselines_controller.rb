@@ -46,17 +46,14 @@ class BaselinesController < ApplicationController
 
   def create
     @baseline = Baseline.new(params[:baseline])
-    @excluded_versions = params[:excluded_versions]
+    @versions_to_exclude = params[:versions_to_exclude]
     @baseline.project = @project
     @baseline.state = l(:label_current_baseline)
-    
+    @baseline.start_date = @project.get_start_date(@baseline.id)
 
     if @baseline.save 
-      @baseline.add_excluded_versions(@excluded_versions) #Add the excluded versions in BaselineExclusions table.
-      @baseline.start_date = @project.get_start_date(@baseline.id)
-      @baseline.save #Be carefull young one, your are still too green.
-      @baseline.create_versions(@project.versions)         #Add versions to BaselineVersions table.
-      @baseline.create_issues(@project.issues)            #Add issues to BaselineIssues table.
+      @baseline.create_versions(@project.versions, @versions_to_exclude)         #Add versions to BaselineVersions model.
+      @baseline.create_issues(@project.issues)                                   #Add issues to BaselineIssues model.
 
       flash[:notice] = l(:notice_successful_create)
       redirect_to settings_project_path(@project, :tab => 'baselines')
@@ -72,12 +69,8 @@ class BaselinesController < ApplicationController
     if request.put? && params[:baseline]
       attributes = params[:baseline].dup
       @baseline.safe_attributes = attributes
-      @excluded_versions = params[:excluded_versions]
 
       if @baseline.save
-        
-        @baseline.update_baseline_exclusions(@excluded_versions)
-
         flash[:notice] = l(:notice_successful_update)
         redirect_to settings_project_path(@project, :tab => 'baselines')
       else

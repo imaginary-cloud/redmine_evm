@@ -32,12 +32,20 @@ module RedmineEvm
         
         # get issues from projects : versions.
         #Filter issues if they are on a excluded version
+        # if self.instance_of?(Project)
+        #   #instance of project
+        #   issues = self.issues.where("fixed_version_id IS NULL OR fixed_version_id NOT IN (SELECT version_id FROM baseline_exclusions WHERE baseline_id = ?)", baseline_id) #issues from project
+        # else
+        #   #instance of version
+        #   issues = self.fixed_issues.where("fixed_version_id IS NULL OR fixed_version_id NOT IN (SELECT version_id FROM baseline_exclusions WHERE baseline_id = ?)", baseline_id) #Issues from version
+        # end
+        
         if self.instance_of?(Project)
           #instance of project
-          issues = self.issues.where("fixed_version_id IS NULL OR fixed_version_id NOT IN (SELECT version_id FROM baseline_exclusions WHERE baseline_id = ?)", baseline_id) #issues from project
+          issues = self.issues
         else
           #instance of version
-          issues = self.fixed_issues.where("fixed_version_id IS NULL OR fixed_version_id NOT IN (SELECT version_id FROM baseline_exclusions WHERE baseline_id = ?)", baseline_id) #Issues from version
+          issues = self.fixed_issues
         end
         
         normal_issues = issues.select{ |i| i.done_ratio > 0 && oii.exclude?(i.id)  }                    # select only issues from project :versions with done ratio > 0 and ignore if its the same as baseline.

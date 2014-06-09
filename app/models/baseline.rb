@@ -6,7 +6,6 @@ class Baseline < ActiveRecord::Base
   belongs_to :project
   has_many :baseline_issues, dependent: :destroy
   has_many :baseline_versions, dependent: :destroy
-  has_many :baseline_exclusions, dependent: :destroy
 
   validates :name, :due_date, :presence => true
 
@@ -20,13 +19,12 @@ class Baseline < ActiveRecord::Base
   'description',
   'due_date'
 
-  def create_versions versions
+  def create_versions versions, versions_to_exclude
     unless versions.nil?
       versions.each do |version|
-        #Checks if it is a excluded version.
-        if baseline_exclusions.where("version_id = ?",version.id).empty? 
-          self.baseline_versions.create(original_version_id: version.id, effective_date: version.get_end_date(self.id), start_date: version.get_start_date(self.id), name: version.name)
-        end
+
+        baseline_versions.create(original_version_id: version.id, effective_date: version.get_end_date(self.id),
+                                start_date: version.get_start_date(self.id), name: version.name, exclude: versions_to_exclude.collect{|ve| ve.to_i}.include?(version.id))
       end
     end
   end
@@ -34,58 +32,36 @@ class Baseline < ActiveRecord::Base
   def create_issues issues
     unless issues.nil?
       issues.each do |issue|
-        #If a issue belongs to a excluded version.
-        unless baseline_exclusions.map(&:version_id).include?(issue.fixed_version_id) 
+        
 
-          baseline_issue = BaselineIssue.new(original_issue_id: issue.id, done_ratio: issue.done_ratio)
+        baseline_issue = BaselineIssue.new(original_issue_id: issue.id, done_ratio: issue.done_ratio)
 
-          baseline_version = self.baseline_versions.find_by_original_version_id(issue.fixed_version_id)
-          unless baseline_version.nil?
-            baseline_issue.baseline_version_id = baseline_version.id
-          end
+        baseline_version = self.baseline_versions.find_by_original_version_id(issue.fixed_version_id)
+        unless baseline_version.nil?
+          baseline_issue.baseline_version_id = baseline_version.id
+        end
 
-          if(Project.find(project_id).baselines.count > 1)
-            if(issue.done_ratio == 100 || issue.status.name == "Rejected")
-              baseline_issue.estimated_hours = issue.total_spent_hours
-                issue.time_entries.empty? ? baseline_issue.due_date = issue.updated_on.to_date : baseline_issue.due_date = issue.time_entries.maximum('spent_on')
-            else
-              baseline_issue.estimated_hours = issue.estimated_hours || 0
-              issue.due_date.nil? ? baseline_issue.due_date = issue.time_entries.maximum('spent_on') : baseline_issue.due_date = issue.due_date
-            end
+        if(Project.find(project_id).baselines.count > 1)
+          if(issue.done_ratio == 100 || issue.status.name == "Rejected")
+            baseline_issue.estimated_hours = issue.total_spent_hours
+              issue.time_entries.empty? ? baseline_issue.due_date = issue.updated_on.to_date : baseline_issue.due_date = issue.time_entries.maximum('spent_on')
           else
             baseline_issue.estimated_hours = issue.estimated_hours || 0
-            if(issue.done_ratio == 100 || issue.status.name == "Rejected")
-              issue.time_entries.empty? ? baseline_issue.due_date = issue.updated_on.to_date : baseline_issue.due_date = issue.time_entries.maximum('spent_on')
-            else
-              issue.due_date.nil? ? baseline_issue.due_date = issue.time_entries.maximum('spent_on') : baseline_issue.due_date = issue.due_date
-            end
-          end 
+            issue.due_date.nil? ? baseline_issue.due_date = issue.time_entries.maximum('spent_on') : baseline_issue.due_date = issue.due_date
+          end
+        else
+          baseline_issue.estimated_hours = issue.estimated_hours || 0
+          if(issue.done_ratio == 100 || issue.status.name == "Rejected")
+            issue.time_entries.empty? ? baseline_issue.due_date = issue.updated_on.to_date : baseline_issue.due_date = issue.time_entries.maximum('spent_on')
+          else
+            issue.due_date.nil? ? baseline_issue.due_date = issue.time_entries.maximum('spent_on') : baseline_issue.due_date = issue.due_date
+          end
+        end 
 
-          baseline_issue.save
-          baseline_issues << baseline_issue
-        end
+        baseline_issue.save
+        baseline_issues << baseline_issue
+        
       end
-    end
-  end
-
-  def add_excluded_versions excluded_versions
-    unless excluded_versions.nil?
-      excluded_versions.each do |ev|
-        baseline_exclusions.create(version_id: ev)
-      end
-    end
-  end
-
-  def update_baseline_exclusions excluded_versions
-    project = Project.find(project_id)
-    unless excluded_versions.nil?
-      self.baseline_exclusions.delete_all            #Need refactor
-      self.baseline_versions.delete_all
-      self.baseline_issues.delete_all
-
-      self.add_excluded_versions(excluded_versions)  #Add the excluded versions in BaselineExclusions table.
-      self.create_versions(project.versions)         #Add versions to BaselineVersions table.
-      self.create_issues(project.issues)             #Add issues to BaselineIssues table.
     end
   end
 
