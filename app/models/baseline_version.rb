@@ -13,3 +13,4 @@ class BaselineVersion < ActiveRecord::Base
     self.exclude
   end
 end
+

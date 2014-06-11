@@ -5,43 +5,29 @@ module Schedulable
     baseline_issues.sum(:estimated_hours)
   end
 
-  # #Returns the planned value by weeks.
-  # def planned_value_by_week
-  #   planned_value_by_weeks = {}
-  #   time = 0
-  #   (start_date.to_date..end_date.to_date).each do |key|
-  #     time += baseline_issues.select{ |baseline_issue| baseline_issue.end_date == key }.sum(&:estimated_hours)
-  #     planned_value_by_weeks[key.beginning_of_week] = time
-  #   end
-  #   planned_value_by_weeks
-  # end
-
-  #Returns the planned value by weeks.
   def planned_value_by_week
-    planned_value_by_weeks ||= planned_value_by
+    @planned_value_by_week ||= calculate_planned_value_by_week
   end
-  
-  def planned_value_by
-    result = baseline_issues.select('due_date, sum(estimated_hours) as estimated_hours')
-                            .group('due_date').having('sum(estimated_hours)<>0')
-                            .collect { |baseline_issue| [baseline_issue.due_date, baseline_issue.estimated_hours] }
-    summed_baseline_issues = Hash[result]
 
-    planned_value_by_weeks = {}
-    time = 0
-    (start_date.beginning_of_week..end_date).each do |key|
-      unless summed_baseline_issues[key].nil?
-        time += summed_baseline_issues[key]
+  def calculate_planned_value_by_week
+    planned_value_by_week = {}
+    (start_date.beginning_of_week..end_date).each do |date|
+      planned_value_by_week[date.beginning_of_week] = 0
+    end
+
+    baseline_issues.each do |baseline_issue|
+      unless baseline_issue.start_date.nil? && baseline_issue.end_date.nil?
+        baseline_issue_days = (baseline_issue.start_date..baseline_issue.end_date).to_a
+        hoursPerDay = baseline_issue.estimated_hours / baseline_issue_days.size
       end
-        planned_value_by_weeks[key.beginning_of_week] = time
+      baseline_issue_days.each do |day|
+        planned_value_by_week[day.beginning_of_week] += hoursPerDay
+      end
     end
+    planned_value_by_week.each do |key, value|
 
-    unless summed_baseline_issues[nil].nil? #Check if there are issues with no due_date
-      time += summed_baseline_issues[nil] #Issues with no due_date, add estimated_hours
     end
-    planned_value_by_weeks[end_date.to_date.beginning_of_week] = time
-
-    planned_value_by_weeks
+    planned_value_by_week.each_with_object({}) { |(k, v), h| h[k] = v + (h.values.last||0)  }
   end
 
   #Returns the actual (current time) planned value.
