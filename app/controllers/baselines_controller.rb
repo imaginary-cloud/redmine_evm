@@ -60,8 +60,8 @@ class BaselinesController < ApplicationController
 
     if @baseline.save
       @versions_to_exclude = @baseline.versions_to_exclude(params[:operator_target_versions], params[:selected_target_versions], @project.id)
-      @baseline.create_versions(@project.versions, @versions_to_exclude)         #Add versions to BaselineVersions model.
-      @baseline.create_issues(@project.issues)                                   #Add issues to BaselineIssues model.
+      @baseline.create_versions(@project.versions, @versions_to_exclude)                                #Add versions to BaselineVersions model.
+      @baseline.create_issues(@project.issues, params[:update_estimated_hours])                       #Add issues to BaselineIssues model.
       @baseline.start_date = @project.get_start_date(@baseline.id)
       @baseline.save
 
