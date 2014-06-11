@@ -160,7 +160,7 @@
   <div id="evm-versions-charts">
     <% @project.versions.each do |version|%>
       <% version_chart_data = [] %>
-      <% baseline_version = @baseline.baseline_versions.where(original_version_id: version.id).first %>
+      <% baseline_version = @baseline.baseline_versions.where(original_version_id: version.id, exclude: false).first %>
       <% unless baseline_version.nil? %>
         <h5><%= version.name %></h5>
         <div id='evm-graph-lines-version-<%= version.id %>' style="width:70%;height:350px;margin:auto;margin-top:40px;margin-bottom:40px;"></div>

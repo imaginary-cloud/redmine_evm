@@ -19,22 +19,13 @@ module RedmineEvm
     module ChartDatesInstanceMethods
 
       def get_issues_for_dates baseline_id
-        # if self.instance_of?(Project)
-        #   #instance of project
-        #   issues = self.issues.where("fixed_version_id IS NULL OR fixed_version_id NOT IN (SELECT version_id FROM baseline_exclusions WHERE baseline_id = ?)", baseline_id)
-        # else
-        #   #instance of version
-        #   issues = self.fixed_issues.where("fixed_version_id IS NULL OR fixed_version_id NOT IN (SELECT version_id FROM baseline_exclusions WHERE baseline_id = ?)", baseline_id)
-        # end
-
         if self.instance_of?(Project)
           #instance of project
-          issues = self.issues
+          issues = self.issues.where("fixed_version_id IS NULL OR fixed_version_id NOT IN (SELECT original_version_id FROM baseline_versions WHERE exclude = true AND baseline_id = ?)", baseline_id)
         else
           #instance of version
-          issues = self.fixed_issues
+          issues = self.fixed_issues.where("fixed_version_id IS NULL OR fixed_version_id NOT IN (SELECT original_version_id FROM baseline_versions WHERE exclude = true AND baseline_id = ?)", baseline_id)
         end
-
       end
 
       def get_start_date baseline_id
