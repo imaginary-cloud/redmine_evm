@@ -30,7 +30,7 @@ ActiveRecord::Fixtures.create_fixtures(Redmine::Plugin.find(:redmine_evm).direct
   end
 
   def test_if_get_issues_for_actual_cost_returns
-    assert_not_nil @project.get_issues_for_actual_cost(@baseline.id)
+    assert_not_nil @project.get_non_excluded_issues(@baseline.id)
   end
 
   def test_when_time_entries_have_no_issue_associated
@@ -52,10 +52,17 @@ ActiveRecord::Fixtures.create_fixtures(Redmine::Plugin.find(:redmine_evm).direct
   end
 
   #Test if in the actual time the actual_cost_by_week for the chart is equal to actual_cost function.
-  def test_if_pv_is_equal_to_current_in_pv_by_week
+  def test_if_actualcost_is_equal_to_current_in_actualcost_by_week
     current_ac_in_by_week = @project.actual_cost_by_week(@baseline.id)[Date.today.beginning_of_week]
     current_ac = @baseline.actual_cost
     assert_equal current_ac, current_ac_in_by_week
+  end
+
+  def test_if_get_issues_filter_issues_from_excluded_versions
+    bv = @baseline.baseline_versions.first
+    bv.exclude = true
+    bv.save
+    assert_equal 4, @project.get_non_excluded_issues(@baseline.id).count
   end
 
 end

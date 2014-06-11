@@ -40,7 +40,6 @@ ActiveRecord::Fixtures.create_fixtures(Redmine::Plugin.find(:redmine_evm).direct
   should belong_to(:project)
   should have_many(:baseline_issues)
   should have_many(:baseline_versions)
-  should have_many(:baseline_exclusions)
   should validate_presence_of(:name)
   should validate_presence_of(:due_date)
 
@@ -141,12 +140,14 @@ ActiveRecord::Fixtures.create_fixtures(Redmine::Plugin.find(:redmine_evm).direct
   def test_if_actual_forecast_line_returns_array
     forecast_line = @baseline.actual_cost_forecast_line
     assert_not_nil forecast_line
+    assert_equal @baseline.estimate_at_completion_cost, forecast_line[1][1]
   end
 
-  # def test_if_earned_forecast_line_returns_array
-  #   forecast_line = @baseline.earned_value_forecast_line
-  #   assert_not_nil forecast_line
-  # end
+  def test_if_earned_forecast_line_returns_array
+    forecast_line = @baseline.earned_value_forecast_line
+    assert_not_nil forecast_line
+    assert_equal @baseline.planned_value_at_completion, forecast_line[1][1]
+  end
 
   def test_if_end_date_for_top_line_returns_value
     assert_not_nil @baseline.end_date_for_top_line
@@ -157,6 +158,7 @@ ActiveRecord::Fixtures.create_fixtures(Redmine::Plugin.find(:redmine_evm).direct
     assert_not_nil bac_top_line
     assert_equal 271.0, bac_top_line[0][1]
     assert_equal 271.0, bac_top_line[1][1]
+    assert_equal @baseline.planned_value_at_completion, bac_top_line[0][1] 
   end
     
   def test_if_eac_top_line_returns_array
@@ -164,6 +166,7 @@ ActiveRecord::Fixtures.create_fixtures(Redmine::Plugin.find(:redmine_evm).direct
     assert_not_nil eac_top_line
     assert_equal 180.66666666666666, eac_top_line[0][1]
     assert_equal 180.66666666666666, eac_top_line[1][1]
+    assert_equal @baseline.estimate_at_completion_cost, eac_top_line[0][1]
   end
 
   def test_if_actual_cost_is_equal_to_actual_cost_by_week
@@ -178,10 +181,16 @@ ActiveRecord::Fixtures.create_fixtures(Redmine::Plugin.find(:redmine_evm).direct
     assert_equal earned_value, earned_value_by_week
   end
 
-  def test_if_palnned_value_is_equal_to_planned_value_by_week
+  def test_if_planned_value_is_equal_to_planned_value_by_week
     planned_value_by_week = @baseline.planned_value_by_week.to_a.last[1]
     planned_value = @baseline.planned_value
     assert_equal planned_value, planned_value_by_week
   end
+
+  # def test_excluded_baselines
+  #   versions_to_exclude = ["164","168"]
+  #   @baseline.add_excluded_versions(versions_to_exclude)
+  #   assert_not_empty @baseline.baseline_exclusions
+  # end
 
 end

@@ -18,20 +18,9 @@ module RedmineEvm
 
     module ActualCostInstanceMethods
 
-      #Filter issues if they are on a excluded version
-      def get_issues_for_actual_cost baseline_id
-        if self.instance_of?(Project)
-          #instance of project
-          issues = self.issues.where("fixed_version_id IS NULL OR fixed_version_id NOT IN (SELECT original_version_id FROM baseline_versions WHERE exclude = true AND baseline_id = ?)", baseline_id)
-        else
-          #instance of version
-          issues = self.fixed_issues.where("fixed_version_id IS NULL OR fixed_version_id NOT IN (SELECT original_version_id FROM baseline_versions WHERE exclude = true AND baseline_id = ?)", baseline_id)
-        end
-      end
-
       def actual_cost baseline_id
-        #Filter issues from excluded version.
-        issues = get_issues_for_actual_cost(baseline_id) 
+        #Get issues that are not excluded. from chart_dates_patch
+        issues = get_non_excluded_issues(baseline_id) 
         
         if self.instance_of?(Project)
           result = issues.select('sum(hours) as sum_hours').joins('join time_entries ti on( issues.id = ti.issue_id)').where("spent_on BETWEEN '#{get_start_date(baseline_id).beginning_of_week}' AND '#{get_end_date(baseline_id)}'").first.sum_hours
@@ -42,8 +31,8 @@ module RedmineEvm
       end
 
       def get_summed_time_entries baseline_id
-        #Filter issues from excluded version.
-        issues = get_issues_for_actual_cost(baseline_id)
+        #Get issues that are not excluded. from chart_dates_patch
+        issues = get_non_excluded_issues(baseline_id)
 
         if self.instance_of?(Project)
           #Project issues.

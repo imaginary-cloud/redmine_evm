@@ -42,7 +42,7 @@ ActiveRecord::Fixtures.create_fixtures(Redmine::Plugin.find(:redmine_evm).direct
   end
 
   #Test if in the actual time the earned_value_by_week for the chart is equal to earned_value function.
-  def test_if_pv_is_equal_to_current_in_pv_by_week
+  def test_if_earnedvalue_is_equal_to_current_in_earnedvalue_by_week
     current_ev_in_by_week = @project.earned_value_by_week(@baseline.id)[Date.today.beginning_of_week]
     current_ev = @baseline.earned_value
     assert_equal current_ev, current_ev_in_by_week

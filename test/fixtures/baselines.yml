@@ -33,7 +33,7 @@
 baselines_005:
   id : 1
   name : Voo Baseline 1
-  due_date : 2014-06-07
+  due_date : <%= Date.today%>
   description : All versions
   state : Current
   project_id : 1

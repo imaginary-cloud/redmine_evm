@@ -30,15 +30,8 @@ module RedmineEvm
         end
         oii = issues_with_done_ratio.map{ |bi| bi.original_issue_id }                                   # get only ids from baseline issues with done ratio = 100.
         
-        # get issues from projects : versions.
-        #Filter issues if they are on a excluded version
-        if self.instance_of?(Project)
-          #instance of project
-          issues = self.issues.where("fixed_version_id IS NULL OR fixed_version_id NOT IN (SELECT original_version_id FROM baseline_versions WHERE exclude = true AND baseline_id = ?)", baseline_id)
-        else
-          #instance of version
-          issues = self.fixed_issues.where("fixed_version_id IS NULL OR fixed_version_id NOT IN (SELECT original_version_id FROM baseline_versions WHERE exclude = true AND baseline_id = ?)", baseline_id)
-        end
+        #Get issues that are not excluded. from chart_dates_patch
+        issues = get_non_excluded_issues(baseline_id)
         
         normal_issues = issues.select{ |i| i.done_ratio > 0 && oii.exclude?(i.id)  }                    # select only issues from project :versions with done ratio > 0 and ignore if its the same as baseline.
         normal_issues.each do |issue|

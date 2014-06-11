@@ -54,6 +54,7 @@ baseline_versions_008:
     start_date : 2013-01-07
     baseline_id : 1
     name : Acceptance Review 
+    exclude: false
 baseline_versions_009:
     id : 94
     original_version_id : 168
@@ -62,6 +63,7 @@ baseline_versions_009:
     start_date : 2014-06-02
     baseline_id : 1
     name : Test Version
+    exclude: false
 baseline_versions_010:
     id : 95
     original_version_id : 164
@@ -70,3 +72,4 @@ baseline_versions_010:
     start_date : 2012-12-27
     baseline_id : 1
     name : Design Review
+    exclude: false

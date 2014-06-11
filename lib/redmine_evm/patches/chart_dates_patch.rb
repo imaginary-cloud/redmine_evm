@@ -18,7 +18,8 @@ module RedmineEvm
 
     module ChartDatesInstanceMethods
 
-      def get_issues_for_dates baseline_id
+      #Get issues that are not excluded.
+      def get_non_excluded_issues baseline_id
         if self.instance_of?(Project)
           #instance of project
           issues = self.issues.where("fixed_version_id IS NULL OR fixed_version_id NOT IN (SELECT original_version_id FROM baseline_versions WHERE exclude = true AND baseline_id = ?)", baseline_id)
@@ -30,7 +31,7 @@ module RedmineEvm
 
       def get_start_date baseline_id
         #Filter issues from excluded version.
-        issues = get_issues_for_dates(baseline_id)
+        issues = get_non_excluded_issues(baseline_id)
 
         #start_date || created_on
         date = issues.minimum(:start_date) || created_on
@@ -38,7 +39,7 @@ module RedmineEvm
 
       def get_end_date baseline_id
         #Filter issues from excluded version.
-        issues = get_issues_for_dates(baseline_id)
+        issues = get_non_excluded_issues(baseline_id)
 
         if self.instance_of?(Project)
           date = Baseline.find(baseline_id).due_date #project get current baseline due_date

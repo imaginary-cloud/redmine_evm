@@ -22,4 +22,8 @@ class BaselineVersionTest < ActiveSupport::TestCase
     assert_equal Date.new(2013,05,31), @baseline.baseline_versions.first.end_date
   end
 
+  def is_excluded_does_not_return_nil
+    assert_not_nil @baseline.baseline_versions.first
+  end
+
 end
