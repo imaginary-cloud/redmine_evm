@@ -22,7 +22,7 @@ class Baseline < ActiveRecord::Base
   def create_versions versions, versions_to_exclude
     unless versions.nil?
       versions.each do |version|
-        versions_to_exclude.nil? ? exclude = false : exclude =  versions_to_exclude.include?(version.id.to_s)
+        versions_to_exclude.nil? ? exclude = false : exclude =  versions_to_exclude.include?(version.id)
         baseline_versions.create(original_version_id: version.id, effective_date: version.get_end_date(self.id),
                                 start_date: version.get_start_date(self.id), name: version.name, exclude: exclude)
       end
