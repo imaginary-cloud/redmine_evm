@@ -1,15 +1,24 @@
 class BaselinesController < ApplicationController
-  unloadable
 
   helper :baselines
   include BaselinesHelper
 
   model_object Baseline
 
-  before_filter :find_model_object, :except => [:new, :create, :current_baseline]
-  before_filter :find_project_from_association, :except => [:new, :create, :current_baseline]
-  before_filter :find_project_by_project_id, :only => [:new, :create, :current_baseline]
+  before_filter :find_model_object, :except => [:new, :create, :index]
+  before_filter :find_project_from_association, :except => [:new, :create, :index]
+  before_filter :find_project_by_project_id, :only => [:new, :create, :index]
   before_filter :authorize
+
+  def index
+    if @project.baselines.any?
+      baseline_id = @project.baselines.last.id
+      redirect_to baseline_path(baseline_id)
+    else 
+      flash[:error] = l(:error_no_baseline)
+      redirect_to settings_project_path(@project, :tab => 'baselines')
+    end
+  end
 
   def show
     @baseline = Baseline.find(params[:id]) 
@@ -49,11 +58,12 @@ class BaselinesController < ApplicationController
     @baseline.project = @project
     @baseline.state = l(:label_current_baseline)
 
-    if @baseline.save 
-      @baseline.create_versions @project.versions, params[:versions_to_exclude]         #Add versions to BaselineVersions model.
-      @baseline.create_issues @project.issues, params[:update_estimated_hours]                                   #Add issues to BaselineIssues model.
+    if @baseline.save
+      @versions_to_exclude = @baseline.versions_to_exclude(params[:operator_target_versions], params[:selected_target_versions], @project.id)
+      @baseline.create_versions(@project.versions, @versions_to_exclude)         #Add versions to BaselineVersions model.
+      @baseline.create_issues(@project.issues)                                   #Add issues to BaselineIssues model.
       @baseline.start_date = @project.get_start_date(@baseline.id)
-      @baseline.save 
+      @baseline.save
 
       flash[:notice] = l(:notice_successful_create)
       redirect_to settings_project_path(@project, :tab => 'baselines')
@@ -82,16 +92,6 @@ class BaselinesController < ApplicationController
   def destroy
     @baseline.destroy
     redirect_to settings_project_path(@project, :tab => 'baselines')
-  end
-
-  def current_baseline
-    if @project.baselines.any?
-      baseline_id = @project.baselines.last.id
-      redirect_to baseline_path(baseline_id)
-    else 
-      flash[:error] = l(:error_no_baseline)
-      redirect_to settings_project_path(@project, :tab => 'baselines')
-    end
   end
 
 end

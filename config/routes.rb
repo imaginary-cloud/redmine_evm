@@ -4,5 +4,4 @@
 resources :baselines
 resources :projects do 
 	resources :baselines
-  get '/current_baseline', to: 'baselines#current_baseline' 
 end

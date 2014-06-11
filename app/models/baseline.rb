@@ -23,10 +23,8 @@ class Baseline < ActiveRecord::Base
     unless versions.nil?
       versions.each do |version|
         versions_to_exclude.nil? ? exclude = false : exclude =  versions_to_exclude.include?(version.id.to_s)
-
         baseline_versions.create(original_version_id: version.id, effective_date: version.get_end_date(self.id),
                                 start_date: version.get_start_date(self.id), name: version.name, exclude: exclude)
-
       end
     end
   end
@@ -34,7 +32,6 @@ class Baseline < ActiveRecord::Base
   def create_issues issues, update_estimated_hours
     unless issues.nil?
       issues.each do |issue|
-        
         baseline_issue = BaselineIssue.new(original_issue_id: issue.id, done_ratio: issue.done_ratio, status: issue.status.name, due_date: issue.due_date, start_date: issue.start_date || issue.created_on)
 
         baseline_version = self.baseline_versions.find_by_original_version_id(issue.fixed_version_id)
@@ -65,6 +62,28 @@ class Baseline < ActiveRecord::Base
         
       end
     end
+  end
+
+  def versions_to_exclude operator, selected_target_versions, project_id
+    target_versions = []
+    unless selected_target_versions.nil?
+      target_versions = selected_target_versions.collect{|v| v.to_i}
+    end
+    all_versions = Project.find(project_id).versions.map(&:id)
+    if operator == "is"
+      all_versions - target_versions #All the other not selected versions are excluded.
+    elsif operator == "is not"
+      target_versions
+    elsif operator == "any"
+      target_versions
+    elsif operator == "none"
+      all_versions
+    end
+  end
+
+  #Returns the excluded versions from this baseline
+  def get_excluded_versions
+    baseline_versions.where(exclude: true).map(&:original_version_id)
   end
 
   def update_baseline_status status, project_id
@@ -105,7 +124,6 @@ class Baseline < ActiveRecord::Base
 
   #Cost Performance Index (CPI)
   def cost_performance_index
-    #NOTE: Actual cost is a decimal value.
     if actual_cost != 0
       earned_value.to_f / actual_cost
     else
