@@ -16,16 +16,14 @@ module Schedulable
     end
 
     baseline_issues.each do |baseline_issue|
-      unless baseline_issue.start_date.nil? && baseline_issue.end_date.nil?
+      next if baseline_issue.exclude
+      unless baseline_issue.start_date.nil? && baseline_issue.end_date.nil? 
         baseline_issue_days = (baseline_issue.start_date..baseline_issue.end_date).to_a
         hoursPerDay = baseline_issue.estimated_hours / baseline_issue_days.size
       end
       baseline_issue_days.each do |day|
         planned_value_by_week[day.beginning_of_week] += hoursPerDay
       end
-    end
-    planned_value_by_week.each do |key, value|
-
     end
     planned_value_by_week.each_with_object({}) { |(k, v), h| h[k] = v + (h.values.last||0)  }
   end
