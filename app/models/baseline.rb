@@ -32,11 +32,12 @@ class Baseline < ActiveRecord::Base
   def create_issues issues, update_estimated_hours
     unless issues.nil?
       issues.each do |issue|
-        baseline_issue = BaselineIssue.new(original_issue_id: issue.id, done_ratio: issue.done_ratio, status: issue.status.name, due_date: issue.due_date, start_date: issue.start_date || issue.created_on)
+        baseline_issue = BaselineIssue.new(original_issue_id: issue.id, done_ratio: issue.done_ratio, status: issue.status.name, due_date: issue.due_date, start_date: issue.start_date || issue.created_on, exclude: false)
 
         baseline_version = self.baseline_versions.find_by_original_version_id(issue.fixed_version_id)
         unless baseline_version.nil?
           baseline_issue.baseline_version_id = baseline_version.id
+          baseline_issue.exclude = baseline_version.exclude
         end
 
         if update_estimated_hours == "1"
@@ -66,10 +67,11 @@ class Baseline < ActiveRecord::Base
 
   def versions_to_exclude operator, selected_target_versions, project_id
     target_versions = []
+    all_versions = Project.find(project_id).versions.map(&:id)
     unless selected_target_versions.nil?
       target_versions = selected_target_versions.collect{|v| v.to_i}
     end
-    all_versions = Project.find(project_id).versions.map(&:id)
+    
     if operator == "is"
       all_versions - target_versions #All the other not selected versions are excluded.
     elsif operator == "is not"
@@ -84,6 +86,10 @@ class Baseline < ActiveRecord::Base
   #Returns the excluded versions from this baseline
   def get_excluded_versions
     baseline_versions.where(exclude: true).map(&:original_version_id)
+  end
+
+  def get_targeted_versions
+    baseline_versions.where(exclude: false).map(&:original_version_id)
   end
 
   def update_baseline_status status, project_id
