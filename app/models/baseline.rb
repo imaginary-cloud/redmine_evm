@@ -23,8 +23,8 @@ class Baseline < ActiveRecord::Base
     unless versions.nil?
       versions.each do |version|
         versions_to_exclude.nil? ? exclude = false : exclude =  versions_to_exclude.include?(version.id)
-        baseline_versions.create(original_version_id: version.id, effective_date: version.get_end_date(self.id),
-                                start_date: version.get_start_date(self.id), name: version.name, exclude: exclude)
+        baseline_versions.create(original_version_id: version.id, effective_date: version.due_date, start_date: version.start_date, name: version.name, exclude: exclude)
+        #baseline_versions.create(original_version_id: version.id, effective_date: version.get_end_date(self.id), start_date: version.get_start_date(self.id), name: version.name, exclude: exclude)
       end
     end
   end
@@ -44,13 +44,20 @@ class Baseline < ActiveRecord::Base
           puts issue.status.name
           if issue.status.name == "Closed"
             baseline_issue.estimated_hours = issue.spent_hours
-            #issue.time_entries.empty? ? baseline_issue.due_date = issue.updated_on.to_date : baseline_issue.due_date = issue.time_entries.maximum('spent_on')
+            if issue.due_date.nil?
+              issue.time_entries.empty? ? baseline_issue.due_date = issue.updated_on.to_date : baseline_issue.due_date = issue.time_entries.maximum('spent_on')
+            end  
           else
             baseline_issue.estimated_hours = issue.estimated_hours || 0
             #issue.due_date.nil? ? baseline_issue.due_date = issue.time_entries.maximum('spent_on') : baseline_issue.due_date = issue.due_date
           end
         else
           baseline_issue.estimated_hours = issue.estimated_hours || 0
+          if issue.status.name == "Closed"
+            if issue.due_date.nil?
+              issue.time_entries.empty? ? baseline_issue.due_date = issue.updated_on.to_date : baseline_issue.due_date = issue.time_entries.maximum('spent_on')
+            end
+          end
           # if issue.done_ratio == 100 || issue.status.name == "Rejected"
           #   issue.time_entries.empty? ? baseline_issue.due_date = issue.updated_on.to_date : baseline_issue.due_date = issue.time_entries.maximum('spent_on')
           # else

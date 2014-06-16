@@ -23,24 +23,33 @@ module RedmineEvm
     module EarnedValueInstanceMethods
 
       def get_issues_for_earned_value baseline_id
-        if self.instance_of?(Project)
-          issues_with_done_ratio = Baseline.find(baseline_id).baseline_issues.where("done_ratio = 100")   # get issues from baseline where done ratio = 100.
-        else
-          issues_with_done_ratio = Baseline.find(baseline_id).baseline_versions.where("original_version_id = #{self.id}").first.baseline_issues.where("done_ratio = 100")   # get issues from baseline where done ratio = 100.
-        end
-        oii = issues_with_done_ratio.map{ |bi| bi.original_issue_id }                                   # get only ids from baseline issues with done ratio = 100.
-        
+
         #Get issues that are not excluded. from chart_dates_patch
         issues = get_non_excluded_issues(baseline_id)
+
+        #Get baseline issues whre status is closed(completed issues).
+        if self.instance_of?(Project)
+          issues_with_done_ratio = Baseline.find(baseline_id).baseline_issues.where(status: "Closed", exclude: false)   
+        else
+          issues_with_done_ratio = Baseline.find(baseline_id).baseline_versions.where("original_version_id = #{self.id}").first.baseline_issues.where(status: "Closed", exclude: false) 
+        end
+
+        #coloca due dates 
+        issues_with_done_ratio.each do |baseline_issue|
+          unless baseline_issue.due_date.nil?
+            if issues.where("id = #{baseline_issue.original_issue_id}").first.time_entries.empty?
+              baseline_issue.due_date = issues.where("id = #{baseline_issue.original_issue_id}").first.updated_on.to_date
+            else
+              baseline_issue.due_date = issues.where("id = #{baseline_issue.original_issue_id}").first.time_entries.maximum('spent_on')
+            end
+          end
+        end
+
+        oii = issues_with_done_ratio.map(&:original_issue_id)                                 
         
         normal_issues = issues.select{ |i| i.done_ratio > 0 && oii.exclude?(i.id)  }                    # select only issues from project :versions with done ratio > 0 and ignore if its the same as baseline.
         normal_issues.each do |issue|
-          #if issue.done_ratio < 100
-            #if issues dont have time_entries use updated_on
             issue.time_entries.empty? ? issue.due_date = issue.updated_on.to_date : issue.due_date = issue.time_entries.maximum('spent_on')
-          # else
-          #   issue.due_date.nil? ? issue.due_date = issue.time_entries.maximum('spent_on') : nil
-          # end         # substitui a due_date pelo maximo das time entries. 
         end
         
         unless normal_issues.nil?
