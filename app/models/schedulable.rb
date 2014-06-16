@@ -2,7 +2,7 @@ module Schedulable
 
   #Returns the Budget at Complete (BAC), the planned value at project completion.
   def planned_value_at_completion
-    baseline_issues.sum(:estimated_hours)
+    baseline_issues.where(exclude: false).sum(:estimated_hours)
   end
 
   def planned_value_by_week
