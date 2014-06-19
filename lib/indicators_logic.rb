@@ -61,6 +61,11 @@ module IndicatorsLogic
       end
     end
     ary_data_week_years = [['week', 'ActualCost', 'PlannedCost', 'EarnedValue']]
+    ary_weeks = [] # ["week"]
+    ary_acs = [] # ["AC"]
+    ary_pcs = [] # ["PV"]
+    ary_evs = [] # ["EV"]
+
     sum_real, sum_planned, sum_earned = 0,0,0
     ary_weeks_years.each do |k|
       v = hash_weeks_years[k]
@@ -72,10 +77,15 @@ module IndicatorsLogic
          (sum_real * 100).round / 100.0,
          (sum_planned * 100).round / 100.0,
          (sum_earned * 100).round / 100.0])
+      ary_weeks.push(k[0].to_s + "/" + k[1].to_s);
+      ary_acs.push((sum_real * 100).round / 100.0);
+      ary_pcs.push((sum_planned * 100).round / 100.0);
+      ary_evs.push((sum_earned * 100).round / 100.0);
     end
+    
     cpi = calculate_performance_indicator(ary_data_week_years.last[3], ary_data_week_years.last[1])
     spi = calculate_performance_indicator(ary_data_week_years.last[3], ary_data_week_years.last[2])
-    [ary_data_week_years, (cpi * 1000).round / 1000.0, (spi * 1000).round / 1000.0]
+    [ary_data_week_years, (cpi * 1000).round / 1000.0, (spi * 1000).round / 1000.0, ary_weeks, ary_acs, ary_pcs, ary_evs]
   end
 
   def self.retrive_data(project_or_version)
