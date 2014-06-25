@@ -6,7 +6,7 @@ class BaselineVersion < ActiveRecord::Base
   has_many :baseline_issues, dependent: :destroy
 
   def end_date
-    effective_date || baseline.due_date
+    @end_date = effective_date || baseline.due_date
   end
 
   def is_excluded
