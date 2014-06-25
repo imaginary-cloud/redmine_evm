@@ -47,7 +47,7 @@ function drawChart(dataToChart, placeholder, actualWeek){
         color: '#0F75BC'
     },{ 
         data: data[1],
-        label: "Acutal Cost",
+        label: "Actual Cost",
         color: '#FBC040'
     },{  
         data: data[2],

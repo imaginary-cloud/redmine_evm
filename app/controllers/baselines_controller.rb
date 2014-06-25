@@ -59,10 +59,10 @@ class BaselinesController < ApplicationController
     @baseline.state = l(:label_current_baseline)
 
     if @baseline.save
-      @versions_to_exclude = @baseline.versions_to_exclude(params[:operator_target_versions], params[:selected_target_versions], @project.id)
-      @baseline.create_versions(@project.versions, @versions_to_exclude)                                #Add versions to BaselineVersions model.
-      @baseline.create_issues(@project.issues, params[:update_estimated_hours])                       #Add issues to BaselineIssues model.
-      @baseline.start_date = @project.get_start_date(@baseline.id)
+      @versions_to_exclude = @baseline.versions_to_exclude params[:operator_target_versions], params[:selected_target_versions], @project.id
+      @baseline.create_versions @project.versions, @versions_to_exclude, params[:update_estimated_hours]                                 #Add versions to BaselineVersions model.
+      @baseline.create_issues @project.issues, params[:update_estimated_hours]                       #Add issues to BaselineIssues model.
+      @baseline.start_date = @project.get_start_date @baseline.id #start date for baseline before it was get_start_date(see if it still remains necessary)
       @baseline.save
 
       flash[:notice] = l(:notice_successful_create)
