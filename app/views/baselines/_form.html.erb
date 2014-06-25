@@ -6,7 +6,7 @@
   <% disabled = true %> 
 <% end %>
 
-<% default_date = @baseline.due_date || project.due_date %>
+<% default_date = @baseline.due_date || project.maximum_date %>
 
 <div class="box tabular">
   <p><%= f.text_field :name, size: 60, required: true %></p>
