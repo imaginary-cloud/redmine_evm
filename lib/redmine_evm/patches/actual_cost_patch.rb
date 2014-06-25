@@ -30,27 +30,6 @@ module RedmineEvm
         end
       end
 
-      def get_summed_time_entries baseline_id
-        #Get issues that are not excluded. from chart_dates_patch
-        issues = get_non_excluded_issues(baseline_id)
-
-        if self.instance_of?(Project)
-          #Project issues.
-          result = issues.select('MAX(spent_on) AS spent_on, SUM(hours) AS sum_hours').
-                          joins('join time_entries ti ON(issues.id = ti.issue_id)').
-                          group('spent_on').collect { |issue| [issue.spent_on, issue.sum_hours] }
-        else
-          #Version issues.
-          result = issues.select('MAX(spent_on) AS spent_on, SUM(hours) AS sum_hours').
-                          joins('join time_entries ti on(issues.id = ti.issue_id)').
-                          where('issues.fixed_version_id = ?', id).
-                          group('spent_on').collect { |issue| [issue.spent_on, issue.sum_hours] }
-        end
-        #sql result has class array 
-        #convert array to hash
-        return Hash[result] # => { 1=>2, 2=>4, 3=>6}
-      end
-
       def actual_cost_by_week baseline_id
         actual_cost_by_weeks = {}
         time = 0
@@ -63,11 +42,15 @@ module RedmineEvm
           final_date = date_today
         end
 
-        (get_start_date(baseline_id).to_date.beginning_of_week..final_date.to_date).each do |key|
-          unless summed_time_entries[key].nil?
-            time += summed_time_entries[key]
+        unless summed_time_entries.nil?
+          (get_start_date(baseline_id).to_date.beginning_of_week..final_date.to_date).each do |key|
+            unless summed_time_entries[key].nil?
+              time += summed_time_entries[key]
+            end
+            actual_cost_by_weeks[key.beginning_of_week] = time      #time_entry to the beggining od week
           end
-          actual_cost_by_weeks[key.beginning_of_week] = time      #time_entry to the beggining od week
+        else
+          actual_cost_by_weeks={0=>0}
         end
 
         actual_cost_by_weeks
@@ -81,6 +64,24 @@ module RedmineEvm
       def has_time_entries_before_start_date baseline_id
         time_entries.where("spent_on < '#{start_date.beginning_of_week}' ").count > 0
       end
+
+      private
+
+        def get_summed_time_entries baseline_id
+          issues = get_non_excluded_issues(baseline_id)
+
+          if self.instance_of?(Project)
+            result = issues.select('MAX(spent_on) AS spent_on, SUM(hours) AS sum_hours').
+            joins('join time_entries ti ON(issues.id = ti.issue_id)').
+            group('spent_on').collect { |issue| [issue.spent_on, issue.sum_hours] }
+          else
+            result = issues.select('MAX(spent_on) AS spent_on, SUM(hours) AS sum_hours').
+            joins('join time_entries ti on(issues.id = ti.issue_id)').
+            where('issues.fixed_version_id = ?', id).
+            group('spent_on').collect { |issue| [issue.spent_on, issue.sum_hours] }
+          end
+          return Hash[result] # => { 1=>2, 2=>4, 3=>6}
+        end
 
     end
   end

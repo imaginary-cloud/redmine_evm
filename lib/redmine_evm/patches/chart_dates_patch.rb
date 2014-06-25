@@ -18,52 +18,44 @@ module RedmineEvm
 
     module ChartDatesInstanceMethods
 
-      #Get issues that are not excluded.
-      def get_non_excluded_issues baseline_id
-        if self.instance_of?(Project)
-          #instance of project
-          issues = self.issues.where("fixed_version_id IS NULL OR fixed_version_id NOT IN (SELECT original_version_id FROM baseline_versions WHERE exclude = true AND baseline_id = ?)", baseline_id)
-        else
-          #instance of version
-          issues = self.fixed_issues.where("fixed_version_id IS NULL OR fixed_version_id NOT IN (SELECT original_version_id FROM baseline_versions WHERE exclude = true AND baseline_id = ?)", baseline_id)
-        end
-      end
-
       def get_start_date baseline_id
-        #Filter issues from excluded version.
         issues = get_non_excluded_issues(baseline_id)
-
-        #start_date || created_on
         date = issues.minimum(:start_date) || created_on
       end
 
       def get_end_date baseline_id
-        #Filter issues from excluded version.
         issues = get_non_excluded_issues(baseline_id)
 
-        if self.instance_of?(Project)
-          date = Baseline.find(baseline_id).due_date #project get current baseline due_date
-          issues = self.issues                                    #get all issues from this project
-        else
-          date = due_date || created_on.to_date                   #version due_date or created_on if not
-          issues = self.fixed_issues                              #get all issues from this version
-        end
+        date = Baseline.find(baseline_id).due_date if self.instance_of?(Project)
+        date = due_date || created_on.to_date unless self.instance_of?(Project)
     
         max_due_date_from_issues = issues.maximum(:due_date)
         max_spent_on_from_time_entries = issues.select("max(spent_on) as spent_on").
                                                 joins("left join time_entries te on (issues.id = te.issue_id)").first.spent_on 
                                                 #Left join because there are issues without time entries
-
-        unless max_due_date_from_issues.nil?
-          date = max_due_date_from_issues if max_due_date_from_issues > date
-        end
-        unless max_spent_on_from_time_entries.nil?
-          date = max_spent_on_from_time_entries if max_spent_on_from_time_entries > date
-        end
+        
+        date = max_due_date_from_issues if max_due_date_from_issues > date unless max_due_date_from_issues.nil?
+        date = max_spent_on_from_time_entries if max_spent_on_from_time_entries > date unless max_spent_on_from_time_entries.nil?
 
         date
       end
 
+      private
+        def get_non_excluded_issues baseline_id
+          if self.instance_of?(Project)
+            issues = self.issues.where("fixed_version_id IS NULL OR fixed_version_id NOT IN (SELECT original_version_id FROM baseline_versions WHERE exclude = true AND baseline_id = ?)", baseline_id)
+          else
+            issues = self.fixed_issues.where("fixed_version_id IS NULL OR fixed_version_id NOT IN (SELECT original_version_id FROM baseline_versions WHERE exclude = true AND baseline_id = ?)", baseline_id)
+          end
+        end
+
+        def get_non_exluded_versions baseline_id
+          if self.instance_of?(Project)
+            versions = self.versions.where("id NOT IN (SELECT original_version_id FROM baseline_versions WHERE exclude = true AND baseline_id = ?)", baseline_id)
+          else
+            versions = self.fixed_issues.where("fixed_version_id IS NULL OR fixed_version_id NOT IN (SELECT original_version_id FROM baseline_versions WHERE exclude = true AND baseline_id = ?)", baseline_id)
+          end
+        end
     end
   end
 end
