@@ -1,7 +1,7 @@
 module Schedulable
 
   #Returns the Budget at Complete (BAC), the planned value at project completion.
-  def planned_value_at_completion
+  def budget_at_completion
     baseline_issues.where(exclude: false).sum(:estimated_hours)
   end
 
@@ -12,7 +12,7 @@ module Schedulable
 
   #Returns the actual (today's date) planned value.
   def planned_value
-    planned_value_by_week[Date.today.beginning_of_week].nil? ? planned_value_at_completion : planned_value_by_week[Date.today.beginning_of_week]
+    planned_value_by_week[Date.today.beginning_of_week].nil? ? budget_at_completion : planned_value_by_week[Date.today.beginning_of_week]
   end
 
   private

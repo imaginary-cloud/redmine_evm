@@ -16,7 +16,7 @@
 <p id="evm-subtitle"><%=l(:subtitle_evm_tab)%></p>
 
 <!--Sidebar-->
-<% if @baseline.earned_value != 0 %> <%# Sidebar only avaliable if there is EV %>
+<% if @project.earned_value(@baseline) != 0 %> <%# Sidebar only avaliable if there is EV %>
   <% content_for :sidebar do %>
     <div id="evm-summary">
       <h3><%= l(:subtitle_evm_summary) %></h3>
@@ -66,7 +66,7 @@
 
     <%#Add forecast%>
     <% if @forecast_is_enabled %>
-      <% if @baseline.earned_value != 0 %> <%#Only when there is EV%>
+      <% if @project.earned_value(@baseline) != 0 %> <%#Only when there is EV%>
         <div id="evm-forecast" >
           <h3><%= l(:subtitle_evm_forecast) %></h3>
           <div id="evm-forecast-indicators" class="sidebar-boxes" >
@@ -104,7 +104,7 @@
   <fieldset id="filters" class="collapsible collapsed">
     <legend onclick="toggleFieldset(this);"><%= l(:label_options) %></legend>
     <div style="display: none;">
-      <% unless @baseline.actual_cost == 0 %>
+      <% unless @project.actual_cost(@baseline) == 0 %>
       <%= check_box_tag 'forecast', 'true', @forecast_is_enabled  %>
       <%= label_tag 'Forecast' %>
       <% end %>
@@ -176,8 +176,8 @@
 
 <script>
   var plannedValue = <%= @baseline.planned_value%>
-  var actualCost   = <%= @baseline.actual_cost   %>
-  var earnedValue  = <%= @baseline.earned_value  %>
+  var actualCost   = <%= @project.actual_cost(@baseline)   %>
+  var earnedValue  = <%= @project.earned_value(@baseline)  %>
   
   //Bar indicators and behavior from sidebar.---------------------------------------------------------------------------
   var maxValue = Math.max(plannedValue, actualCost, earnedValue);
