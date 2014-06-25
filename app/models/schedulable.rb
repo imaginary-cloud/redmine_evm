@@ -5,36 +5,30 @@ module Schedulable
     baseline_issues.where(exclude: false).sum(:estimated_hours)
   end
 
+  #Returns the planned value distrubeted by weeks
   def planned_value_by_week
     @planned_value_by_week ||= calculate_planned_value_by_week
   end
 
-  def calculate_planned_value_by_week
-    planned_value_by_week = {}
-    (start_date.beginning_of_week..end_date).each do |date|
-      planned_value_by_week[date.beginning_of_week] = 0
-    end
-
-    baseline_issues.each do |baseline_issue|
-      next if baseline_issue.exclude
-      unless baseline_issue.start_date.nil? && baseline_issue.end_date.nil? 
-        baseline_issue_days = (baseline_issue.start_date..baseline_issue.end_date).to_a
-        hoursPerDay = baseline_issue.estimated_hours / baseline_issue_days.size
-      end
-      baseline_issue_days.each do |day|
-        planned_value_by_week[day.beginning_of_week] += hoursPerDay
-      end
-    end
-    planned_value_by_week.each_with_object({}) { |(k, v), h| h[k] = v + (h.values.last||0)  }
-  end
-
-  #Returns the actual (current time) planned value.
+  #Returns the actual (today's date) planned value.
   def planned_value
-    if planned_value_by_week[Date.today.beginning_of_week].nil?
-      planned_value_at_completion
-    else 
-      planned_value_by_week[Date.today.beginning_of_week]
-    end
+    planned_value_by_week[Date.today.beginning_of_week].nil? ? planned_value_at_completion : planned_value_by_week[Date.today.beginning_of_week]
   end
-  
+
+  private
+    
+    def calculate_planned_value_by_week
+      planned_value_by_week = {}
+      (start_date.beginning_of_week..end_date).each do |date|
+        planned_value_by_week[date.beginning_of_week] = 0
+      end
+
+      baseline_issues.each do |baseline_issue|
+        next if baseline_issue.exclude
+        baseline_issue.days.each do |day|
+          planned_value_by_week[day.beginning_of_week] += baseline_issue.hours_per_day unless planned_value_by_week[day.beginning_of_week].nil?
+        end
+      end
+      planned_value_by_week.each_with_object({}) { |(k, v), h| h[k] = v + (h.values.last||0)  }
+    end
 end
