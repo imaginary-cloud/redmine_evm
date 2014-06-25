@@ -4,16 +4,25 @@ class BaselineIssue < ActiveRecord::Base
   belongs_to :baseline
   belongs_to :baseline_version
 
-
-  def end_date 
-    @end_date ||= get_end_date
+  def days
+    @days ||= (start_date..end_date).to_a
   end
 
-  def get_end_date
-    if baseline_version.nil? 
-      due_date || baseline.due_date
-    else
-  	  due_date || baseline_version.end_date || baseline.due_date
+  def hours_per_day
+    @hours_per_day ||= estimated_hours / number_of_days 
+  end
+
+  private
+
+    # def end_date 
+    #   @end_date ||= get_end_date
+    # end
+
+    def number_of_days
+      days.size
     end
-  end
+
+    def end_date
+      baseline_version ? due_date || baseline_version.end_date : due_date || baseline.due_date
+    end
 end
