@@ -19,12 +19,16 @@ class Baseline < ActiveRecord::Base
   'description',
   'due_date'
 
-  def create_versions versions, versions_to_exclude
+  def create_versions versions, versions_to_exclude, update_estimated_hours
     unless versions.nil?
       versions.each do |version|
         versions_to_exclude.nil? ? exclude = false : exclude =  versions_to_exclude.include?(version.id)
-        baseline_versions.create(original_version_id: version.id, effective_date: version.due_date, start_date: version.start_date, name: version.name, exclude: exclude)
+        if version.closed? && update_estimated_hours == "1"
+        baseline_versions.create(original_version_id: version.id, effective_date: version.get_end_date(self.id), start_date: version.start_date || version.get_start_date(self.id), name: version.name, exclude: exclude)  
+        else
+        baseline_versions.create(original_version_id: version.id, effective_date: version.due_date, start_date: version.start_date || version.get_start_date(self.id), name: version.name, exclude: exclude)
         #baseline_versions.create(original_version_id: version.id, effective_date: version.get_end_date(self.id), start_date: version.get_start_date(self.id), name: version.name, exclude: exclude)
+        end
       end
     end
   end
