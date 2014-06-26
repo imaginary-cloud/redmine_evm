@@ -16,7 +16,7 @@
 <p id="evm-subtitle"><%=l(:subtitle_evm_tab)%></p>
 
 <!--Sidebar-->
-<% if @baseline.earned_value != 0 %> <%# Sidebar only avaliable if there is EV %>
+<% if @project.earned_value(@baseline) != 0 %> <%# Sidebar only avaliable if there is EV %>
   <% content_for :sidebar do %>
     <div id="evm-summary">
       <h3><%= l(:subtitle_evm_summary) %></h3>
@@ -33,12 +33,10 @@
               <div id="spi-ev-bar" class="bar"></div>
             </div>
           </div>
-          <p><b><%= l(:label_the_project_is)%>
-          <% if @baseline.schedule_variance < 0 %>
-            <%= ((1 - @baseline.schedule_performance_index) * 100).round %>%</b><br> <%= l(:label_behind_schedule)%></p>
-          <% else %>
-            <%= ((@baseline.schedule_performance_index - 1) * 100).round %>%</b><br> <%= l(:label_ahead_schedule)%></p>
-          <% end %>
+          <p>
+            <b><%= l(:label_the_project_is)%> <%= label_cost_performance_percentage %>%</b><br>
+            <%= label_cost_performance_status %> 
+          </p>
         </div>
 
         <div class="indicators-container">
@@ -54,19 +52,17 @@
             </div>
           </div>
           <div id="evm-cpi-barchart"></div>
-          <p><b><%= l(:label_the_project_is)%>
-          <% if @baseline.cost_variance < 0 %>
-            <%= ((1 - @baseline.cost_performance_index) * 100).round %>%</b><br> <%= l(:label_above_budget)%></p>
-          <% else %>
-            <%= ((@baseline.cost_performance_index - 1) * 100).round %>%</b><br> <%= l(:label_under_budget)%></p>
-          <% end %>
+          <p>
+            <b><%= l(:label_the_project_is)%> <%= label_schedule_performance_percentage %>%</b><br> 
+            <%= label_schedule_performance_status%>
+          </p>
         </div>
       </div>
     </div>
 
     <%#Add forecast%>
     <% if @forecast_is_enabled %>
-      <% if @baseline.earned_value != 0 %> <%#Only when there is EV%>
+      <% if @project.earned_value(@baseline) != 0 %> <%#Only when there is EV%>
         <div id="evm-forecast" >
           <h3><%= l(:subtitle_evm_forecast) %></h3>
           <div id="evm-forecast-indicators" class="sidebar-boxes" >
@@ -104,7 +100,7 @@
   <fieldset id="filters" class="collapsible collapsed">
     <legend onclick="toggleFieldset(this);"><%= l(:label_options) %></legend>
     <div style="display: none;">
-      <% unless @baseline.actual_cost == 0 %>
+      <% unless @project.actual_cost(@baseline) == 0 %>
       <%= check_box_tag 'forecast', 'true', @forecast_is_enabled  %>
       <%= label_tag 'Forecast' %>
       <% end %>
@@ -154,30 +150,24 @@
   <!-- Main Chart -->
   <div id="evm-main-chart">
     <div id='evm-graph-lines' class='evm-main-chart' style="width:70%;height:350px;margin:auto;"></div>
-    <%= render :partial => '/baselines/chart_js', :locals => { project_chart_data: @project_chart_data } %>
+    <%= render :partial => '/baselines/chart_js', :locals => { project_chart_data: @project.get_chart_data(@baseline, @forecast_is_enabled) } %>
   </div>
   <!-- Versions Charts -->
   <div id="evm-versions-charts">
-    <% @project.versions.each do |version|%>
-      <% version_chart_data = [] %>
-      <% baseline_version = @baseline.baseline_versions.where(original_version_id: version.id, exclude: false).first %>
-      <% unless baseline_version.nil? %>
+    <% @project.versions.each do |version| %>
+      <% unless @baseline.baseline_versions.where(original_version_id: version.id, exclude: false).first.nil? %>
         <h5><%= version.name %></h5>
         <div id='evm-graph-lines-version-<%= version.id %>' style="width:70%;height:350px;margin:auto;margin-top:40px;margin-bottom:40px;"></div>
-        <% version_chart_data << convert_to_chart(baseline_version.planned_value_by_week) %>
-        <% version_chart_data << convert_to_chart(version.actual_cost_by_week(@baseline.id)) %>
-        <% version_chart_data << convert_to_chart(version.earned_value_by_week(@baseline.id)) %>
-        <%= render :partial => '/baselines/version_chart_js', :locals => { version_chart_data: version_chart_data, version: version } %>
-      <% end %>
-      
+        <%= render :partial => '/baselines/version_chart_js', :locals => { version_chart_data: version.get_chart_data(@baseline, @forecast_is_enabled), version: version } %>   
+      <% end %>   
     <% end %>
   </div> 
 </div>
 
 <script>
-  var plannedValue = <%= @baseline.planned_value%>
-  var actualCost   = <%= @baseline.actual_cost   %>
-  var earnedValue  = <%= @baseline.earned_value  %>
+  var plannedValue = <%= @baseline.planned_value %>
+  var actualCost   = <%= @project.actual_cost(@baseline)   %>
+  var earnedValue  = <%= @project.earned_value(@baseline)  %>
   
   //Bar indicators and behavior from sidebar.---------------------------------------------------------------------------
   var maxValue = Math.max(plannedValue, actualCost, earnedValue);
