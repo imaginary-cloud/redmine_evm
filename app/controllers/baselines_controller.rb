@@ -21,15 +21,13 @@ class BaselinesController < ApplicationController
   end
 
   def show
-    @baseline = Baseline.find(params[:id]) 
     @baselines = @project.baselines.order('created_on DESC')
-    @forecast_is_enabled = params[:forecast] #this is in a variable because of forecast div and checkbox.
 
     @project_chart_data  = [convert_to_chart(@baseline.planned_value_by_week),
                             convert_to_chart(@project.actual_cost_by_week(@baseline.id)), 
                             convert_to_chart(@project.earned_value_by_week(@baseline.id))]
 
-    if(@forecast_is_enabled)
+    if params[:forecast]
       @project_chart_data << convert_to_chart(@baseline.actual_cost_forecast_line)
       @project_chart_data << convert_to_chart(@baseline.earned_value_forecast_line)
       @project_chart_data << convert_to_chart(@baseline.bac_top_line)
@@ -56,14 +54,11 @@ class BaselinesController < ApplicationController
   def create
     @baseline = Baseline.new(params[:baseline])
     @baseline.project = @project
-    @baseline.state = l(:label_current_baseline)
 
     if @baseline.save
-      @versions_to_exclude = @baseline.versions_to_exclude params[:operator_target_versions], params[:selected_target_versions], @project.id
-      @baseline.create_versions @project.versions, @versions_to_exclude, params[:update_estimated_hours]                                 #Add versions to BaselineVersions model.
-      @baseline.create_issues @project.issues, params[:update_estimated_hours]                       #Add issues to BaselineIssues model.
-      @baseline.start_date = @project.get_start_date @baseline.id #start date for baseline before it was get_start_date(see if it still remains necessary)
-      @baseline.save
+      versions_to_exclude = @baseline.versions_to_exclude params[:operator_target_versions], params[:selected_target_versions]
+      @baseline.create_versions @project.versions, versions_to_exclude, params[:update_estimated_hours]                                
+      @baseline.create_issues @project.issues, params[:update_estimated_hours]               
 
       flash[:notice] = l(:notice_successful_create)
       redirect_to settings_project_path(@project, :tab => 'baselines')
