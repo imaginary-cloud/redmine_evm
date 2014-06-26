@@ -33,12 +33,10 @@
               <div id="spi-ev-bar" class="bar"></div>
             </div>
           </div>
-          <p><b><%= l(:label_the_project_is)%>
-          <% if @baseline.schedule_variance < 0 %>
-            <%= ((1 - @baseline.schedule_performance_index) * 100).round %>%</b><br> <%= l(:label_behind_schedule)%></p>
-          <% else %>
-            <%= ((@baseline.schedule_performance_index - 1) * 100).round %>%</b><br> <%= l(:label_ahead_schedule)%></p>
-          <% end %>
+          <p>
+            <b><%= l(:label_the_project_is)%> <%= label_cost_performance_percentage %>%</b><br>
+            <%= label_cost_performance_status %> 
+          </p>
         </div>
 
         <div class="indicators-container">
@@ -54,12 +52,10 @@
             </div>
           </div>
           <div id="evm-cpi-barchart"></div>
-          <p><b><%= l(:label_the_project_is)%>
-          <% if @baseline.cost_variance < 0 %>
-            <%= ((1 - @baseline.cost_performance_index) * 100).round %>%</b><br> <%= l(:label_above_budget)%></p>
-          <% else %>
-            <%= ((@baseline.cost_performance_index - 1) * 100).round %>%</b><br> <%= l(:label_under_budget)%></p>
-          <% end %>
+          <p>
+            <b><%= l(:label_the_project_is)%> <%= label_schedule_performance_percentage %>%</b><br> 
+            <%= label_schedule_performance_status%>
+          </p>
         </div>
       </div>
     </div>
