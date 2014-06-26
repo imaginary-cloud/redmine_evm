@@ -19,8 +19,7 @@ module RedmineEvm
     module ChartDatesInstanceMethods
 
       def get_start_date baseline_id
-        issues = get_non_excluded_issues(baseline_id)
-        date = issues.minimum(:start_date) || created_on
+        self.instance_of?(Project) ? baselines.find(baseline_id).start_date : BaselineVersion.find_by_baseline_id(baseline_id).start_date
       end
 
       def get_end_date baseline_id
