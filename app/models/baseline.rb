@@ -119,20 +119,12 @@ class Baseline < ActiveRecord::Base
 
   #Schedule Performance Index (SPI)
   def schedule_performance_index 
-    if self.planned_value != 0
-      project.earned_value(self).to_f / self.planned_value
-    else
-      return 0
-    end
+    planned_value != 0 ? project.earned_value(self).to_f / self.planned_value : 0
   end
 
   #Cost Performance Index (CPI)
   def cost_performance_index
-    if project.actual_cost(self) != 0
-      project.earned_value(self).to_f / project.actual_cost(self)
-    else
-      return 0
-    end
+    project.actual_cost(self) != 0 ? project.earned_value(self).to_f / project.actual_cost(self) : 0
   end
 
   #Schedule Variance (SV)

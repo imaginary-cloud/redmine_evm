@@ -154,28 +154,22 @@
   <!-- Main Chart -->
   <div id="evm-main-chart">
     <div id='evm-graph-lines' class='evm-main-chart' style="width:70%;height:350px;margin:auto;"></div>
-    <%= render :partial => '/baselines/chart_js', :locals => { project_chart_data: @project_chart_data } %>
+    <%= render :partial => '/baselines/chart_js', :locals => { project_chart_data: @project.get_chart_data(@baseline, @forecast_is_enabled) } %>
   </div>
   <!-- Versions Charts -->
   <div id="evm-versions-charts">
-    <% @project.versions.each do |version|%>
-      <% version_chart_data = [] %>
-      <% baseline_version = @baseline.baseline_versions.where(original_version_id: version.id, exclude: false).first %>
-      <% unless baseline_version.nil? %>
+    <% @project.versions.each do |version| %>
+      <% unless @baseline.baseline_versions.where(original_version_id: version.id, exclude: false).first.nil? %>
         <h5><%= version.name %></h5>
         <div id='evm-graph-lines-version-<%= version.id %>' style="width:70%;height:350px;margin:auto;margin-top:40px;margin-bottom:40px;"></div>
-        <% version_chart_data << convert_to_chart(baseline_version.planned_value_by_week) %>
-        <% version_chart_data << convert_to_chart(version.actual_cost_by_week(@baseline.id)) %>
-        <% version_chart_data << convert_to_chart(version.earned_value_by_week(@baseline.id)) %>
-        <%= render :partial => '/baselines/version_chart_js', :locals => { version_chart_data: version_chart_data, version: version } %>
-      <% end %>
-      
+        <%= render :partial => '/baselines/version_chart_js', :locals => { version_chart_data: version.get_chart_data(@baseline, @forecast_is_enabled), version: version } %>   
+      <% end %>   
     <% end %>
   </div> 
 </div>
 
 <script>
-  var plannedValue = <%= @baseline.planned_value%>
+  var plannedValue = <%= @baseline.planned_value %>
   var actualCost   = <%= @project.actual_cost(@baseline)   %>
   var earnedValue  = <%= @project.earned_value(@baseline)  %>
   

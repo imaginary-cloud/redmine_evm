@@ -1,7 +1,6 @@
 class BaselinesController < ApplicationController
 
   helper :baselines
-  include BaselinesHelper
 
   model_object Baseline
 
@@ -21,20 +20,8 @@ class BaselinesController < ApplicationController
   end
 
   def show
-    @baseline = Baseline.find(params[:id]) 
     @baselines = @project.baselines.order('created_on DESC')
     @forecast_is_enabled = params[:forecast] #this is in a variable because of forecast div and checkbox.
-
-    @project_chart_data  = [convert_to_chart(@baseline.planned_value_by_week),
-                            convert_to_chart(@project.actual_cost_by_week(@baseline.id)), 
-                            convert_to_chart(@project.earned_value_by_week(@baseline.id))]
-
-    if(@forecast_is_enabled)
-      @project_chart_data << convert_to_chart(@baseline.actual_cost_forecast_line)
-      @project_chart_data << convert_to_chart(@baseline.earned_value_forecast_line)
-      @project_chart_data << convert_to_chart(@baseline.bac_top_line)
-      @project_chart_data << convert_to_chart(@baseline.eac_top_line)
-    end
 
     if(@project.has_time_entries_with_no_issue)
       flash[:warning] = l(:warning_log_time_with_no_issue)
