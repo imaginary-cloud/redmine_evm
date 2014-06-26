@@ -5,24 +5,36 @@ class BaselineIssue < ActiveRecord::Base
   belongs_to :baseline_version
 
   def days
-    @days ||= (start_date..end_date).to_a
+    @days ||= (start_date_for_chart..end_date_for_chart).to_a
   end
 
   def hours_per_day
-    @hours_per_day ||= estimated_hours / number_of_days 
+    @hours_per_day ||= estimated_hours_for_chart / number_of_days 
+  end
+
+  def estimated_hours_for_chart
+    @estimated_hours ||= update_hours ? status == "Closed" || status == "Rejected" ? spent_hours : estimated_hours || 0 : estimated_hours || 0
   end
 
   private
 
-    # def end_date 
-    #   @end_date ||= get_end_date
-    # end
+    def start_date_for_chart 
+      start_date ? start_date : baseline_version ? baseline_version.start_date : baseline.start_date
+    end
+
+    def end_date_for_chart
+      if update_hours
+        if status == "Closed" || status == "Rejected"
+          closed_on.to_date
+        else
+          due_date ? due_date : baseline_version ? baseline_version.end_date : baseline.due_date
+        end
+      else
+        due_date ? due_date : baseline_version ? baseline_version.end_date : baseline.due_date
+      end
+    end
 
     def number_of_days
       days.size
-    end
-
-    def end_date
-      baseline_version ? due_date || baseline_version.end_date : due_date || baseline.due_date
     end
 end
