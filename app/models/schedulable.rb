@@ -3,7 +3,6 @@ module Schedulable
   #Returns the Budget at Complete (BAC), the planned value at project completion.
   def budget_at_completion 
     #closed(self.id)
-
     if baseline_issues.first.update_hours
       sum_closed_issues = baseline_issues.where(exclude: false, status: "Closed").sum(:spent_hours)
       sum_rejected_issues = baseline_issues.where(exclude: false, status: "Rejected").sum(:spent_hours)
@@ -12,6 +11,7 @@ module Schedulable
     else
       baseline_issues.where(exclude: false).sum(:estimated_hours)
     end  
+  end
 
   #Returns the planned value distrubeted by weeks
   def planned_value_by_week

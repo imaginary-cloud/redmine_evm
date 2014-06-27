@@ -66,11 +66,6 @@ class Baseline < ActiveRecord::Base
     end
   end
 
-  #Returns the excluded versions from this baseline
-  def get_excluded_versions
-    baseline_versions.where(exclude: true).map(&:original_version_id)
-  end
-
   def get_targeted_versions
     baseline_versions.where(exclude: false).map(&:original_version_id)
   end
