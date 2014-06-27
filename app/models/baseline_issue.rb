@@ -3,6 +3,7 @@ class BaselineIssue < ActiveRecord::Base
 
   belongs_to :baseline
   belongs_to :baseline_version
+  belongs_to :issue, foreign_key: 'original_issue_id'
 
   def days
     @days ||= (start_date_for_chart..end_date_for_chart).to_a
