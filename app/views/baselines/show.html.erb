@@ -158,7 +158,7 @@
       <% unless @baseline.baseline_versions.where(original_version_id: version.id, exclude: false).first.nil? %>
         <h5><%= version.name %></h5>
         <div id='evm-graph-lines-version-<%= version.id %>' style="width:70%;height:350px;margin:auto;margin-top:40px;margin-bottom:40px;"></div>
-        <%= render :partial => '/baselines/version_chart_js', :locals => { version_chart_data: version.get_chart_data(@baseline, @forecast_is_enabled), version: version } %>   
+        <%= render :partial => '/baselines/version_chart_js', :locals => { version_chart_data: version.get_chart_data(@baseline), version: version } %>   
       <% end %>   
     <% end %>
   </div> 
