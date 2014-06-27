@@ -5,5 +5,5 @@ Rails.configuration.to_prepare do
   require 'redmine_evm/patches/actual_cost_patch'
   require 'redmine_evm/patches/chart_dates_patch'
   require 'redmine_evm/patches/data_for_chart_patch'
-
+  require 'redmine_evm/patches/version_patch'
 end
