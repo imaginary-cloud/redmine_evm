@@ -1,22 +1,23 @@
 /* Dependencies: jquery, flot, flottime, flotlabel, gaugemin */
 
 //Draws the chart for the project or versions. (Flot)
-function drawChart(dataToChart, placeholder, actualWeek){ 
-    var actualWeek = actualWeek
+function drawChart(dataToChart, placeholder, actualWeek, endDate){ 
+    var actualWeek = actualWeek;
     var chartHtmlElement = $('#' + placeholder);
     var data = dataToChart;
+    var endDate = endDate;
 
     var actualCostEstimateLine;
     var earnedValueEstimateLine;
-    
-    var startDate = data[0][0][0];
-    var endDate;   
-    var plannedEndDate  = data[0][data[0].length-1][0];
-    var earnedEndDate   = data[2][data[2].length-1][0];
 
-    if (plannedEndDate > earnedEndDate)
-        endDate = plannedEndDate;
-    else endDate = earnedEndDate;
+    // var startDate = data[0][0][0];
+    // var endDate;   
+    // var plannedEndDate  = data[0][data[0].length-1][0];
+    // var earnedEndDate   = data[2][data[2].length-1][0];
+
+    // if (plannedEndDate > earnedEndDate)
+    //     endDate = plannedEndDate;
+    // else endDate = earnedEndDate;
 
     if (actualWeek <= endDate) { //For OLD Projects
         var markings = [{ color: "#E0E0E0", lineWidth: 1, xaxis: { from: actualWeek , to: actualWeek } }]; //This is the marker to the "Project is here" marking today date.
