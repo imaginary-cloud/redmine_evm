@@ -31,21 +31,17 @@ module RedmineEvm
       end
 
       def earned_value_by_week baseline_id
-        earned_value_by_week = {}
-
-        (start_date_for_chart.beginning_of_week..end_date_for_chart).each do |date|
-          earned_value_by_week[date.beginning_of_week] = 0
-        end
+        earned_value_by_week = Hash.new { |h, k| h[k] = 0 }
 
         fixed_issues.each do |fixed_issue|
-          unless fixed_issue.estimated_hours.nil?
-            dates = fixed_issue_dates fixed_issue
-            fixed_issue_days = (dates[0].to_date..dates[1].to_date).to_a
-            hours_per_day = fixed_issue.estimated_hours / fixed_issue_days.size
+          fixed_issue_dates = fixed_issue.dates
+          next if fixed_issue.estimated_hours.nil?
 
-            fixed_issue_days.each do |day|
-              earned_value_by_week[day.beginning_of_week] += hours_per_day * fixed_issue.done_ratio/100.0 unless earned_value_by_week[day.beginning_of_week].nil?
-            end
+          fixed_issues_days = (fixed_issue_dates[0].to_date..fixed_issue_dates[1].to_date).to_a
+          hoursPerDay = fixed_issue.estimated_hours / fixed_issues_days.size 
+        
+          fixed_issues_days.each do |day|
+            earned_value_by_week[day.beginning_of_week] += hoursPerDay * fixed_issue.done_ratio/100.0 
           end
         end
         earned_value_by_week.each_with_object({}) { |(k, v), h| h[k] = v + (h.values.last||0)  }
@@ -56,20 +52,8 @@ module RedmineEvm
           start_date ? start_date : created_on
         end
 
-        def end_date_for_chart
-          due_date ? due_date : Date.today
-        end
-
-        def fixed_issue_dates fixed_issue
-          dates = []
-          selected_journals = fixed_issue.journals.select {|journal| journal.journalized.done_ratio > 0}
-          dates[0] = selected_journals.first.created_on
-          if fixed_issue.status.name == "Closed"
-            dates[1] = fixed_issue.closed_on
-          else
-            dates[1] = fixed_issue.updated_on
-          end
-          dates
+        def end_date_for_chart #due date para o earned value tem que ser a data da ultima alteração.
+          due_date ? due_date : Date.toda
         end
     end  
   end

@@ -71,46 +71,46 @@ module RedmineEvm
       #   sum_earned_value
       # end
 
-      def earned_value baseline_id
-        issues = get_issues_for_earned_value(baseline_id)
-        sum_earned_value = 0
-        issues.each do |issue|
-          unless issue.estimated_hours.nil?
-            sum_earned_value += issue.estimated_hours * (issue.done_ratio / 100.0)
-          end
-        end
-        sum_earned_value
-      end
+      # def earned_value baseline_id
+      #   issues = get_issues_for_earned_value(baseline_id)
+      #   sum_earned_value = 0
+      #   issues.each do |issue|
+      #     unless issue.estimated_hours.nil?
+      #       sum_earned_value += issue.estimated_hours * (issue.done_ratio / 100.0)
+      #     end
+      #   end
+      #   sum_earned_value
+      # end
 
-      def earned_value_by_week baseline_id
-        # journals = issue.journals.select {|journal| journal.journalized.done_ratio > 0}
+      # def earned_value_by_week baseline_id
+      #   # journals = issue.journals.select {|journal| journal.journalized.done_ratio > 0}
 
 
-        earned_value_by_week = {}
-          (start_date.beginning_of_week..get_end_date(baseline_id)).each do |date|
-        earned_value_by_week[date.beginning_of_week] = 0
-        end
+      #   earned_value_by_week = {}
+      #     (start_date.beginning_of_week..get_end_date(baseline_id)).each do |date|
+      #   earned_value_by_week[date.beginning_of_week] = 0
+      #   end
 
-        issues = get_non_excluded_issues(baseline_id)
+      #   issues = get_non_excluded_issues(baseline_id)
 
-        issues.each do |issue|
-          issue_dates = get_issues_dates issue
-          issue.estimated_hours = BaselineIssue.where(:original_issue_id => issue.id, :baseline_id => baseline_id).first.estimated_hours if issue.closed? && !BaselineIssue.where(:original_issue_id => issue.id, :baseline_id => baseline_id).first.nil?
-          unless issue.estimated_hours.nil?
-          # issue_days = (issue.start_date..issue.due_date).to_a
+      #   issues.each do |issue|
+      #     issue_dates = get_issues_dates issue
+      #     issue.estimated_hours = BaselineIssue.where(:original_issue_id => issue.id, :baseline_id => baseline_id).first.estimated_hours if issue.closed? && !BaselineIssue.where(:original_issue_id => issue.id, :baseline_id => baseline_id).first.nil?
+      #     unless issue.estimated_hours.nil?
+      #     # issue_days = (issue.start_date..issue.due_date).to_a
       
-          issues_days = (issue_dates[0].to_date..issue_dates[1].to_date).to_a
-          hoursPerDay = issue.estimated_hours / issues_days.size 
+      #     issues_days = (issue_dates[0].to_date..issue_dates[1].to_date).to_a
+      #     hoursPerDay = issue.estimated_hours / issues_days.size 
             
           
         
-          issues_days.each do |day|
-            earned_value_by_week[day.beginning_of_week] += hoursPerDay * issue.done_ratio/100.0 unless earned_value_by_week[day.beginning_of_week].nil?
-          end
-          end
-        end
-        earned_value_by_week.each_with_object({}) { |(k, v), h| h[k] = v + (h.values.last||0)  }
-      end
+      #     issues_days.each do |day|
+      #       earned_value_by_week[day.beginning_of_week] += hoursPerDay * issue.done_ratio/100.0 unless earned_value_by_week[day.beginning_of_week].nil?
+      #     end
+      #     end
+      #   end
+      #   earned_value_by_week.each_with_object({}) { |(k, v), h| h[k] = v + (h.values.last||0)  }
+      # end
 
       def get_issues_dates issue
         issue_dates = []
