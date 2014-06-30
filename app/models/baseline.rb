@@ -26,7 +26,7 @@ class Baseline < ActiveRecord::Base
       versions.each do |version|
         versions_to_exclude.nil? ? exclude = false : exclude =  versions_to_exclude.include?(version.id)
         update_estimated_hours == "1" ? update_hours = true : update_hours = false
-        baseline_versions.create original_version_id: version.id, effective_date: version.get_end_date(self.id), name: version.name, exclude: exclude, update_hours: update_hours
+        baseline_versions.create original_version_id: version.id, effective_date: version.effective_date, name: version.name, exclude: exclude, update_hours: update_hours
       end
     end
   end

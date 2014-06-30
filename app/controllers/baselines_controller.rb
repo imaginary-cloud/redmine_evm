@@ -43,11 +43,12 @@ class BaselinesController < ApplicationController
   def create
     @baseline = Baseline.new(params[:baseline])
     @baseline.project = @project
+    @baseline.update_hours = true if params[:update_estimated_hours] == "1"
 
     if @baseline.save
       versions_to_exclude = @baseline.versions_to_exclude params[:operator_target_versions], params[:selected_target_versions]
       @baseline.create_versions @project.versions, versions_to_exclude, params[:update_estimated_hours]                                
-      @baseline.create_issues @project.issues, params[:update_estimated_hours]               
+      @baseline.create_issues @project.issues, params[:update_estimated_hours]
 
       flash[:notice] = l(:notice_successful_create)
       redirect_to settings_project_path(@project, :tab => 'baselines')
