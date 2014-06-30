@@ -19,8 +19,19 @@ module RedmineEvm
     end
 
     module IssueInstanceMethods
-
-      
+      def dates 
+        dates = []
+        selected_journals = journals.select {|journal| journal.journalized.done_ratio > 0}
+        dates[0] = selected_journals.first.created_on unless journals.empty?
+        dates[0] = created_on if selected_journals.nil?
+        
+        if closed?
+          dates[1] = closed_on
+        else
+          dates[1] = updated_on
+        end
+        dates
+      end
     end  
   end
 end
