@@ -23,8 +23,6 @@ module RedmineEvm
       def filter_excluded_issues baseline_id
         fixed_issues.joins(:baseline_issues).where("baseline_issues.exclude = 0 AND baseline_issues.baseline_id = ?", baseline_id)
       end
-
-      ##########ACTUAL COST###########
       
       def actual_cost baseline_id
         spent_hours
@@ -50,10 +48,15 @@ module RedmineEvm
         end
 
         summed_time_entries = self.summed_time_entries(baseline_id)
+        puts "Summed"
+        puts summed_time_entries
         
         unless summed_time_entries.nil?
+          puts "Start data: #{get_start_date(baseline_id).to_date.beginning_of_week}"
           (get_start_date(baseline_id).to_date.beginning_of_week..final_date.to_date).each do |key|
             unless summed_time_entries[key].nil?
+              puts "Time"
+              puts time
               time += summed_time_entries[key]
             end
             actual_cost_by_weeks[key.beginning_of_week] = time      #time_entry to the beggining od week
@@ -64,8 +67,6 @@ module RedmineEvm
 
         actual_cost_by_weeks
       end
-
-      #######EARNED VALUE#############
 
       def earned_value_by_week baseline_id
         earned_value_by_week = Hash.new { |h, k| h[k] = 0 }
@@ -81,7 +82,25 @@ module RedmineEvm
             earned_value_by_week[day.beginning_of_week] += hoursPerDay * fixed_issue.done_ratio/100.0 
           end
         end
-        earned_value_by_week.each_with_object({}) { |(k, v), h| h[k] = v + (h.values.last||0)  }
+        #test hash order
+        nh = {}
+        earned_value_by_week.keys.sort.each do |k|
+          nh[k] = earned_value_by_week[k]
+        end
+        if Date.today < baseline_versions.where(baseline_id: baseline_id, original_version_id: id).first.end_date
+          dat = Date.today
+        else
+          dat = baseline_versions.where(baseline_id: baseline_id, original_version_id: id).first.end_date
+        end
+        unless nh.empty?
+          if nh.keys.last+1 <= dat
+            (nh.keys.last+1..dat).each do |date|
+              nh[date.beginning_of_week] = 0 unless nh[date.beginning_of_week] 
+            end
+          end  
+        end
+
+        nh.each_with_object({}) { |(k, v), h| h[k] = v + (h.values.last||0)  } 
       end
 
       def data_for_chart baseline
@@ -123,15 +142,6 @@ module RedmineEvm
           self.baseline_versions.where("baseline_id = ?", baseline_id).first.exclude
         end
       end
-
-      private
-        def start_date_for_chart
-          start_date ? start_date : created_on
-        end
-
-        def end_date_for_chart #due date para o earned value tem que ser a data da ultima alteração.
-          due_date ? due_date : Date.toda
-        end
     end  
   end
 end
