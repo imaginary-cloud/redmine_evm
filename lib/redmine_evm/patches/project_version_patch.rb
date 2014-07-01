@@ -19,7 +19,7 @@ module RedmineEvm
     module ProjectVersionInstanceMethods
 
       def get_start_date baseline_id
-        self.instance_of?(Project) ? baselines.find(baseline_id).start_date : BaselineVersion.find_by_baseline_id(baseline_id).start_date
+        self.instance_of?(Project) ? baselines.find(baseline_id).start_date : BaselineVersion.where(baseline_id: baseline_id, original_version_id: id).first.start_date
       end
 
       def get_end_date baseline_id
