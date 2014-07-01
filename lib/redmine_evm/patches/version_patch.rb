@@ -37,11 +37,14 @@ module RedmineEvm
       end
 
       def actual_cost_by_week baseline_id
+        issues = filter_excluded_issues(baseline_id)
         actual_cost_by_weeks = {}
         time = 0
 
+        start_date = self.start_date
+        end_date = issues.select("max(spent_on) as spent_on").joins(:time_entries).first.spent_on
         #If it is not a old project
-        final_date = get_end_date(baseline_id)
+        final_date = end_date
         date_today = Date.today
         if final_date > date_today      
           final_date = date_today
@@ -52,8 +55,7 @@ module RedmineEvm
         puts summed_time_entries
         
         unless summed_time_entries.nil?
-          puts "Start data: #{get_start_date(baseline_id).to_date.beginning_of_week}"
-          (get_start_date(baseline_id).to_date.beginning_of_week..final_date.to_date).each do |key|
+          (start_date.beginning_of_week..final_date.to_date).each do |key|
             unless summed_time_entries[key].nil?
               puts "Time"
               puts time
@@ -108,7 +110,6 @@ module RedmineEvm
         baseline_version = baseline.baseline_versions.where(original_version_id: self.id, exclude: false).first
 
         chart_data = []
-        puts "Current Version: #{self.name} | Is Excluded?  #{self.is_excluded(baseline)}"
         unless is_excluded(baseline)
           unless baseline_version.nil?
             chart_data << convert_to_chart(baseline_version.planned_value_by_week)
@@ -131,15 +132,16 @@ module RedmineEvm
           end_dates << self.earned_value_by_week(baseline).to_a.last[0]
         end
 
-        end_dates.max.nil? ? 0 : end_dates.max.to_time.to_i * 1000  #convert to to milliseconds for flot.js
+        end_dates.max.nil? ? 0 : end_dates.max
 
       end
 
       def is_excluded baseline_id
-        if self.baseline_versions.where("baseline_id = ?", baseline_id).first.nil?
-          false
+        baseline_version = self.baseline_versions.where("baseline_id = ?", baseline_id).first #BaselineVersion of this version
+        if baseline_version.nil?
+          false #Does not have a baseline version so it is not excluded.
         else
-          self.baseline_versions.where("baseline_id = ?", baseline_id).first.exclude
+          baseline_version.exclude
         end
       end
     end  
