@@ -7,7 +7,7 @@ class BaselineVersion < ActiveRecord::Base
   belongs_to :version, :foreign_key => 'original_version_id'
 
   def start_date # start date for chart?
-    @start_date ||= baseline_issues.minimum('start_date') #se nao houver start date explode!
+    @start_date ||= baseline_issues.minimum('start_date') || created_on.to_date #created_on of the normal original version. rename it in te database
   end
 
   def end_date # end date for chart?
