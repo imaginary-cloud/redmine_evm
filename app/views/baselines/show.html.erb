@@ -150,15 +150,15 @@
   <!-- Main Chart -->
   <div id="evm-main-chart">
     <div id='evm-graph-lines' class='evm-main-chart' style="width:70%;height:350px;margin:auto;"></div>
-    <%= render :partial => '/baselines/chart_js', :locals => { maximum_end_date: @project.maximum_end_date(@baseline), project_chart_data: @project.data_for_chart(@baseline, @forecast_is_enabled) } %>
+    <%= render :partial => '/baselines/chart_js', :locals => { maximum_chart_date: @project.maximum_chart_date(@baseline), project_chart_data: @project.data_for_chart(@baseline, @forecast_is_enabled) } %>
   </div>
   <!-- Versions Charts -->
   <div id="evm-versions-charts">
     <% @project.versions.each do |version| %>
       <% unless version.is_excluded(@baseline) %>
-        <h5><%= version.name %></h5>
+        <h3 class="version"><%= link_to version.name, version %></h3>
         <div id='evm-graph-lines-version-<%= version.id %>' style="width:70%;height:350px;margin:auto;margin-top:40px;margin-bottom:40px;"></div>
-        <%= render :partial => '/baselines/version_chart_js', :locals => { maximum_end_date: version.maximum_end_date(@baseline), version_chart_data: version.data_for_chart(@baseline), version: version } %> 
+        <%= render :partial => '/baselines/version_chart_js', :locals => { maximum_chart_date: version.maximum_chart_date(@baseline), version_chart_data: version.data_for_chart(@baseline), version: version } %> 
       <% end %>
     <% end %>
   </div> 

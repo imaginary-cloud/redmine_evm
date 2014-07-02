@@ -44,7 +44,7 @@ module RedmineEvm
         start_date = issues.select("min(spent_on) as spent_on").joins(:time_entries).first.spent_on || project.start_date
         #end_date   = issues.select("max(spent_on) as spent_on").joins(:time_entries).first.spent_on || start_date
 
-        final_date = maximum_end_date(baseline)
+        final_date = maximum_chart_date(baseline)
         date_today = Date.today
         if final_date > date_today      
           final_date = date_today
@@ -118,7 +118,7 @@ module RedmineEvm
         chart_data
       end
 
-      def maximum_end_date baseline
+      def maximum_chart_date baseline
         issues = filter_excluded_issues(baseline)
 
         dates = []

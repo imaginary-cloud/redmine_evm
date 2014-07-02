@@ -82,9 +82,9 @@ module Forecastable
   #End date for top lines. Detects if it is an old project, so it does not go beyond baseline due_date.
   def end_date_for_top_line
     if(end_date < Date.today) #If it is an old project.
-      end_date_for_top_line = [project.maximum_end_date(self).beginning_of_week, self.end_date.beginning_of_week].max
+      end_date_for_top_line = [project.maximum_chart_date(self).beginning_of_week, self.end_date.beginning_of_week].max
     else
-      end_date_for_top_line = [project.maximum_end_date(self).beginning_of_week, self.end_date.beginning_of_week, estimate_at_completion_duration.week.from_now].max
+      end_date_for_top_line = [project.maximum_chart_date(self).beginning_of_week, self.end_date.beginning_of_week, estimate_at_completion_duration.week.from_now].max
     end
   end
 
