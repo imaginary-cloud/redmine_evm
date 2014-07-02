@@ -26,9 +26,6 @@ class BaselinesController < ApplicationController
     if(@project.has_time_entries_with_no_issue)
       flash[:warning] = l(:warning_log_time_with_no_issue)
     end
-    if(@project.has_time_entries_before_start_date(@baseline.id))
-      flash[:warning] = l(:warning_log_time_before_start_date)
-    end
   end
 
   def new

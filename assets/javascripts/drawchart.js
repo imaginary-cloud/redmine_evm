@@ -10,28 +10,19 @@ function drawChart(dataToChart, placeholder, actualWeek, endDate){
     var actualCostEstimateLine;
     var earnedValueEstimateLine;
 
-    // var startDate = data[0][0][0];
-    // var endDate;   
-    // var plannedEndDate  = data[0][data[0].length-1][0];
-    // var earnedEndDate   = data[2][data[2].length-1][0];
-
-    // if (plannedEndDate > earnedEndDate)
-    //     endDate = plannedEndDate;
-    // else endDate = earnedEndDate;
-
     if (actualWeek <= endDate) { //For OLD Projects
         var markings = [{ color: "#E0E0E0", lineWidth: 1, xaxis: { from: actualWeek , to: actualWeek } }]; //This is the marker to the "Project is here" marking today date.
-        actualCostEstimateLine = data[3];
-        earnedValueEstimateLine = data[4];
+        actualCostEstimateLine = data.actual_cost_forecast;
+        earnedValueEstimateLine = data.earned_value_forecast;
     }
 
     var graphData = [
     { 
-        data: data[5],
+        data: data.bac_top_line,
         label:"Budget at Complete", 
         color: "#CEE8FA", dashes: { show: true, lineWidth: 1 }
     },{ 
-        data: data[6] ,
+        data: data.eac_top_line ,
         label: "Estimated at Complete",
         color: "#FFE2B8", dashes: { show: true, lineWidth: 1 }     
     },{
@@ -43,15 +34,15 @@ function drawChart(dataToChart, placeholder, actualWeek, endDate){
         label: "Earned Value Forecast",
         color: "#8CC63F", dashes: { show: true, lineWidth: 3 }, points: { show: true, fill: true, fillColor: "#8CC63F" }       
     },{
-        data: data[0],
+        data: data.planned_value,
         label: "Planned Value",
         color: '#0F75BC'
     },{ 
-        data: data[1],
+        data: data.actual_cost,
         label: "Actual Cost",
         color: '#FBC040'
     },{  
-        data: data[2],
+        data: data.earned_value,
         label: "Earned Value",
         color: '#8CC63F'
     }];
