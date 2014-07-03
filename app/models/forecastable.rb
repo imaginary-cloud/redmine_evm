@@ -28,7 +28,7 @@ module Forecastable
 
   #Earned Schedule (ES) from http://www.pmknowledgecenter.com/node/163
   def earned_schedule
-    ev = project.earned_value(self).round               #Current Earned Value
+    ev = project.earned_value(self)   #Current Earned Value
     pv_line = planned_value_by_week         #Planned value by week to see in what week EV is the same as PV.
 
     week = pv_line.first[0]                 #PVt week
