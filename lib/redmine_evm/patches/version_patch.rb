@@ -36,28 +36,34 @@ module RedmineEvm
         Hash[query]
       end
 
-      def actual_cost_by_week baseline_id
+      def actual_cost_by_week baseline
+        issues = filter_excluded_issues(baseline)
         actual_cost_by_weeks = {}
         time = 0
 
-        #If it is not a old project
-        final_date = get_end_date(baseline_id)
+        start_date = issues.select("min(spent_on) as spent_on").joins(:time_entries).first.spent_on || project.start_date
+        #end_date   = issues.select("max(spent_on) as spent_on").joins(:time_entries).first.spent_on || start_date
+
+        final_date = maximum_chart_date(baseline)
         date_today = Date.today
         if final_date > date_today      
           final_date = date_today
         end
 
-        summed_time_entries = self.summed_time_entries(baseline_id)
+
+        summed_time_entries = self.summed_time_entries(baseline)
         
-        unless summed_time_entries.nil?
-          (get_start_date(baseline_id).to_date.beginning_of_week..final_date.to_date).each do |key|
+        unless summed_time_entries.empty?
+          (start_date.beginning_of_week..final_date.to_date).each do |key|
             unless summed_time_entries[key].nil?
               time += summed_time_entries[key]
             end
             actual_cost_by_weeks[key.beginning_of_week] = time      #time_entry to the beggining od week
           end
-        else
-          actual_cost_by_weeks={0=>0}
+        else #returns defult value 0 for dates
+          (start_date.beginning_of_week..final_date.to_date).each do |key|
+            actual_cost_by_weeks[key.beginning_of_week]
+          end
         end
 
         actual_cost_by_weeks
@@ -78,38 +84,38 @@ module RedmineEvm
         #Need to show all versions but exclude the selected versions.
         baseline_version = baseline.baseline_versions.where(original_version_id: self.id, exclude: false).first
 
-        chart_data = []
-        unless is_excluded(baseline)
+        chart_data = {}
+        unless is_excluded(baseline) #If a version is not excluded.
           unless baseline_version.nil?
-            chart_data << convert_to_chart(baseline_version.planned_value_by_week)
-            chart_data << convert_to_chart(self.actual_cost_by_week(baseline))
-            chart_data << convert_to_chart(self.earned_value_by_week(baseline))
+            chart_data['planned_value'] = convert_to_chart(baseline_version.planned_value_by_week)
+            chart_data['actual_cost']   = convert_to_chart(self.actual_cost_by_week(baseline))
+            chart_data['earned_value']  = convert_to_chart(self.earned_value_by_week(baseline))
           end
         end
+        chart_data
       end
 
-      def chart_end_date baseline
-        end_dates = []
-        baseline_version = self.baseline_versions.where(baseline_id: baseline).first
-        unless baseline_version.planned_value_by_week.to_a.last.nil?
-          end_dates << baseline_version.planned_value_by_week.to_a.last[0]
-        end
-        unless self.actual_cost_by_week(baseline).to_a.last.nil?
-          end_dates << self.actual_cost_by_week(baseline).to_a.last[0]
-        end
-        unless self.earned_value_by_week(baseline).to_a.last.nil?
-          end_dates << self.earned_value_by_week(baseline).to_a.last[0]
-        end
+      def maximum_chart_date baseline
+        issues = filter_excluded_issues(baseline)
 
-        end_dates.max.nil? ? 0 : end_dates.max.to_time.to_i * 1000  #convert to to milliseconds for flot.js
+        dates = []
+        dates << baseline_versions.where(baseline_id: baseline).first.try(:end_date) #planned value line, returns nil if not in a baseline
+        dates << issues.select("max(spent_on) as spent_on").joins(:time_entries).first.spent_on #actual cost line
+        dates << issues.joins(:baseline_issues).where("baseline_issues.update_hours = 0").map(&:updated_on).compact.max.try(:to_date) #earned value
+        dates << issues.joins(:baseline_issues).where("baseline_issues.update_hours = 1").map(&:closed_on).compact.max.try(:to_date) #earnedvalue
 
+        dates << project.start_date #If there is no data yet
+
+        dates.compact.max
+        #dates.max.nil? ? 0 : dates.max
       end
 
       def is_excluded baseline_id
-        if self.baseline_versions.where("baseline_id = ?", baseline_id).first.nil?
-          false
+        baseline_version = self.baseline_versions.where("baseline_id = ?", baseline_id).first #BaselineVersion of this version
+        if baseline_version.nil?
+          false #Does not have a baseline version so it is not excluded.
         else
-          self.baseline_versions.where("baseline_id = ?", baseline_id).first.exclude
+          baseline_version.exclude
         end
       end
 
