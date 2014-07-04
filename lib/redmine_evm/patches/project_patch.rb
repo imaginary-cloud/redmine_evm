@@ -21,7 +21,7 @@ module RedmineEvm
     module ProjectInstanceMethods
 
       def filter_excluded_issues baseline_id
-        issues.joins(:baseline_issues).where("baseline_issues.exclude = 0 AND baseline_issues.baseline_id = ?", baseline_id)
+        issues.where("issues.id NOT IN (SELECT original_issue_id as id FROM baseline_issues WHERE exclude = 1 AND baseline_id = ?)", baseline_id)
       end
 
       def actual_cost baseline_id
@@ -38,7 +38,6 @@ module RedmineEvm
       end
 
       def actual_cost_by_week baseline
-        issues = filter_excluded_issues(baseline)
         actual_cost_by_weeks = {}
         time = 0
 
