@@ -18,7 +18,7 @@ ActiveRecord::Fixtures.create_fixtures(Redmine::Plugin.find(:redmine_evm).direct
   end
 
   def test_filter_excluded_issues
-    assert_equal 15, @project.filter_excluded_issues(@baseline).count
+    assert_equal 17, @project.filter_excluded_issues(@baseline).count
   end
 
   def test_filter_excluded_issues_with_one_version_excluded
@@ -29,7 +29,7 @@ ActiveRecord::Fixtures.create_fixtures(Redmine::Plugin.find(:redmine_evm).direct
       bi.exclude = true
       bi.save
     end
-    assert_equal 4, @project.filter_excluded_issues(@baseline).count
+    assert_equal 6, @project.filter_excluded_issues(@baseline).count
   end
   
   def test_filter_excluded_issues_with_all_versions_excluded
@@ -41,7 +41,7 @@ ActiveRecord::Fixtures.create_fixtures(Redmine::Plugin.find(:redmine_evm).direct
       end
       bv.save
     end
-    assert_equal 1, @project.filter_excluded_issues(@baseline).count
+    assert_equal 3, @project.filter_excluded_issues(@baseline).count
   end
 
   def test_maximum_chart_date
