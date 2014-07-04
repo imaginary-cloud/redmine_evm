@@ -20,16 +20,12 @@ module RedmineEvm
 
     module VersionInstanceMethods
 
-      def filter_excluded_issues baseline_id
-        fixed_issues.joins(:baseline_issues).where("baseline_issues.exclude = 0 AND baseline_issues.baseline_id = ?", baseline_id)
-      end
-      
       def actual_cost baseline_id
         spent_hours
       end
 
       def summed_time_entries baseline_id
-        issues = filter_excluded_issues(baseline_id)
+        issues = self.fixed_issues
         query = issues.select('MAX(spent_on) AS spent_on, SUM(hours) AS sum_hours').
                 joins(:time_entries).
                 group('spent_on').collect { |issue| [issue.spent_on, issue.sum_hours] }
@@ -37,7 +33,7 @@ module RedmineEvm
       end
 
       def actual_cost_by_week baseline
-        issues = filter_excluded_issues(baseline)
+        issues = self.fixed_issues
         actual_cost_by_weeks = {}
         time = 0
 
@@ -58,10 +54,6 @@ module RedmineEvm
               time += summed_time_entries[key]
             end
             actual_cost_by_weeks[key.beginning_of_week] = time      #time_entry to the beggining od week
-          end
-        else #returns defult value 0 for dates
-          (start_date.beginning_of_week..final_date.to_date).each do |key|
-            actual_cost_by_weeks[key.beginning_of_week]
           end
         end
 
@@ -115,11 +107,11 @@ module RedmineEvm
             chart_data['earned_value']  = convert_to_chart(self.earned_value_by_week(baseline))
           end
         end
-        chart_data
+        chart_data #Data ready for chart flot.js to consume.
       end
 
       def maximum_chart_date baseline
-        issues = filter_excluded_issues(baseline)
+        issues = self.fixed_issues
 
         dates = []
         dates << baseline_versions.where(baseline_id: baseline).first.try(:end_date) #planned value line, returns nil if not in a baseline
