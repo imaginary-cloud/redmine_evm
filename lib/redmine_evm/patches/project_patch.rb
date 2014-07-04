@@ -67,51 +67,15 @@ module RedmineEvm
 
       def earned_value_by_week baseline_id
         earned_value_by_week = Hash.new { |h, k| h[k] = 0 }
-
+        baselines.find(baseline_id).update_hours ? update_hours = true : update_hours = false
         issues.each do |issue|
-          next if issue.baseline_issues.where(original_issue_id: issue.id, baseline_id: baseline_id).first.try(:exclude)
-          if baselines.find(baseline_id).update_hours
-            #refactor: put some of the code in issue patch
-            #refactor: what happen if a issue is close after the creation of the baseline the if clause need something more
-            if issue.closed? #verify if it's also closed in baseline issues
-              next if issue.spent_hours == 0
-              issue_dates = issue.dates
-              issues_days = (issue_dates[0].to_date..issue_dates[1].to_date).to_a
-              hoursPerDay = issue.spent_hours / issues_days.size 
-            else
-              next if issue.estimated_hours.nil?
-              issue_dates = issue.dates
-              issues_days = (issue_dates[0].to_date..issue_dates[1].to_date).to_a
-              hoursPerDay = issue.estimated_hours / issues_days.size 
-            end
-          else
-            next if issue.estimated_hours.nil?
-            issue_dates = issue.dates
-            issues_days = (issue_dates[0].to_date..issue_dates[1].to_date).to_a
-            hoursPerDay = issue.estimated_hours / issues_days.size 
-          end
-          issues_days.each do |day|
-            earned_value_by_week[day.beginning_of_week] += hoursPerDay * issue.done_ratio/100.0 
+          next if issue.baseline_issues.find_by_baseline_id(baseline_id).try(:exclude)
+          issue.days.each do |day|
+            earned_value_by_week[day.beginning_of_week] += issue.hours_per_day(update_hours, baseline_id) * issue.done_ratio/100.0 
           end
         end
-        #test hash order
-        nh = {}
-        earned_value_by_week.keys.sort.each do |k|
-          nh[k] = earned_value_by_week[k]
-        end
-        if Date.today < baselines.find(baseline_id).due_date
-          dat = Date.today
-        else
-          dat = baselines.find(baseline_id).due_date
-        end
-        unless nh.empty?
-          if nh.keys.last+1 <= dat
-            (nh.keys.last+1..dat).each do |date|
-              nh[date.beginning_of_week] = 0 unless nh[date.beginning_of_week] 
-            end
-          end  
-        end
-        nh.each_with_object({}) { |(k, v), h| h[k] = v + (h.values.last||0) }
+        ordered_earned_value = order_earned_value earned_value_by_week
+        extend_earned_value_to_final_date ordered_earned_value, baseline_id
       end
 
       def earned_value baseline_id
@@ -140,6 +104,7 @@ module RedmineEvm
         chart_data['planned_value'] = convert_to_chart(baseline.planned_value_by_week)
         chart_data['actual_cost']   = convert_to_chart(self.actual_cost_by_week(baseline))
         chart_data['earned_value']  = convert_to_chart(self.earned_value_by_week(baseline))
+
         if(forecast_is_enabled)
           chart_data['actual_cost_forecast']  = convert_to_chart(baseline.actual_cost_forecast_line)
           chart_data['earned_value_forecast'] = convert_to_chart(baseline.earned_value_forecast_line)
@@ -174,8 +139,31 @@ module RedmineEvm
         [maximum_start_date, due_date].compact.max
       end
 
-    end
+      private
+        def order_earned_value earned_value
+          ordered_earned_value = {}
+          earned_value.keys.sort.each do |key|
+            ordered_earned_value[key] = earned_value[key]
+          end
+          ordered_earned_value
+        end
 
+        def extend_earned_value_to_final_date ordered_earned_value, baseline_id
+          if Date.today < baselines.find(baseline_id).due_date
+            dat = Date.today
+          else
+            dat = baselines.find(baseline_id).due_date
+          end
+          unless ordered_earned_value.empty?
+            if ordered_earned_value.keys.last+1 <= dat
+              (ordered_earned_value.keys.last+1..dat).each do |date|
+                ordered_earned_value[date.beginning_of_week] = 0 unless ordered_earned_value[date.beginning_of_week] 
+              end
+            end  
+          end
+          ordered_earned_value.each_with_object({}) { |(key, v), h| h[key] = v + (h.values.last||0) }
+        end
+    end
   end
 end
 

@@ -14,10 +14,14 @@ class BaselineIssue < ActiveRecord::Base
   end
 
   def estimated_hours_for_chart
-    @estimated_hours ||= update_hours ? status == "Closed" || status == "Rejected" ? spent_hours : estimated_hours || 0 : estimated_hours || 0
+    @estimated_hours ||= update_hours ? closed? ? spent_hours : estimated_hours || 0 : estimated_hours || 0
   end
 
-  private
+  def closed?
+    status == "Closed" || status == "Rejected" ? true : false
+  end
+
+  #private
 
     def start_date_for_chart 
       start_date ? start_date : baseline_version ? baseline_version.start_date : baseline.start_date

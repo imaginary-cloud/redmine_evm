@@ -46,6 +46,7 @@ module RedmineEvm
           final_date = date_today
         end
 
+
         summed_time_entries = self.summed_time_entries(baseline)
         
         unless summed_time_entries.empty?
@@ -62,38 +63,14 @@ module RedmineEvm
 
       def earned_value_by_week baseline_id
         earned_value_by_week = Hash.new { |h, k| h[k] = 0 }
-
+        baseline_versions.find_by_baseline_id(baseline_id).update_hours ? update_hours = true : update_hours = false
         fixed_issues.each do |fixed_issue|
-          fixed_issue_dates = fixed_issue.dates
-          next if fixed_issue.estimated_hours.nil?
-
-          fixed_issues_days = (fixed_issue_dates[0].to_date..fixed_issue_dates[1].to_date).to_a
-          hoursPerDay = fixed_issue.estimated_hours / fixed_issues_days.size 
-        
-          fixed_issues_days.each do |day|
-            earned_value_by_week[day.beginning_of_week] += hoursPerDay * fixed_issue.done_ratio/100.0 
+          fixed_issue.days.each do |day|
+            earned_value_by_week[day.beginning_of_week] += fixed_issue.hours_per_day(update_hours, baseline_id) * fixed_issue.done_ratio/100.0 
           end
         end
-        #test hash order
-        nh = {}
-        earned_value_by_week.keys.sort.each do |k|
-          nh[k] = earned_value_by_week[k]
-        end
-        if Date.today < baseline_versions.where(baseline_id: baseline_id, original_version_id: id).first.end_date
-          dat = Date.today
-        else
-          dat = baseline_versions.where(baseline_id: baseline_id, original_version_id: id).first.end_date
-        end
-        unless nh.empty?
-          if nh.keys.last+1 <= dat
-            (nh.keys.last+1..dat).each do |date|
-              nh[date.beginning_of_week] = 0 unless nh[date.beginning_of_week] 
-            end
-          end  
-        end
-
-        nh.each_with_object({}) { |(k, v), h| h[k] = v + (h.values.last||0)  } 
-      end
+        ordered_earned_value = order_earned_value earned_value_by_week
+        extend_earned_value_to_final_date ordered_earned_value, baseline_id      end
 
       def data_for_chart baseline
         #Need to show all versions but exclude the selected versions.
@@ -133,6 +110,31 @@ module RedmineEvm
           baseline_version.exclude
         end
       end
+
+      private
+        def order_earned_value earned_value
+          ordered_earned_value = {}
+          earned_value.keys.sort.each do |key|
+            ordered_earned_value[key] = earned_value[key]
+          end
+          ordered_earned_value
+        end
+
+        def extend_earned_value_to_final_date ordered_earned_value, baseline_id
+          if Date.today < baseline_versions.find_by_baseline_id(baseline_id).end_date
+            dat = Date.today
+          else
+            dat = baseline_versions.find_by_baseline_id(baseline_id).end_date
+          end
+          unless ordered_earned_value.empty?
+            if ordered_earned_value.keys.last+1 <= dat
+              (ordered_earned_value.keys.last+1..dat).each do |date|
+                ordered_earned_value[date.beginning_of_week] = 0 unless ordered_earned_value[date.beginning_of_week] 
+              end
+            end  
+          end
+          ordered_earned_value.each_with_object({}) { |(key, v), h| h[key] = v + (h.values.last||0) }
+        end
     end  
   end
 end
