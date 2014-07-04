@@ -54,3 +54,17 @@ time_entries_009:
     tweek : 1
     created_on : 2013-01-04 17:08:19
     updated_on : 2013-01-04 17:08:19
+time_entries_010: 
+    id : 5673
+    project_id : 1
+    user_id : 59
+    issue_id : 4713
+    hours : 100
+    comments : Test log time with no baseline
+    activity_id : 8
+    spent_on : 2014-06-04
+    tyear : 2014
+    tmonth : 6
+    tweek : 23
+    created_on : 2014-06-04 17:08:19
+    updated_on : 2014-06-04 17:08:19

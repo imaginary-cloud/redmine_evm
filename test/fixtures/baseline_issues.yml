@@ -64,6 +64,11 @@ baseline_issues_008:
     created_on : 2014-06-05 14:27:03
     baseline_id : 1
     done_ratio : 50
+    status: 'In Progress'
+    start_date : 2013-01-02
+    exclude: false
+    spent_hours: 4
+    closed_on :
 baseline_issues_009:
     id : 602
     original_issue_id : 4531
@@ -73,6 +78,11 @@ baseline_issues_009:
     created_on : 2014-06-05 14:27:04
     baseline_id : 1
     done_ratio : 0
+    status: 'New'
+    start_date : 2013-01-07
+    exclude: false
+    spent_hours: 0
+    closed_on :
 baseline_issues_010:
     id : 603
     original_issue_id : 4532
@@ -82,6 +92,11 @@ baseline_issues_010:
     created_on : 2014-06-05 14:27:04
     baseline_id : 1
     done_ratio : 0
+    status: 'New'
+    start_date : 2013-01-08
+    exclude: false
+    spent_hours: 0
+    closed_on :
 baseline_issues_011:
     id : 604
     original_issue_id : 4533
@@ -91,6 +106,11 @@ baseline_issues_011:
     created_on : 2014-06-05 14:27:04
     baseline_id : 1
     done_ratio : 0
+    status: 'New'
+    start_date : 2013-01-08
+    exclude: false
+    spent_hours: 0
+    closed_on :
 baseline_issues_012:
     id : 605
     original_issue_id : 4534
@@ -100,6 +120,11 @@ baseline_issues_012:
     created_on : 2014-06-05 14:27:04
     baseline_id : 1
     done_ratio : 0
+    status: 'New'
+    start_date : 2013-01-08
+    exclude: false
+    spent_hours: 0
+    closed_on :
 baseline_issues_013:
     id : 606
     original_issue_id : 4535
@@ -109,6 +134,11 @@ baseline_issues_013:
     created_on : 2014-06-05 14:27:04
     baseline_id : 1
     done_ratio : 0
+    status: 'New'
+    start_date : 2013-01-14
+    exclude: false
+    spent_hours: 0
+    closed_on :
 baseline_issues_014:
     id : 607
     original_issue_id : 4536
@@ -118,6 +148,11 @@ baseline_issues_014:
     created_on : 2014-06-05 14:27:04
     baseline_id : 1
     done_ratio : 0
+    status: 'New'
+    start_date : 2013-01-14
+    exclude: false
+    spent_hours: 0
+    closed_on :
 baseline_issues_015:
     id : 608
     original_issue_id : 4537
@@ -127,6 +162,11 @@ baseline_issues_015:
     created_on : 2014-06-05 14:27:04
     baseline_id : 1
     done_ratio : 0
+    status: 'New'
+    start_date : 2013-01-14
+    exclude: false
+    spent_hours: 0
+    closed_on :
 baseline_issues_016:
     id : 609
     original_issue_id : 4538
@@ -136,6 +176,11 @@ baseline_issues_016:
     created_on : 2014-06-05 14:27:04
     baseline_id : 1
     done_ratio : 0
+    status: 'New'
+    start_date : 2013-01-14
+    exclude: false
+    spent_hours: 0
+    closed_on :
 baseline_issues_017:
     id : 610
     original_issue_id : 4539
@@ -145,6 +190,11 @@ baseline_issues_017:
     created_on : 2014-06-05 14:27:04
     baseline_id : 1
     done_ratio : 0
+    status: 'New'
+    start_date : 2013-01-14
+    exclude: false
+    spent_hours: 0
+    closed_on :
 baseline_issues_018:
     id : 611
     original_issue_id : 4540
@@ -154,6 +204,11 @@ baseline_issues_018:
     created_on : 2014-06-05 14:27:04
     baseline_id : 1
     done_ratio : 0
+    status: 'New'
+    start_date : 2013-01-14
+    exclude: false
+    spent_hours: 0
+    closed_on :
 baseline_issues_019:
     id : 612
     original_issue_id : 4541
@@ -163,6 +218,11 @@ baseline_issues_019:
     created_on : 2014-06-05 14:27:04
     baseline_id : 1
     done_ratio : 0
+    status: 'New'
+    start_date : 2013-01-14
+    exclude: false
+    spent_hours: 0
+    closed_on :
 baseline_issues_020:
     id : 613
     original_issue_id : 4544
@@ -172,6 +232,11 @@ baseline_issues_020:
     created_on : 2014-06-05 14:27:04
     baseline_id : 1
     done_ratio : 50
+    status: 'In Progress'
+    start_date : 2012-12-27
+    exclude: false
+    spent_hours: 1
+    closed_on :
 baseline_issues_021:
     id : 614
     original_issue_id : 4710
@@ -181,6 +246,11 @@ baseline_issues_021:
     created_on : 2014-06-05 14:27:04
     baseline_id : 1
     done_ratio : 0
+    status: 'New'
+    start_date : 2014-06-02
+    exclude: false
+    spent_hours: 0
+    closed_on :
 baseline_issues_022:
     id : 615
     original_issue_id : 4711
@@ -190,3 +260,8 @@ baseline_issues_022:
     created_on : 2014-06-05 14:27:04
     baseline_id : 1
     done_ratio : 0
+    status: 'New'
+    start_date : 2014-06-02
+    exclude: false
+    spent_hours: 0
+    closed_on :

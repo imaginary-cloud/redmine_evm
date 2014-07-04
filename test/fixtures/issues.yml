@@ -427,3 +427,53 @@ issues_032:
   rgt : 2
   is_private : 0
   closed_on : 
+issues_033:
+  id : 4712
+  tracker_id : 2
+  project_id : 1
+  subject : Teste issue with version and no baseline
+  description : 
+  due_date : 2014-06-07
+  category_id : 
+  status_id : 1
+  assigned_to_id : 
+  priority_id : 4
+  fixed_version_id : 169 
+  author_id : 63
+  lock_version : 1
+  created_on : 2014-06-02 15:44:32
+  updated_on : 2014-06-04 15:33:21
+  start_date : 2014-06-02
+  done_ratio : 0
+  estimated_hours : 20
+  parent_id : 
+  root_id : 4712
+  lft : 1
+  rgt : 2
+  is_private : 0
+  closed_on : 
+issues_034:
+  id : 4713
+  tracker_id : 2
+  project_id : 1
+  subject : Teste issue with version and no baseline 2
+  description : 
+  due_date : 2014-06-21
+  category_id : 
+  status_id : 1
+  assigned_to_id : 
+  priority_id : 4
+  fixed_version_id : 169 
+  author_id : 63
+  lock_version : 1
+  created_on : 2014-06-20 15:44:32
+  updated_on : 2014-06-20 15:33:21
+  start_date : 2014-06-20
+  done_ratio : 0
+  estimated_hours : 5
+  parent_id : 
+  root_id : 4713
+  lft : 1
+  rgt : 2
+  is_private : 0
+  closed_on : 

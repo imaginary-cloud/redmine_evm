@@ -33,9 +33,9 @@
 baselines_005:
   id : 1
   name : Voo Baseline 1
-  due_date : <%= Date.today%>
+  due_date : 2014-06-07
   description : All versions
   state : Current
   project_id : 1
   created_on : 2014-06-05 14:27:03
-  start_date : 2012-12-27
+  update_hours: 0
