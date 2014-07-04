@@ -157,7 +157,7 @@
   <div id="evm-versions-charts">
     <% @project.versions.each do |version| %>
       <% unless version.is_excluded(@baseline) %>
-        <h3 class="version"><%= link_to version.name, version %></h3>
+        <h3 class="version"> <%= version.name %></h3>
         <div id='evm-graph-lines-version-<%= version.id %>' style="width:70%;height:350px;margin:auto;margin-top:40px;margin-bottom:40px;"></div>
         <%= render :partial => '/baselines/version_chart_js', :locals => { maximum_chart_date: version.maximum_chart_date(@baseline), version_chart_data: version.data_for_chart(@baseline), version: version } %> 
       <% end %>
