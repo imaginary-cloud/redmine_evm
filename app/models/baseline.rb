@@ -83,8 +83,8 @@ class Baseline < ActiveRecord::Base
     @start_date = baseline_issues.where(exclude: false).minimum(:start_date) || project.created_on #SCOPE WHERE
   end
 
-  def end_date
-    due_date
+  def end_date 
+    update_hours ? @end_date ||= maximum_end_date_when_update_hours.to_date : @end_date ||= due_date
   end
 
   #Schedule Performance Index (SPI)
@@ -106,5 +106,10 @@ class Baseline < ActiveRecord::Base
   def cost_variance
     project.earned_value(self) - project.actual_cost(self)
   end
+
+  private
+    def maximum_end_date_when_update_hours
+      baseline_issues.maximum('closed_on') || due_date
+    end
 
 end
