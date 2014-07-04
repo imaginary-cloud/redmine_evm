@@ -80,9 +80,9 @@ module RedmineEvm
         unless is_excluded(baseline) #If a version is not excluded.
           unless baseline_version.nil?
             chart_data['planned_value'] = convert_to_chart(baseline_version.planned_value_by_week)
-            chart_data['actual_cost']   = convert_to_chart(self.actual_cost_by_week(baseline))
             chart_data['earned_value']  = convert_to_chart(self.earned_value_by_week(baseline))
           end
+          chart_data['actual_cost']   = convert_to_chart(self.actual_cost_by_week(baseline))
         end
         chart_data #Data ready for chart flot.js to consume.
       end
@@ -91,7 +91,7 @@ module RedmineEvm
         issues = self.fixed_issues
 
         dates = []
-        dates << baseline_versions.where(baseline_id: baseline).first.try(:end_date) #planned value line, returns nil if not in a baseline
+        dates << baseline_versions.where(baseline_id: baseline, original_version_id: id).first.try(:end_date) #planned value line, returns nil if not in a baseline
         dates << issues.select("max(spent_on) as spent_on").joins(:time_entries).first.spent_on #actual cost line
         dates << issues.joins(:baseline_issues).where("baseline_issues.update_hours = 0").map(&:updated_on).compact.max.try(:to_date) #earned value
         dates << issues.joins(:baseline_issues).where("baseline_issues.update_hours = 1").map(&:closed_on).compact.max.try(:to_date) #earnedvalue
