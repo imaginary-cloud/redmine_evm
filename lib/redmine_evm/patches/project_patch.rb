@@ -43,7 +43,7 @@ module RedmineEvm
         time = 0
 
         start_date = self.start_date
-        end_date   = issues.select("max(spent_on) as spent_on").joins(:time_entries).first.spent_on || start_date
+        #end_date   = issues.select("max(spent_on) as spent_on").joins(:time_entries).first.spent_on || start_date
 
         final_date = maximum_chart_date(baseline)
         date_today = Date.today
@@ -54,13 +54,12 @@ module RedmineEvm
         summed_time_entries = self.summed_time_entries(baseline)
 
         unless summed_time_entries.empty?
-          (self.start_date.beginning_of_week..final_date.to_date).each do |key|
+          (start_date.beginning_of_week..final_date.to_date).each do |key|
             unless summed_time_entries[key].nil?
               time += summed_time_entries[key]
             end
             actual_cost_by_weeks[key.beginning_of_week] = time      #time_entry to the beggining od week
           end
-
         end
 
         actual_cost_by_weeks
@@ -70,7 +69,7 @@ module RedmineEvm
         earned_value_by_week = Hash.new { |h, k| h[k] = 0 }
 
         issues.each do |issue|
-          next if issue.baseline_issues.where(original_issue_id: issue.id, baseline_id: baseline_id).first.exclude
+          next if issue.baseline_issues.where(original_issue_id: issue.id, baseline_id: baseline_id).first.try(:exclude)
           if baselines.find(baseline_id).update_hours
             #refactor: put some of the code in issue patch
             #refactor: what happen if a issue is close after the creation of the baseline the if clause need something more
@@ -118,7 +117,7 @@ module RedmineEvm
       def earned_value baseline_id
         sum_earned_value = 0
         issues.each do |issue|
-          next if issue.baseline_issues.where(original_issue_id: issue.id, baseline_id: baseline_id).first.exclude
+          next if issue.baseline_issues.where(original_issue_id: issue.id, baseline_id: baseline_id).first.try(:exclude)
           #baselines.find(baseline_id).baseline_issues.where
           if baselines.find(baseline_id).update_hours
             if issue.closed?
@@ -147,7 +146,7 @@ module RedmineEvm
           chart_data['bac_top_line']          = convert_to_chart(baseline.bac_top_line)
           chart_data['eac_top_line']          = convert_to_chart(baseline.eac_top_line)
         end
-        chart_data
+        chart_data #Data ready for chart flot.js to consume.
       end
 
       def maximum_chart_date baseline
