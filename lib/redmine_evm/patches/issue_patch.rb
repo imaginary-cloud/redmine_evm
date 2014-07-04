@@ -20,36 +20,34 @@ module RedmineEvm
 
     module IssueInstanceMethods
       #still in refectoring process
-      def issue_days
+      def days
         dates2 = dates
         (dates2[0].to_date..dates2[1].to_date).to_a
       end
       #still in refectoring process
-      def hours_per_day
-        estimated_hours_for_chart / number_of_days 
-      end
-      #still in refectoring process
-      def estimated_hours_for_chart update_hours
-        update_hours ? closed? ? spent_hours : estimated_hours || 0 : estimated_hours || 0
+      def hours_per_day update_hours, baseline_id
+        estimated_hours_for_chart(update_hours, baseline_id) / number_of_days 
       end
 
-      #private #still in refectoring process
-        def dates 
+      private #still in refectoring process
+        def dates # start_and_end_dates
           dates = []
           selected_journals = journals.select {|journal| journal.journalized.done_ratio > 0}
           dates[0] = selected_journals.first.created_on unless selected_journals.first.nil?
           dates[0] = created_on if dates[0].nil?
         
-          if closed?
-            dates[1] = closed_on
-          else
-            dates[1] = updated_on
-          end
+          closed? ? dates[1] = closed_on : dates[1] = updated_on
+
           dates
         end
 
-        def number_of_day
-          issue_days.size
+        def number_of_days
+          days.size
+        end
+
+        #still in refectoring process
+        def estimated_hours_for_chart update_hours, baseline_id
+          update_hours ? closed? && baseline_issues.find_by_baseline_id(baseline_id).closed? ? spent_hours : estimated_hours || 0 : estimated_hours || 0
         end
       end  
   end
