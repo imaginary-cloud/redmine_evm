@@ -45,7 +45,7 @@ ActiveRecord::Fixtures.create_fixtures(Redmine::Plugin.find(:redmine_evm).direct
   end
 
   def test_maximum_chart_date
-    assert_equal Date.new(2014,06,07), @project.maximum_chart_date(@baseline)
+    assert_equal Date.new(2014,06,16), @project.maximum_chart_date(@baseline)
   end
 
   def test_maximum_date

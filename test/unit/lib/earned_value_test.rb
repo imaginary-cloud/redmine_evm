@@ -32,9 +32,4 @@ ActiveRecord::Fixtures.create_fixtures(Redmine::Plugin.find(:redmine_evm).direct
     assert_equal 0.0, version.earned_value_by_week(@baseline.id).to_a.last[1]
   end
 
-  def earned_value_must_not_be_grater_than_budget_at_complete
-    result = @baseline.budget_at_complete >= @project.earned_value(@baseline)
-    assert_equal true, result
-  end
-
 end

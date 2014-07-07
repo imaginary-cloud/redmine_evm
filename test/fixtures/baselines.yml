@@ -32,7 +32,7 @@
 #   start_date: 2013-12-25 21:00:33 +02:00
 baselines_005:
   id : 1
-  name : Voo Baseline 1
+  name : Baseline 1
   due_date : 2014-06-07
   description : All versions
   state : Current
