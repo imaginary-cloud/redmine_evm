@@ -93,12 +93,12 @@ module RedmineEvm
         dates = []
         dates << baseline_versions.where(baseline_id: baseline, original_version_id: id).first.try(:end_date) #planned value line, returns nil if not in a baseline
         dates << issues.select("max(spent_on) as spent_on").joins(:time_entries).first.spent_on #actual cost line
-        dates << issues.joins(:baseline_issues).where("baseline_issues.update_hours = 0").map(&:updated_on).compact.max.try(:to_date) #earned value
-        dates << issues.joins(:baseline_issues).where("baseline_issues.update_hours = 1").map(&:closed_on).compact.max.try(:to_date) #earnedvalue
-
+        dates << issues.map(&:updated_on).compact.max.try(:to_date) #earned value
+        dates << issues.map(&:closed_on).compact.max.try(:to_date) #earnedvalue
+        #fixed_issues updated on e closed on ...
         dates << project.start_date #If there is no data yet
 
-        dates.compact.max
+        dates.compact.max.beginning_of_week
         #dates.max.nil? ? 0 : dates.max
       end
 
