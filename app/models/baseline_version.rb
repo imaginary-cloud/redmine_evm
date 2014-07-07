@@ -11,13 +11,14 @@ class BaselineVersion < ActiveRecord::Base
   end
 
   def end_date # end date for chart? #com update_hours o caso muda # se não tiver closed issues como é? max due date? metodo privado para max de varias hipoteses?
-    update_hours ? @end_date ||= max_end_date_when_updated_hours.to_date : @end_date ||= effective_date || baseline.due_date
+    update_hours ? @end_date ||= end_date_when_updated_hours.to_date : @end_date ||= effective_date || baseline.due_date
   end
 
   private
+  #se a versão está fechada maximum closed on se não continua o effective date
 
-  def max_end_date_when_updated_hours # repensar nisto
-    baseline_issues.maximum('closed_on') || [effective_date, baseline.due_date].compact.max
+  #scope para closed_baseline_issues e para non_closed_baseline_issues
+  def end_date_when_updated_hours # repensar nisto# compact com end_date e baseline_due_date
+     is_closed ? baseline_issues.maximum('closed_on') : effective_date || baseline.due_date
   end
 end
-

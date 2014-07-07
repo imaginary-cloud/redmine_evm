@@ -34,7 +34,7 @@ module RedmineEvm
           dates = []
           selected_journals = journals.select {|journal| journal.journalized.done_ratio > 0}
           dates[0] = selected_journals.first.created_on unless selected_journals.first.nil?
-          dates[0] = created_on if dates[0].nil?
+          dates[0] = start_date? ? start_date : created_on if dates[0].nil? #start_date e caso não tenha created_on #feito
         
           closed? ? dates[1] = closed_on : dates[1] = updated_on
 
@@ -47,7 +47,7 @@ module RedmineEvm
 
         #still in refectoring process
         def estimated_hours_for_chart update_hours, baseline_id
-          update_hours ? closed? && baseline_issues.find_by_baseline_id(baseline_id).closed? ? spent_hours : estimated_hours || 0 : estimated_hours || 0
+          update_hours ? closed? && baseline_issues.find_by_baseline_id(baseline_id).is_closed ? spent_hours : estimated_hours || 0 : estimated_hours || 0
         end
       end  
   end

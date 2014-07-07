@@ -10,8 +10,6 @@ class Baseline < ActiveRecord::Base
 
   validates :name, :due_date, :presence => true
 
-  # scope :closed, lambda { |id| query }
-
   before_create {update_baseline_status("#{l(:label_old_baseline)}", project_id)}
   after_destroy {update_baseline_status("#{l(:label_current_baseline)}", project_id)}
 
@@ -26,7 +24,7 @@ class Baseline < ActiveRecord::Base
       versions.each do |version|
         versions_to_exclude.nil? ? exclude = false : exclude =  versions_to_exclude.include?(version.id)
         update_estimated_hours == "1" ? update_hours = true : update_hours = false
-        baseline_versions.create original_version_id: version.id, effective_date: version.effective_date, name: version.name, created_on: version.created_on,exclude: exclude, update_hours: update_hours
+        baseline_versions.create original_version_id: version.id, effective_date: version.effective_date, name: version.name, created_on: version.created_on,exclude: exclude, update_hours: update_hours, is_closed: version.closed?
       end
     end
   end
@@ -35,7 +33,7 @@ class Baseline < ActiveRecord::Base
     unless issues.nil?
       issues.each do |issue|
         update_estimated_hours == "1" ? update_hours = true : update_hours = false
-        baseline_issue = BaselineIssue.new original_issue_id: issue.id, done_ratio: issue.done_ratio, status: issue.status.name, due_date: issue.due_date, start_date: issue.start_date, exclude: false, update_hours: update_hours, estimated_hours: issue.estimated_hours, spent_hours: issue.spent_hours, closed_on: issue.closed_on
+        baseline_issue = BaselineIssue.new original_issue_id: issue.id, done_ratio: issue.done_ratio, status: issue.status.name, due_date: issue.due_date, start_date: issue.start_date, exclude: false, update_hours: update_hours, estimated_hours: issue.estimated_hours, spent_hours: issue.spent_hours, closed_on: issue.closed_on, is_closed: issue.closed?
 
         baseline_version = self.baseline_versions.find_by_original_version_id(issue.fixed_version_id)
         unless baseline_version.nil?
