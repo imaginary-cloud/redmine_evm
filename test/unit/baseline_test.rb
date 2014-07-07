@@ -88,8 +88,10 @@ ActiveRecord::Fixtures.create_fixtures(Redmine::Plugin.find(:redmine_evm).direct
   def test_if_it_updates_hours
     baseline_with_update = @project.baselines.create(name: 'Test Update', due_date: Date.new(2014,05,14), description: "updated hours enabled", update_hours: true )
     versions_to_exclude = []
-    assert_equal true, baseline_with_update.update_hours
+    update_hours_param = true
+    assert_equal true, baseline_with_update.update_hours # CHANGE TO TRUE
   end
+
 
   def test_if_destroy_deletes_associated_data
     @baseline.destroy 

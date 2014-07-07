@@ -54,7 +54,7 @@ class ForecastableTest < ActiveSupport::TestCase
   end
 
   def test_end_date_for_top_line
-    assert_equal Date.new(2014,06,02), @baseline.end_date_for_top_line
+    assert_equal Date.new(2014,06,16), @baseline.end_date_for_top_line
   end
 
   def test_if_bac_top_line_returns_array

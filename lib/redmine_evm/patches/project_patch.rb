@@ -42,9 +42,9 @@ module RedmineEvm
         time = 0
 
         start_date = self.start_date
-        #end_date   = issues.select("max(spent_on) as spent_on").joins(:time_entries).first.spent_on || start_date
+        end_date   = issues.select("max(spent_on) as spent_on").joins(:time_entries).first.spent_on || start_date
 
-        final_date = maximum_chart_date(baseline)
+        final_date = [maximum_chart_date(baseline), end_date].max
         date_today = Date.today
         if final_date > date_today      
           final_date = date_today
@@ -119,12 +119,12 @@ module RedmineEvm
         dates = []
         dates << baseline.due_date # planned value line
         dates << issues.select("max(spent_on) as spent_on").joins(:time_entries).first.spent_on # actual cost line
-        dates << issues.joins(:baseline_issues).where("baseline_issues.update_hours = 0").map(&:updated_on).compact.max.try(:to_date)
-        dates << issues.joins(:baseline_issues).where("baseline_issues.update_hours = 1").map(&:closed_on).compact.max.try(:to_date)
+        dates << issues.map(&:updated_on).compact.max.try(:to_date)
+        dates << issues.map(&:closed_on).compact.max.try(:to_date)
 
         dates << start_date #If there is no data yet
 
-        dates.compact.max
+        dates.compact.max.beginning_of_week
         #dates.max.nil? ? 0 : dates.max
       end
 
