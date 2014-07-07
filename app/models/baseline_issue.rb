@@ -4,9 +4,20 @@ class BaselineIssue < ActiveRecord::Base
   belongs_to :baseline
   belongs_to :baseline_version
   belongs_to :issue, foreign_key: 'original_issue_id'
+  @@days_by_week = {}
 
-  def days
-    @days ||= (start_date_for_chart..end_date_for_chart).to_a
+  def days  
+    #@days ||= (start_date_for_chart..end_date_for_chart).to_a
+    if @@days_by_week["#{start_date} #{end_date_for_chart}"]
+      @@days_by_week["#{start_date} #{end_date_for_chart}"]
+    else
+    array = []
+    (start_date_for_chart..end_date_for_chart).each do |day|
+      array<< day.beginning_of_week
+    end
+    @@days_by_week["#{start_date} #{end_date_for_chart}"] = array.uniq
+    array.uniq
+  end
   end
 
   def hours_per_day
