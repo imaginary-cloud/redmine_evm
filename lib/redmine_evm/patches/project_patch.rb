@@ -81,7 +81,6 @@ module RedmineEvm
         sum_earned_value = 0
         issues.each do |issue|
           next if issue.baseline_issues.where(original_issue_id: issue.id, baseline_id: baseline_id).first.try(:exclude)
-          #baselines.find(baseline_id).baseline_issues.where
           if baselines.find(baseline_id).update_hours
             if issue.closed?
               next if issue.spent_hours == 0

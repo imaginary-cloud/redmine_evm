@@ -19,12 +19,10 @@ module RedmineEvm
     end
 
     module IssueInstanceMethods
-      #still in refectoring process
       @@days_by_week = {}
 
       def days
         dates2 = dates
-        #(dates2[0].to_date..dates2[1].to_date).to_a
         if @@days_by_week["#{dates2[0].to_date} #{dates2[1].to_date}"]
           @@days_by_week["#{dates2[0].to_date} #{dates2[1].to_date}"]
         else
@@ -36,13 +34,13 @@ module RedmineEvm
           array.uniq
         end
       end
-      #still in refectoring process
+
       def hours_per_day update_hours, baseline_id
         estimated_hours_for_chart(update_hours, baseline_id) / number_of_days 
       end
 
-      private #still in refectoring process
-        def dates # start_and_end_dates
+      private 
+        def dates 
           dates = []
           selected_journals = journals.select {|journal| journal.journalized.done_ratio > 0}
           dates[0] = selected_journals.first.created_on unless selected_journals.first.nil?
@@ -57,7 +55,6 @@ module RedmineEvm
           days.size
         end
 
-        #still in refectoring process
         def estimated_hours_for_chart update_hours, baseline_id
           update_hours ? closed? && baseline_issues.find_by_baseline_id(baseline_id).is_closed ? spent_hours : estimated_hours || 0 : estimated_hours || 0
         end

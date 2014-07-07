@@ -7,7 +7,6 @@ class BaselineIssue < ActiveRecord::Base
   @@days_by_week = {}
 
   def days  
-    #@days ||= (start_date_for_chart..end_date_for_chart).to_a
     if @@days_by_week["#{start_date} #{end_date_for_chart}"]
       @@days_by_week["#{start_date} #{end_date_for_chart}"]
     else

@@ -14,6 +14,18 @@ V1.0.0 (4-Jul-2014)
   -Get information about the current project performance.
   -Predict the project final cost and duration.
 
+Installation:
 
-Imaginary Cloud
+1) Download tarball 
+2) cd {redmine_root}/plugins/; mkdir redmine_evm 
+3) Extract files to {redmine_root}/plugins/redmine_evm/
+4) rake redmine:plugins:migrate NAME=redmine_evm RAILS_ENV=production
+
+Keywords:
+
+EVM, CPI, SPI, Earned Value Management, Redmine, Plugin
+
+License:
+
+Copyright © 2012 ImaginaryCloud, imaginarycloud.com. This plugin is licensed under the MIT license.
 
