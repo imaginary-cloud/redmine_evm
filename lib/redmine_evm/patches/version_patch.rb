@@ -40,7 +40,7 @@ module RedmineEvm
         start_date = issues.select("min(spent_on) as spent_on").joins(:time_entries).first.spent_on || project.start_date
         end_date   = issues.select("max(spent_on) as spent_on").joins(:time_entries).first.spent_on || start_date
 
-        final_date = [maximum_chart_date(baseline), end_date].max
+        final_date = [maximum_chart_date(baseline), end_date].compact.max
         date_today = Date.today
         if final_date > date_today      
           final_date = date_today
@@ -70,7 +70,8 @@ module RedmineEvm
           end
         end
         ordered_earned_value = order_earned_value earned_value_by_week
-        extend_earned_value_to_final_date ordered_earned_value, baseline_id      end
+        extend_earned_value_to_final_date ordered_earned_value, baseline_id      
+      end
 
       def data_for_chart baseline
         #Need to show all versions but exclude the selected versions.
