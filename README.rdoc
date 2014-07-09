@@ -5,12 +5,12 @@ V1.0.0 (4-Jul-2014)
 
 ==About
 
-  This plugin uses EVM (Earned Value Management) a project monitoring methodology that measures the current progress of the project. By setting a project baseline it generates three key metrics, the planned value, actual cost and earned value and with these the plugin renders a line chart and performance indicators.
+This plugin uses EVM (Earned Value Management) a project monitoring methodology that measures the current progress of the project. By setting a project baseline it generates three key metrics, the planned value, actual cost and earned value and with these the plugin renders a line chart and performance indicators.
   
-  With this plugin you can:
-  -Manage and keep an history of baselines.
-  -Get information about the current project performance.
-  -Predict the project final cost and duration.
+With this plugin you can:
+* Manage and keep an history of baselines.
+* Get information about the current project performance.
+* Predict the project final cost and duration.
 
 ==Installation
 
