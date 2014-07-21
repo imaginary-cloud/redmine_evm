@@ -22,7 +22,7 @@ en:
   label_project_cost: Project Cost
   label_project_schedule: Project Schedule
 
-  label_update_estimated_hours: Assume incorrect cost in closed tasks
+  label_update_estimated_hours: Assume the spent time as planned hours in closed tasks
 
   #Bar indicators label
   label_the_project_is: The project is
