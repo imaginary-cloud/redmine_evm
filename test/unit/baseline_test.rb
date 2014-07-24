@@ -134,10 +134,10 @@ ActiveRecord::Fixtures.create_fixtures(Redmine::Plugin.find(:redmine_evm).direct
     assert_equal earned_value, earned_value_by_week.round(2)
   end
 
-  def test_if_planned_value_is_equal_to_planned_value_by_week
+  def test_if_budget_at_completion_is_equal_to_planned_value_by_week
     planned_value_by_week = @baseline.planned_value_by_week.to_a.last[1]
-    planned_value = @baseline.planned_value
-    assert_equal planned_value, planned_value_by_week.round(2)
+    budget_at_completion = @baseline.budget_at_completion
+    assert_equal budget_at_completion, planned_value_by_week.round(2)
   end
 
 end
