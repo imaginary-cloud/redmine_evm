@@ -35,9 +35,9 @@ EVM, CPI, SPI, Earned Value Management, Baseline, Forecast, Redmine, Plugin
 
 Support will only be given to the following versions or above: 
 
-Redmine version                2.5.0.stable
-Ruby version                   1.9.2-p328 
-Rails version                  3.2.17
+* Redmine version                2.5.0.stable
+* Ruby version                   1.9.2-p328 
+* Rails version                  3.2.17
 
 
 
