@@ -20,8 +20,8 @@
   <p>
     <%= label_tag "Target Version"%>
     <%# check_box_tag :enable_taget_versions, :true, false, disabled: disabled %>
-    <%= select_tag :operator_target_versions, options_for_select(["is", "is not", "none", "any"]), hidden: disabled %>
-    <%= select_tag :selected_target_versions, options_from_collection_for_select(project.versions, :id, :name, @baseline.get_targeted_versions ), multiple: true, disabled: disabled %>
+    <%= select_tag :operator_target_versions, options_for_select(["any", "is", "is not", "none"]), hidden: disabled %>
+    <%= select_tag :selected_target_versions, options_from_collection_for_select(project.versions, :id, :name, @baseline.get_targeted_versions ), multiple: true, disabled: disabled, hidden: true %>
   </p> 
   <p>
       <label> <%=l(:label_update_estimated_hours)%> </label>
