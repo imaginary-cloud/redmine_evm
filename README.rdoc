@@ -31,6 +31,16 @@ https://raw.github.com/imaginary-cloud/redmine_evm/master/screenshot.png
 
 EVM, CPI, SPI, Earned Value Management, Baseline, Forecast, Redmine, Plugin
 
+==Support
+
+Support will only be given to the following versions or above: 
+
+Redmine version                2.5.0.stable
+Ruby version                   1.9.2-p328 
+Rails version                  3.2.17
+
+
+
 ==License
 
 Copyright © 2014 ImaginaryCloud, imaginarycloud.com. This plugin is licensed under the MIT license.
