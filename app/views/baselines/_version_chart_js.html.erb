@@ -1,5 +1,5 @@
 <script>
-  var actualWeek = <%= Time.now.beginning_of_week.to_i * 1000 %>;
+  var actualWeek = <%= Date.today.to_time.to_i * 1000 %>;
   var versionChartData = <%= raw version_chart_data.to_json %>;     //Get the versions Data from array
   var endDate = <%= maximum_chart_date.to_time.to_i * 1000  %>;
   verisonChartHtmlElement = 'evm-graph-lines-version-' + <%= version.id%>;

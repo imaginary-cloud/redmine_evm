@@ -50,11 +50,11 @@ module RedmineEvm
         summed_time_entries = self.summed_time_entries(baseline)
         
         unless summed_time_entries.empty?
-          (start_date.beginning_of_week..final_date.to_date).each do |key|
+          (start_date..final_date.to_date).each do |key|
             unless summed_time_entries[key].nil?
               time += summed_time_entries[key]
             end
-            actual_cost_by_weeks[key.beginning_of_week] = time      #time_entry to the beggining od week
+            actual_cost_by_weeks[key] = time      #time_entry to the beggining od week
           end
         end
 
@@ -66,7 +66,7 @@ module RedmineEvm
         baseline_versions.find_by_baseline_id(baseline_id).update_hours ? update_hours = true : update_hours = false
         fixed_issues.each do |fixed_issue|
           fixed_issue.days.each do |day|
-            earned_value_by_week[day.beginning_of_week] += fixed_issue.hours_per_day(update_hours, baseline_id) * fixed_issue.done_ratio/100.0 
+            earned_value_by_week[day] += fixed_issue.hours_per_day(update_hours, baseline_id) * fixed_issue.done_ratio/100.0 
           end
         end
         ordered_earned_value = order_earned_value earned_value_by_week
@@ -99,7 +99,7 @@ module RedmineEvm
         #fixed_issues updated on e closed on ...
         dates << project.start_date #If there is no data yet
 
-        dates.compact.max.beginning_of_week
+        dates.compact.max
         #dates.max.nil? ? 0 : dates.max
       end
 
@@ -130,7 +130,7 @@ module RedmineEvm
           unless ordered_earned_value.empty?
             if ordered_earned_value.keys.last+1 <= dat
               (ordered_earned_value.keys.last+1..dat).each do |date|
-                ordered_earned_value[date.beginning_of_week] = 0 unless ordered_earned_value[date.beginning_of_week] 
+                ordered_earned_value[date] = 0 unless ordered_earned_value[date] 
               end
             end  
           end
