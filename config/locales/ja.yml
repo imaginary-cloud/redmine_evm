@@ -1,0 +1,59 @@
+# japanease translation
+ja:
+  # my_label: "My label"
+  label_baseline: ベースライン
+  label_baseline_plural: ベースライン
+  label_baseline_version: ベースライン バージョン
+  label_baseline_set: ベースラインを設定
+
+  label_due_date: 期日
+  label_created_date: 作成日
+
+  label_current_baseline: 現在
+  label_old_baseline: 過去
+
+  label_select_baseline: ベースラインを選択
+
+  title_evm_tab: EVM指標
+  subtitle_evm_tab: このプロジェクトの進捗をEVMでみる事が出来ます
+  subtitle_evm_summary: 概要
+  subtitle_evm_forecast: 予測
+
+  label_project_cost: コスト差異
+  label_project_schedule: スケジュール差異
+
+  label_update_estimated_hours: 終了したタスクは実績時間を見積もり時間とする
+
+  #Bar indicators label
+  label_the_project_is: プロジェクトは
+  label_ahead_schedule: 計画より進んでいます
+  label_behind_schedule: 計画より遅れています
+  label_above_budget: 予算を超過しています
+  label_under_budget: 予算を下回っています
+
+  label_the_project_is_now: 現在 
+  label_the_project_is_estimated: 完了時コスト差異
+  label_to_finish_the_project: （すべてのタスクを消化するのに必要な時間）
+  label_hours_less_than_planned: 時間 計画より下回る
+  label_hours_more_than_planned: 時間 計画より超過する
+  label_done: のタスクが完了/終了しています
+  label_hours_are_needed: 時間 必要です 
+  label_according_to_estimate: （推定値）
+
+  error_no_baseline: ベースラインを設定してください
+  error_no_issues: チケットが作成されないとベースラインの設定は出来ません
+
+  warning_log_time_with_no_issue: チケットに実績値が入力されていないので正確なコストが表示できません
+  warning_log_time_before_start_date: チケットの開始日以前に実績値が入力されているため正確なコストが表示できません
+
+  label_not_avaliable: 利用不可
+
+  label_evm_legend_pv: Planned Value (PV)
+  label_evm_legend_pv_description: 計画されたタスク(チケット)の見積もり時間
+  label_evm_legend_ac: Actual Cost (AC)
+  label_evm_legend_ac_description: 計画されたタスク(チケット)の作業実績時間
+  label_evm_legend_ev: Earned Value (EV)
+  label_evm_legend_ev_description: 終了したタスク(チケット)の見積もり時間、もしくは作業実績時間
+  label_evm_legend_actual: 実績値
+  label_evm_legend_predicted: 予測値
+
