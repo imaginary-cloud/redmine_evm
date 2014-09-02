@@ -134,8 +134,8 @@ if (!Array.prototype.indexOf) {
                 $tip.html( tipText );
                 that.updateTooltipPosition({ x: pos.pageX, y: pos.pageY });
                 $tip.css({
-                        left: that.tipPosition.x + that.tooltipOptions.shifts.x,
-                        top: that.tipPosition.y + that.tooltipOptions.shifts.y
+                        left: pos.pageX ,
+                        top: pos.pageY  
                     })
                     .show();
 
