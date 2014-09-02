@@ -70,20 +70,20 @@ module Forecastable
   #Estimate at Completion Duration (EACt)
   #Method using Earned Schedule (ES) from http://www.pmknowledgecenter.com/dynamic_scheduling/control/earned-value-management-forecasting-time
   def estimate_at_completion_duration
-    return planned_duration - earned_schedule
+    return Date.today + planned_duration - earned_schedule
   end
 
   def actual_cost_forecast_line
-    [[ Time.now.to_date, project.actual_cost(self) ], [ estimate_at_completion_duration, estimate_at_completion_cost ]] #The estimated line after actual cost
+    [[ Date.today, project.actual_cost(self) ], [ estimate_at_completion_duration, estimate_at_completion_cost ]] #The estimated line after actual cost
   end
 
   def earned_value_forecast_line
-    [[ Time.now.to_date, project.earned_value(self) ], [ estimate_at_completion_duration, budget_at_completion]]
+    [[ Date.today, project.earned_value(self) ], [ estimate_at_completion_duration, budget_at_completion]]
   end
 
   #End date for top lines. Detects if it is an old project, so it does not go beyond baseline due_date.
   def end_date_for_top_line
-    if(end_date < Time.now.to_date) #If it is an old project.
+    if(end_date < Date.today) #If it is an old project.
       end_date_for_top_line = [project.maximum_chart_date(self), self.end_date].max
     else
       end_date_for_top_line = [project.maximum_chart_date(self), self.end_date, estimate_at_completion_duration].max
