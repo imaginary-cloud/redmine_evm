@@ -104,10 +104,10 @@ module RedmineEvm
         chart_data['earned_value']  = convert_to_chart(self.earned_value_by_week(baseline))
 
         if(forecast_is_enabled)
-          chart_data['actual_cost_forecast']  = convert_to_chart(baseline.actual_cost_forecast_line)
-          chart_data['earned_value_forecast'] = convert_to_chart(baseline.earned_value_forecast_line)
+          #chart_data['actual_cost_forecast']  = convert_to_chart(baseline.actual_cost_forecast_line)
+          #chart_data['earned_value_forecast'] = convert_to_chart(baseline.earned_value_forecast_line)
           chart_data['bac_top_line']          = convert_to_chart(baseline.bac_top_line)
-          chart_data['eac_top_line']          = convert_to_chart(baseline.eac_top_line)
+          #chart_data['eac_top_line']          = convert_to_chart(baseline.eac_top_line)
         end
         chart_data #Data ready for chart flot.js to consume.
       end
