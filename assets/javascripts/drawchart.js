@@ -87,9 +87,9 @@ function drawChart(dataToChart, placeholder, actualWeek, endDate){
             display: "none",
             //border: "1px solid #fdd",
             padding: "2px",
-            "background-color": "#FFFFFF",
+            "background-color": "#eee",
             opacity: 0.80
-        }).appendTo("body");
+        }).appendTo("#evm-charts-wrapper");
 
     //Flot tooltip
     chartHtmlElement.bind("plothover", function (event, pos, item) {
@@ -103,7 +103,7 @@ function drawChart(dataToChart, placeholder, actualWeek, endDate){
 
             //Use moment.js lib!
             $("#tooltip").html("<b>" + item.series.label + "</b> " + hours + " hours <br>" + date) 
-                .css({top: item.pageY+5, left: item.pageX+5})
+                .css({top: item.pageY-100, left: item.pageX-100})
                 .fadeIn(200);
         } else {
             $("#tooltip").hide();

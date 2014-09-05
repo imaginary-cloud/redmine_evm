@@ -12,7 +12,7 @@ class BaselineIssue < ActiveRecord::Base
     else
     array = []
     (start_date_for_chart..end_date_for_chart).each do |day|
-      array<< day.beginning_of_week
+      array<< day
     end
     @@days_by_week["#{start_date} #{end_date_for_chart}"] = array.uniq
     array.uniq

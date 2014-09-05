@@ -150,7 +150,7 @@
 <div id="evm-charts-wrapper">
   <!-- Main Chart -->
   <div id="evm-main-chart">
-    <div id='evm-graph-lines' class='evm-main-chart' style="width:70%;height:350px;margin:auto;"></div>
+    <div id='evm-graph-lines' class='evm-main-chart' style="width:95%;height:400px;margin:auto;"></div>
     <%= render :partial => '/baselines/chart_js', :locals => { maximum_chart_date: @project.maximum_chart_date(@baseline), project_chart_data: @project.data_for_chart(@baseline, @forecast_is_enabled) } %>
   </div>
   <!-- Versions Charts -->
@@ -158,7 +158,7 @@
     <% @project.versions.each do |version| %>
       <% unless version.is_excluded(@baseline) %>
         <h3 class="version"> <%= version.name %></h3>
-        <div id='evm-graph-lines-version-<%= version.id %>' style="width:70%;height:350px;margin:auto;margin-top:40px;margin-bottom:40px;"></div>
+        <div id='evm-graph-lines-version-<%= version.id %>' style="width:95%;height:400px;margin:auto;margin-top:40px;margin-bottom:40px;"></div>
         <%= render :partial => '/baselines/version_chart_js', :locals => { maximum_chart_date: version.maximum_chart_date(@baseline), version_chart_data: version.data_for_chart(@baseline), version: version } %> 
       <% end %>
     <% end %>
