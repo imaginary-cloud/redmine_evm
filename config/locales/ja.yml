@@ -57,3 +57,13 @@ ja:
   label_evm_legend_actual: 実績値
   label_evm_legend_predicted: 予測値
 
+  explanation_bac: 完成時総予算。プロジェクトの完了時点におけるPV
+  explanation_spi: スケジュール効率指数(Schedule Performance Index) EV / PV（1以上であれば良好）
+  explanation_cpi: コスト効率指数(Cost Performance Index) EV / AC （1以上であれば良好）
+  explanation_sv: スケジュール差異
+  explanation_cv: コスト差異
+  explanation_complete: ベースラインの総PVに対する完了率
+  explanation_eac: 計画時の予定完了期限の超過時間
+  explanation_etc: 計画時の見積もりコストに対する予想コストの差分
+  
+

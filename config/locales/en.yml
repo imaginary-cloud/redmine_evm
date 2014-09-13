@@ -57,3 +57,5 @@ en:
   label_evm_legend_actual: Actual Values
   label_evm_legend_predicted: Predicted values
 
+  explanation_bac: Budget At Completion (BAC) is the total budget allocated to the project.
+  

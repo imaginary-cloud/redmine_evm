@@ -85,24 +85,44 @@ class Baseline < ActiveRecord::Base
     update_hours ? @end_date ||= maximum_end_date_when_update_hours.to_date : @end_date ||= due_date
   end
 
+  #Plan Value (Today)
+  def today_pv 
+    self.planned_value.round(2)
+  end
+
+  #Earned Value (Today)
+  def today_ev 
+    project.earned_value(self).round(2)
+  end
+
+  #Actual Cost (Today)
+  def today_ac
+    project.actual_cost(self).round(2)
+  end
+
+  #Budget at Completion (BAC)
+  def project_budget_at_completion 
+    self.budget_at_completion.round(2)
+  end
+
   #Schedule Performance Index (SPI)
   def schedule_performance_index 
-    planned_value != 0 ? project.earned_value(self).to_f / self.planned_value : 0
+    planned_value != 0 ? (project.earned_value(self).to_f / self.planned_value).round(2) : 0
   end
 
   #Cost Performance Index (CPI)
   def cost_performance_index
-    project.actual_cost(self) != 0 ? project.earned_value(self).to_f / project.actual_cost(self) : 0
+    project.actual_cost(self) != 0 ? (project.earned_value(self).to_f / project.actual_cost(self)).round(2) : 0
   end
 
   #Schedule Variance (SV)
   def schedule_variance
-    project.earned_value(self) - self.planned_value
+    (project.earned_value(self) - self.planned_value).round(2)
   end
 
   #Cost Variance (CV)
   def cost_variance
-    project.earned_value(self) - project.actual_cost(self)
+    (project.earned_value(self) - project.actual_cost(self)).round(2)
   end
 
   private

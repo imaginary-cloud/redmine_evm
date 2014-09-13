@@ -1,36 +1,23 @@
 module BaselinesHelper
 
-  def label_cost_performance_percentage
-    if @baseline.schedule_variance < 0
-      ((1 - @baseline.schedule_performance_index) * 100).round
-    else
-      ((@baseline.schedule_performance_index - 1) * 100).round
-    end
+  def label_bac
+      @baseline.project_budget_at_completion.round(2)
   end
 
-  def label_cost_performance_status
-    if @baseline.schedule_variance < 0
-      l(:label_behind_schedule)
-    else
-      l(:label_ahead_schedule)
-    end
+  def label_spi
+      @baseline.schedule_performance_index.round(2)
   end
 
-  def label_schedule_performance_percentage
-    if @baseline.cost_variance < 0
-      ((1 - @baseline.cost_performance_index) * 100).round
-    else
-      ((@baseline.cost_performance_index - 1) * 100).round
-    end
-  end 
+  def label_cpi
+      @baseline.cost_performance_index.round(2)
+  end
 
-  def label_schedule_performance_status
-    if @baseline.cost_variance < 0
-      l(:label_above_budget)
-    else
-      l(:label_under_budget)
-    end
-  end 
+  def label_cost_performance
+      @baseline.schedule_variance.round(2)
+  end
 
+  def label_schedule_performance
+      @baseline.cost_variance.round(2)
+  end 
 
 end

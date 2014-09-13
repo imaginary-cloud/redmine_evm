@@ -23,6 +23,19 @@
 #evm-forecast-indicators-container{ margin-top: 10px; }
 #evm-forecast-indicators-container p{ padding: 0; }
 
+#evm-indicator-value-table
+{
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+}
+#evm-indicator-value-table th,
+#evm-indicator-value-table td
+{
+  width: 80px;
+  text-align: center;
+  border-bottom: 1px solid #bbb; 
+}
 .evm-bars-container{
   width: 80px;
   height: 100px;
@@ -72,10 +85,6 @@
 /********** Dropdown Box ********/
 #baseline_id{ border-radius: 0; }
 #baseline_id option{ color: gray; }
-
-/*********** Charts ***********/
-#evm-charts-wrapper{ margin: auto; }
-#evm-main-chart{ padding: 40px 0 40px 0; }
 
 /*Tooltip*/
 #flot_chart_tooltip{
@@ -150,4 +159,23 @@
 .evm-legend-lines > * {
   display: inline;
   margin-right: 5px;
+}
+a.tooltip:hover {
+     background: #ffffff;     /* IE6以下で必要 */
+     text-decoration: none;
+}
+a.tooltip span {
+     display: none;
+     padding: 8px;
+     font-size: 12px;
+     margin-left: 8px;
+     line-height: 1.6;
+}
+a.tooltip:hover span{
+     display: inline;
+     position: absolute;
+     background-color: #FFF7EE;
+     border: 1px solid #cccccc;
+     color: #000000;
+     width: 200px;     /* a.tooltip spanに指定すると、IE6以下でspanの領域でマウスが反応してしまう */
 }
