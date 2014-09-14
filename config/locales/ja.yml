@@ -16,7 +16,8 @@ ja:
 
   title_evm_tab: EVM指標
   subtitle_evm_tab: このプロジェクトの進捗をEVMでみる事が出来ます
-  subtitle_evm_summary: 概要
+  subtitle_evm_summary: サマリー
+  subtitle_evm_graph: EVMグラフ
   subtitle_evm_forecast: 予測
 
   label_project_cost: コスト差異
@@ -54,8 +55,8 @@ ja:
   label_evm_legend_ac_description: 計画されたタスク(チケット)の作業実績時間
   label_evm_legend_ev: EV (出来高)
   label_evm_legend_ev_description: 終了したタスク(チケット)の見積もり時間、もしくは作業実績時間
-  label_evm_legend_actual: 予測作業時間
-  label_evm_legend_predicted: 予測出来高
+  label_evm_legend_actual: 完了時作業実績時間(予測値)
+  label_evm_legend_predicted: 完了時出来高(予測値)
 
   label_forecast: 予測値を表示する
   explanation_bac: 完成時総予算。プロジェクトの完了時点におけるPV
