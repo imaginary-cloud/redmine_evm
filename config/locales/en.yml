@@ -1,63 +1,33 @@
-# English strings go here for Rails i18n
+﻿# English strings go here for Rails i18n
 en:
-  # my_label: "My label"
+  # Setting Tab
   label_baseline: Baseline
   label_baseline_plural: Baselines
   label_baseline_version: Baseline Version
   label_baseline_set: Set Baseline
-
   label_due_date: Due Date
   label_created_date: Created Date
-
   label_current_baseline: Current
   label_old_baseline: Old
-
   label_select_baseline: Select Baseline
-
-  title_evm_tab: EVM Indicators
-  subtitle_evm_tab: Here you can see how your project is progressing relative to the plan seted
-  subtitle_evm_summary: Summary
-  subtitle_evm_graph: EVM Charts
-  subtitle_evm_forecast: Forecast
-
-  label_project_cost: Project Cost
-  label_project_schedule: Project Schedule
-
   label_update_estimated_hours: Assume the spent time as planned hours in closed tasks
-
-  #Bar indicators label
-  label_the_project_is: The project is
-  label_ahead_schedule: ahead schedule
-  label_behind_schedule: behind schedule
-  label_above_budget: above budget
-  label_under_budget: under budget
-
-  label_the_project_is_now: The project is now 
-  label_the_project_is_estimated: The project is estimated to need
-  label_to_finish_the_project: to finish the project
-  label_hours_less_than_planned: hours less than planned 
-  label_hours_more_than_planned: hours more than planned
-  label_done: done 
-  label_hours_are_needed: hours are needed 
-  label_according_to_estimate: according to estimated
-
+  # Message
   error_no_baseline: Please set a baseline before proceeding
   error_no_issues: Please set a issue before proceeding
-
   warning_log_time_with_no_issue: Actual cost is not accurate. There are log times with no issue associated.
   warning_log_time_before_start_date: Actual cost is not accurate. There are log times before the project start date.
-
-  label_not_avaliable: Not Avaliable
-
+  # Main form
+  title_evm_tab: EVM Indicators
+  subtitle_evm_tab: Here you can see how your project is progressing relative to the plan seted
+  subtitle_evm_summary: EVM　Value
+  subtitle_evm_graph: EVM Charts
+  # Legend
   label_evm_legend_pv: Planned Value (PV)
-  label_evm_legend_pv_description: total cost of the work scheduled/planned
   label_evm_legend_ac: Actual Cost (AC)
-  label_evm_legend_ac_description: total cost of the work completed/performed 
   label_evm_legend_ev: Earned Value (EV)
-  label_evm_legend_ev_description: total cost taken to complete the work
   label_evm_legend_actual: Actual Values
   label_evm_legend_predicted: Predicted values
-
+  # Tooltip
   label_forecast: display Forecast
   explanation_bac: Budget At Completion (BAC) is the total budget allocated to the project.
   explanation_pv: Planned Value (PV) is the total cost of the work scheduled/planned as of a reporting date.
@@ -72,5 +42,3 @@ en:
   explanation_etc: Estimate To Complete (ETC) is the estimated cost required to complete the remainder of the project.
   explanation_vac: Variance At completion (VAC) is the variance on the total budget at the end of the project.
   explanation_difference_end_date: Difference planed end date and Estimate To Complete date.
-
-  

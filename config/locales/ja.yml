@@ -1,63 +1,33 @@
 # japanease translation
 ja:
-  # my_label: "My label"
+  # Setting Tab
   label_baseline: ベースライン
   label_baseline_plural: ベースライン
   label_baseline_version: ベースライン バージョン
   label_baseline_set: ベースラインを設定
-
   label_due_date: 期日
   label_created_date: 作成日
-
   label_current_baseline: 現在
   label_old_baseline: 過去
-
   label_select_baseline: ベースラインを選択
-
-  title_evm_tab: EVM指標
-  subtitle_evm_tab: このプロジェクトの進捗をEVMでみる事が出来ます
-  subtitle_evm_summary: サマリー
-  subtitle_evm_graph: EVMグラフ
-  subtitle_evm_forecast: 予測
-
-  label_project_cost: コスト差異
-  label_project_schedule: スケジュール差異
-
   label_update_estimated_hours: 終了したタスクは実績時間を見積もり時間とする
-
-  #Bar indicators label
-  label_the_project_is: プロジェクトは
-  label_ahead_schedule: 計画より進んでいます
-  label_behind_schedule: 計画より遅れています
-  label_above_budget: 予算を超過しています
-  label_under_budget: 予算を下回っています
-
-  label_the_project_is_now: 現在 
-  label_the_project_is_estimated: 完了時コスト差異
-  label_to_finish_the_project: （すべてのタスクを消化するのに必要な時間）
-  label_hours_less_than_planned: 時間 計画より下回る
-  label_hours_more_than_planned: 時間 計画より超過する
-  label_done: のタスクが完了/終了しています
-  label_hours_are_needed: 時間 必要です 
-  label_according_to_estimate: （推定値）
-
+  # Message
   error_no_baseline: ベースラインを設定してください
   error_no_issues: チケットが作成されないとベースラインの設定は出来ません
-
   warning_log_time_with_no_issue: チケットに実績値が入力されていないので正確なコストが表示できません
   warning_log_time_before_start_date: チケットの開始日以前に実績値が入力されているため正確なコストが表示できません
-
-  label_not_avaliable: 利用不可
-
+  # Main form
+  title_evm_tab: EVM指標
+  subtitle_evm_tab: "このプロジェクトの進捗をEVM(PV,EV,AC)で管理します"
+  subtitle_evm_summary: 進捗サマリー
+  subtitle_evm_graph: EVMグラフ
+  # Legend
   label_evm_legend_pv: PV (計画値)
-  label_evm_legend_pv_description: 計画されたタスク(チケット)の見積もり時間
-  label_evm_legend_ac: AC (作業実績値)
-  label_evm_legend_ac_description: 計画されたタスク(チケット)の作業実績時間
-  label_evm_legend_ev: EV (出来高)
-  label_evm_legend_ev_description: 終了したタスク(チケット)の見積もり時間、もしくは作業実績時間
-  label_evm_legend_actual: 完了時作業実績時間(予測値)
-  label_evm_legend_predicted: 完了時出来高(予測値)
-
+  label_evm_legend_ac: AC (作業実績)
+  label_evm_legend_ev: EV (完了出来高)
+  label_evm_legend_actual: 予測作業実績
+  label_evm_legend_predicted: 予測完了出来高
+  # Tooltip
   label_forecast: 予測値を表示する
   explanation_bac: 完成時総予算。プロジェクトの完了時点におけるPV
   explanation_pv: 現時点での計画工数
@@ -65,12 +35,12 @@ ja:
   explanation_ac: 現時点での実績工数
   explanation_sv: 現時点でのスケジュール差異(マイナス値は遅れ)
   explanation_cv: 現時点でのコスト差異(マイナス値はコスト超過)
-  explanation_spi: スケジュール効率指数 (Schedule Performance Index) EV / PV (1以上であれば良好)
-  explanation_cpi: コスト効率指数 (Cost Performance Index) EV / AC (1以上であれば良好)
+  explanation_spi: スケジュール効率指数 (1以上であれば良好)
+  explanation_cpi: コスト効率指数 (1以上であれば良好)
   explanation_complete: ベースラインの総PVに対する完了率
   explanation_eac: 完成時総コスト見積り (EAC：Estimate At Completion）
   explanation_etc: 残作業のコスト見積り (ETC：Estimate To Complete）
   explanation_vac: 完了時コスト差異 (VAC：Variance At Completion）
-  explanation_difference_end_date: 計画終了日との差(日数)
-  
+  explanation_difference_end_date: 完了予想日と計画完了日との差(日数)
+
 
