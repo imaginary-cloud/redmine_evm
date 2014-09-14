@@ -48,22 +48,27 @@ ja:
 
   label_not_avaliable: 利用不可
 
-  label_evm_legend_pv: Planned Value (PV)
+  label_evm_legend_pv: PV (計画値)
   label_evm_legend_pv_description: 計画されたタスク(チケット)の見積もり時間
-  label_evm_legend_ac: Actual Cost (AC)
+  label_evm_legend_ac: AC (作業実績値)
   label_evm_legend_ac_description: 計画されたタスク(チケット)の作業実績時間
-  label_evm_legend_ev: Earned Value (EV)
+  label_evm_legend_ev: EV (出来高)
   label_evm_legend_ev_description: 終了したタスク(チケット)の見積もり時間、もしくは作業実績時間
-  label_evm_legend_actual: 実績値
-  label_evm_legend_predicted: 予測値
+  label_evm_legend_actual: 予測作業時間
+  label_evm_legend_predicted: 予測出来高
 
+  label_forecast: 予測値を表示する
   explanation_bac: 完成時総予算。プロジェクトの完了時点におけるPV
-  explanation_spi: スケジュール効率指数(Schedule Performance Index) EV / PV（1以上であれば良好）
-  explanation_cpi: コスト効率指数(Cost Performance Index) EV / AC （1以上であれば良好）
-  explanation_sv: スケジュール差異
-  explanation_cv: コスト差異
+  explanation_pv: 現時点での計画工数
+  explanation_ev: 現時点での完了工数
+  explanation_ac: 現時点での実績工数
+  explanation_sv: 現時点でのスケジュール差異(マイナス値は遅れ)
+  explanation_cv: 現時点でのコスト差異(マイナス値はコスト超過)
+  explanation_spi: スケジュール効率指数(Schedule Performance Index) EV / PV (1以上であれば良好)
+  explanation_cpi: コスト効率指数(Cost Performance Index) EV / AC (1以上であれば良好)
   explanation_complete: ベースラインの総PVに対する完了率
-  explanation_eac: 計画時の予定完了期限の超過時間
-  explanation_etc: 計画時の見積もりコストに対する予想コストの差分
+  explanation_eac: 完成時総コスト見積り（EAC：Estimate At Completion）
+  explanation_etc: 残作業のコスト見積り（ETC：Estimate To Complete）
+  explanation_vac: 完了時コスト差異 （VAC：Variance At Completion）
   
 

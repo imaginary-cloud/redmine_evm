@@ -57,5 +57,17 @@ en:
   label_evm_legend_actual: Actual Values
   label_evm_legend_predicted: Predicted values
 
+  label_forecast: display Forecast
   explanation_bac: Budget At Completion (BAC) is the total budget allocated to the project.
+  explanation_pv: Planned Value (PV) is the total cost of the work scheduled/planned as of a reporting date.
+  explanation_ev: Earned Value (EV) is the total cost of the work completed/performed as of a reporting date.
+  explanation_ac: Actual Cost (AC) is the total cost taken to complete the work as of a reporting date.
+  explanation_sv: Schedule Variance indicates how much ahead or behind schedule the project is.
+  explanation_cv: Cost Variance (CV) indicates how much over or under budget the project is.
+  explanation_spi: Schedule Performance Indicator is an index showing the efficiency of the time utilized on the project. 
+  explanation_cpi: Cost Performance Indicator is an index showing the efficiency of the utilization of the resources on the project. 
+  explanation_complete: Completed Planned
+  explanation_eac: Estimate At Completion (EAC) is the estimated cost of the project at the end of the project.(difference value)
+  explanation_etc: Estimate To Complete (ETC) is the estimated cost required to complete the remainder of the project.
+  explanation_vac: Variance At completion (VAC) is the variance on the total budget at the end of the project.
   
