@@ -90,17 +90,17 @@ class Baseline < ActiveRecord::Base
     Date.today
   end
 
-  #Plan Value (Today)
+  #Plan Value (PV)
   def today_pv 
     self.planned_value.round(2)
   end
 
-  #Earned Value (Today)
+  #Earned Value (EV)
   def today_ev 
     project.earned_value(self).round(2)
   end
 
-  #Actual Cost (Today)
+  #Actual Cost (AC)
   def today_ac
     project.actual_cost(self).round(2)
   end
@@ -128,6 +128,11 @@ class Baseline < ActiveRecord::Base
   #Cost Variance (CV)
   def cost_variance
     (project.earned_value(self) - project.actual_cost(self)).round(2)
+  end
+
+  #Difference planed end date, forecast earned end date.
+  def difference_bac_eac_days
+    (self.estimate_at_completion_duration - end_date).to_i
   end
 
   private

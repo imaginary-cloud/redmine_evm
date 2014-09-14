@@ -8,21 +8,6 @@ module Forecastable
     project.actual_cost(self) + (self.budget_at_completion - project.earned_value(self)) / self.cost_performance_index
   end
 
-  #Estimate to complete (ETC)
-  def estimate_to_complete
-    estimate_at_completion_cost - project.actual_cost(self)
-  end
-
-  #Variance at Completion (VAC)
-  def variance_at_completion
-    (estimate_at_completion_cost - budget_at_completion).round(2)
-  end
-
-  # % Completed
-  def completed_actual
-    project.actual_cost(self).to_f / estimate_at_completion_cost
-  end
-
   #Planned Duration (PD) in weeks
   def planned_duration
     planned_value_by_week.count - 1 
@@ -72,7 +57,7 @@ module Forecastable
   def estimate_at_completion_duration
     return Date.today + planned_duration - earned_schedule
   end
-
+  
   def actual_cost_forecast_line
     [[ Date.today, project.actual_cost(self) ], [ estimate_at_completion_duration, estimate_at_completion_cost ]] #The estimated line after actual cost
   end
@@ -102,10 +87,22 @@ module Forecastable
     eac_top_line = [[start_date, eac],[end_date_for_top_line, eac]]
   end
 
+  # % Completed
+  def completed_actual
+    project.actual_cost(self).to_f / estimate_at_completion_cost
+  end
+
+  #Variance at Completion (VAC)
+  def variance_at_completion
+    (estimate_at_completion_cost - budget_at_completion).round(2)
+  end
+
+  #Estimate at Completion (EAC)
   def estimate_at_completion
     estimate_at_completion_cost.round(2)
   end
 
+  #Estimate to Complete (ETC)
   def estimate_to_complete
     (estimate_at_completion - project.actual_cost(self).to_f).round(2)
   end

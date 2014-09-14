@@ -54,6 +54,7 @@
         <th><a href="#" class="tooltip">EAC<span><%=l(:explanation_eac)%></span></a></th>
         <th><a href="#" class="tooltip">ETC<span><%=l(:explanation_etc)%></span></a></th>
         <th><a href="#" class="tooltip">VAC<span><%=l(:explanation_vac)%></span></a></th>
+        <th><a href="#" class="tooltip">Difference end date<span><%=l(:explanation_difference_end_date)%></span></a></th>
       <% end %>
     </tr>
     <tr>
@@ -71,6 +72,7 @@
         <td><%= @baseline.estimate_at_completion %> </td>
         <td><%= @baseline.estimate_to_complete %> </td>
         <td><%= @baseline.variance_at_completion %></td>
+        <td><%= @baseline.difference_bac_eac_days %> Days</td>
       <% end %>
     </tr>
   </table>

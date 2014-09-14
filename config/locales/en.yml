@@ -71,4 +71,6 @@ en:
   explanation_eac: Estimate At Completion (EAC) is the estimated cost of the project at the end of the project.(difference value)
   explanation_etc: Estimate To Complete (ETC) is the estimated cost required to complete the remainder of the project.
   explanation_vac: Variance At completion (VAC) is the variance on the total budget at the end of the project.
+  explanation_difference_end_date: Difference planed end date and Estimate To Complete date.
+
   

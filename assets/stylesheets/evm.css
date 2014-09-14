@@ -1,10 +1,15 @@
 
-#evm-title{ 
+/*** Title ***/
+#evm-title
+{ 
   line-height: 0px;
-  padding-top: 17px; 
+  padding-top: 5px; 
 }
 
-#evm-subtitle{ color: gray; }
+#evm-subtitle
+{ 
+  color: gray; 
+}
 
 /*** summary evm indicator ***/
 #evm-indicator-value-table
@@ -20,9 +25,19 @@
   border-bottom: 1px solid #bbb; 
 }
 
-/********** Dropdown Box ********/
+/*** Dropdown Box ***/
 #baseline_id{ border-radius: 0; }
 #baseline_id option{ color: gray; }
+
+/*** Graph area ***/
+#evm-charts-wrapper
+{
+  width: 90%;
+}
+#evm-graph-lines
+{
+  height: 400px;
+}
 
 /*** Legend ***/
 #evm-legend
@@ -57,52 +72,43 @@
   border-top: 3px dotted #8cc63f; 
 }
 
-/*** Graph area ***/
-#evm-charts-wrapper
+/*** Tooltip - Chart ***/
+#flot_chart_tooltip
 {
-  width: 90%;
+  position: absolute;
+  display: none;
+  border: 1px solid #ddd;
+  padding: 2px;
+  background-color: #eee;
+  opacity: 0.80;
 }
-#evm-graph-lines
+.markers
 {
-  height: 400px;
-}
-#evm-graph-lines-version-*
-{
-  height: 400px;
-}
-
-/*Tooltip*/
-#flot_chart_tooltip{
-    position: absolute;
-    display: none;
-    border: 1px solid #ddd;
-    padding: 2px;
-    background-color: #eee;
-    opacity: 0.80;
-}
-.markers{
-
   padding: 2px;
   position: absolute;
   background-color: rgba(255, 255, 255, 0.7);
   color: #d0d0d0;
   font-size: smaller;
 }
-a.tooltip:hover {
-     text-decoration: none;
+/*** Tooltip - EVM value ***/
+a.tooltip:hover
+{
+  text-decoration: none;
 }
-a.tooltip span {
-     display: none;
-     padding: 2px;
-     font-size: 12px;
-     margin-left: 8px;
-     line-height: 1.6;
+a.tooltip span
+{
+  display: none;
+  padding: 2px;
+  font-size: 12px;
+  margin-left: 8px;
+  line-height: 1.6;
 }
-a.tooltip:hover span{
-     display: inline;
-     position: absolute;
-     background-color: #FFF7EE;
-     border: 1px solid #cccccc;
-     color: #000000;
-     width: 200px;
+a.tooltip:hover span
+{
+  display: inline;
+  position: absolute;
+  background-color: #FFF7EE;
+  border: 1px solid #cccccc;
+  color: #000000;
+  width: 200px;
 }
