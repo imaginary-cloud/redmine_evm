@@ -6,85 +6,70 @@
 
 #evm-subtitle{ color: gray; }
 
-/****Sidebar Indicator Bars****/
-.indicators-container{
-  overflow: auto;
-  margin-right: 10px;
-  padding-left: 15px;
-  float: left;
-}
-
-.indicators-container p{ 
-  line-height: 15px; 
-  padding: 15px 0 15px 0;
-  font-size: 12px;
-}
-
-#evm-forecast-indicators-container{ margin-top: 10px; }
-#evm-forecast-indicators-container p{ padding: 0; }
-
+/*** summary evm indicator ***/
 #evm-indicator-value-table
 {
   border-collapse: collapse;
-  margin-left: auto;
-  margin-right: auto;
 }
 #evm-indicator-value-table th,
 #evm-indicator-value-table td
 {
-  width: 80px;
+  width: 60px;
+  padding: 2px;
   text-align: center;
   border-bottom: 1px solid #bbb; 
-}
-.evm-bars-container{
-  width: 80px;
-  height: 100px;
-}
-
-#spi-pv-bar{ background-color: #0f75bc; }
-#spi-ev-bar{ background-color: #8cc63f; }
-#cpi-ev-bar{ background-color: #8cc63f; }
-#cpi-ac-bar{ background-color: #fcb040; }
-
-.bars{
-  width: 40px;
-  height: 100px;
-  float: left;
-  text-align: center;  
-  position: relative;
-}
-
-.bars > p{
-  position: absolute;
-  width: 40px;
-  padding: 0;
-  margin: 0;
-  bottom: 0;
-  z-index: 100;
-}
-
-.bar{
-  position: absolute;
-  width: 40px;
-  bottom: 0;
-  z-index: 50;
-}
-
-/********** Sidebar Summary Box **********/
-/*#evm-summary{ margin-bottom: 10px; }
-
-#evm-forecast{  margin-top: 10px;}*/
-
-.sidebar-boxes{
-  background: #3d454d;
-  overflow: auto;
-  padding: 10px;
-  color: white;
 }
 
 /********** Dropdown Box ********/
 #baseline_id{ border-radius: 0; }
 #baseline_id option{ color: gray; }
+
+/*** Legend ***/
+#evm-legend
+{
+  margin-left: auto;
+  margin-right: auto;
+  color: #333;
+}
+#evm-legend-pv
+{
+  padding: 5px;
+  border-top: 3px solid #0f75bc; 
+}
+#evm-legend-ev
+{
+  padding: 5px;
+  border-top: 3px solid #8cc63f; 
+}
+#evm-legend-ac
+{
+  padding: 5px;
+  border-top: 3px solid #fcb040; 
+}
+#evm-legend-actual
+{
+  padding: 5px;
+  border-top: 3px dotted #fcb040; 
+}
+#evm-legend-predicted
+{
+  padding: 5px;
+  border-top: 3px dotted #8cc63f; 
+}
+
+/*** Graph area ***/
+#evm-charts-wrapper
+{
+  width: 90%;
+}
+#evm-graph-lines
+{
+  height: 400px;
+}
+#evm-graph-lines-version-*
+{
+  height: 400px;
+}
 
 /*Tooltip*/
 #flot_chart_tooltip{
@@ -95,7 +80,6 @@
     background-color: #eee;
     opacity: 0.80;
 }
-
 .markers{
 
   padding: 2px;
@@ -104,69 +88,12 @@
   color: #d0d0d0;
   font-size: smaller;
 }
-
-/********* Chart legend + Info ********/
-#evm-legend-info{
-  border: lightgray 1px solid;
-  margin: 10px 10px 5px 10px;
-}
-
-#evm-legend-content{
-  margin: auto;
-  width: 900px;
-  overflow: auto;
-}
-
-#evm-legend-content div{
-  display: inline-block;
-  padding: 20px;
-  color: dimgray;
-  line-height: 5px;
-}
-
-#evm-legend-ev{
-  padding-top: 10px;
-  color: #8cc63f;
-}
-
-#evm-legend-ac{
-  padding-top: 20px;
-  color: #fcb040;
-}
-
-#evm-legend-pv{
-  padding-top: 20px;
-  color: #0f75bc ;
-}
-
-#evm-legend-forecast-container{
-  width: 410px;
-  margin: auto;
-}
-
-#evm-legend-forecast-container div{
-  display: inline-block;
-  padding: 20px;
-  color: dimgray;
-  line-height: 5px;
-}
-
-.evm-legend-lines{
-  margin: auto;
-  margin-bottom: 10px;
-}
-
-.evm-legend-lines > * {
-  display: inline;
-  margin-right: 5px;
-}
 a.tooltip:hover {
-     background: #ffffff;     /* IE6以下で必要 */
      text-decoration: none;
 }
 a.tooltip span {
      display: none;
-     padding: 8px;
+     padding: 2px;
      font-size: 12px;
      margin-left: 8px;
      line-height: 1.6;
@@ -177,5 +104,5 @@ a.tooltip:hover span{
      background-color: #FFF7EE;
      border: 1px solid #cccccc;
      color: #000000;
-     width: 200px;     /* a.tooltip spanに指定すると、IE6以下でspanの領域でマウスが反応してしまう */
+     width: 200px;
 }

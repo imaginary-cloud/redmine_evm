@@ -85,6 +85,11 @@ class Baseline < ActiveRecord::Base
     update_hours ? @end_date ||= maximum_end_date_when_update_hours.to_date : @end_date ||= due_date
   end
 
+  #Date
+  def today_date
+    Date.today
+  end
+
   #Plan Value (Today)
   def today_pv 
     self.planned_value.round(2)

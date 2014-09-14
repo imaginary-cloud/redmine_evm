@@ -15,7 +15,7 @@ module Forecastable
 
   #Variance at Completion (VAC)
   def variance_at_completion
-    budget_at_completion - estimate_at_completion_cost
+    (estimate_at_completion_cost - budget_at_completion).round(2)
   end
 
   # % Completed
@@ -101,4 +101,13 @@ module Forecastable
     eac = estimate_at_completion_cost
     eac_top_line = [[start_date, eac],[end_date_for_top_line, eac]]
   end
+
+  def estimate_at_completion
+    estimate_at_completion_cost.round(2)
+  end
+
+  def estimate_to_complete
+    (estimate_at_completion - project.actual_cost(self).to_f).round(2)
+  end
+
 end

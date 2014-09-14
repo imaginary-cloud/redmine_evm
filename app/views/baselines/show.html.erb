@@ -23,14 +23,9 @@
     <div>
       <%= collection_select :baseline, :id, @baselines, :id, :name %>
       <%# select_tag "id", options_from_collection_for_select(@baselines, "id", "name") %>
-    </div>
-  </fieldset>
-  <fieldset id="filters" class="collapsible collapsed">
-    <legend onclick="toggleFieldset(this);"><%= l(:label_options) %></legend>
-    <div style="display: none;">
       <% unless @project.actual_cost(@baseline) == 0 %>
-      <%= check_box_tag 'forecast', 'true', @forecast_is_enabled  %>
-      <%= label_tag 'Forecast' %>
+      <%= check_box_tag 'forecast' , 'true', @forecast_is_enabled  %>
+      <%= label_tag l(:label_forecast) %>
       <% end %>
     </div>
   </fieldset>
@@ -41,9 +36,11 @@
 <% end %>
 
 <!--Indicator value-->
+<h3><%= l(:subtitle_evm_summary)%></h3>
 <% if @project.earned_value(@baseline) != 0 %>
   <table id="evm-indicator-value-table">
     <tr>
+      <th>DATE</th>
       <th><a href="#" class="tooltip">BAC<span><%=l(:explanation_bac)%></span></a></th>
       <th><a href="#" class="tooltip">PV<span><%=l(:explanation_pv)%></span></a></th>
       <th><a href="#" class="tooltip">EV<span><%=l(:explanation_ev)%></span></a></th>
@@ -56,9 +53,11 @@
         <th><a href="#" class="tooltip">Complete<span><%=l(:explanation_complete)%></span></a></th>
         <th><a href="#" class="tooltip">EAC<span><%=l(:explanation_eac)%></span></a></th>
         <th><a href="#" class="tooltip">ETC<span><%=l(:explanation_etc)%></span></a></th>
+        <th><a href="#" class="tooltip">VAC<span><%=l(:explanation_vac)%></span></a></th>
       <% end %>
     </tr>
     <tr>
+      <td><%= @baseline.today_date%></td>
       <td><%= @baseline.project_budget_at_completion %></td>
       <td><%= @baseline.today_pv %> </td>
       <td><%= @baseline.today_ev %></td>
@@ -69,8 +68,9 @@
       <td><%= @baseline.cost_performance_index %></td>
       <% if @forecast_is_enabled %>
         <td><%= (@baseline.completed_actual * 100).round %>%</td>
-        <td><%= @baseline.estimate_to_complete.to_i.round %> </td>
-        <td><%= @baseline.variance_at_completion.round %></td>
+        <td><%= @baseline.estimate_at_completion %> </td>
+        <td><%= @baseline.estimate_to_complete %> </td>
+        <td><%= @baseline.variance_at_completion %></td>
       <% end %>
     </tr>
   </table>
@@ -78,18 +78,28 @@
 </br>
 
 <!--Charts-->
-<div id="evm-charts-wrapper" style="width:90;">
+<div id="evm-charts-wrapper">
   <!-- Main Chart -->
   <div id="evm-main-chart">
-    <div id='evm-graph-lines' class='evm-main-chart' style="width:90;height:400px;"></div>
+    <h3 class="version"> All</h3>
+    <div id='evm-graph-lines'></div>
     <%= render :partial => '/baselines/chart_js', :locals => { maximum_chart_date: @project.maximum_chart_date(@baseline), project_chart_data: @project.data_for_chart(@baseline, @forecast_is_enabled) } %>
   </div>
+  </br>
+  <!-- Legend -->
+  <table id="evm-legend">
+    <td id="evm-legend-pv"><%=l(:label_evm_legend_pv)%></td>
+    <td id="evm-legend-ev"><%=l(:label_evm_legend_ev)%></td>
+    <td id="evm-legend-ac"><%=l(:label_evm_legend_ac)%></td>
+    <td id="evm-legend-actual"><%=l(:label_evm_legend_actual)%></td>
+    <td id="evm-legend-predicted"><%=l(:label_evm_legend_predicted)%></td>
+  </table>
   <!-- Versions Charts -->
   <div id="evm-versions-charts">
     <% @project.versions.each do |version| %>
       <% unless version.is_excluded(@baseline) %>
         <h3 class="version"> <%= version.name %></h3>
-        <div id='evm-graph-lines-version-<%= version.id %>' style="width:90;height:400px;"></div>
+        <div id='evm-graph-lines-version-<%= version.id %>' style="height:300px;"></div>
         <%= render :partial => '/baselines/version_chart_js', :locals => { maximum_chart_date: version.maximum_chart_date(@baseline), version_chart_data: version.data_for_chart(@baseline), version: version } %> 
       <% end %>
     <% end %>
