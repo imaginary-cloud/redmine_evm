@@ -12,4 +12,4 @@ ctx.stroke();}
 ctx.save();ctx.translate(plotOffset.left,plotOffset.top);ctx.lineJoin='round';var lw=series.dashes.lineWidth,sw=series.shadowSize;if(lw>0&&sw>0){ctx.lineWidth=sw;ctx.strokeStyle="rgba(0,0,0,0.1)";var angle=Math.PI/18;plotDashes(series.datapoints,Math.sin(angle)*(lw/2+ sw/2),Math.cos(angle)*(lw/2+ sw/2),series.xaxis,series.yaxis);ctx.lineWidth=sw/2;plotDashes(series.datapoints,Math.sin(angle)*(lw/2+ sw/4),Math.cos(angle)*(lw/2+ sw/4),series.xaxis,series.yaxis);}
 ctx.lineWidth=lw;ctx.strokeStyle=series.color;if(lw>0){plotDashes(series.datapoints,0,0,series.xaxis,series.yaxis);}
 ctx.restore();});}
-$.plot.plugins.push({init:init,options:{series:{dashes:{show:false,lineWidth:1,dashLength:10}}},name:'dashes',version:'0.1b'});})(jQuery)
+$.plot.plugins.push({init:init,options:{series:{dashes:{show:false,lineWidth:1,dashLength:5}}},name:'dashes',version:'0.1b'});})(jQuery)
