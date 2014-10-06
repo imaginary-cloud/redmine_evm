@@ -1,0 +1,8 @@
+<% unless @issue.lastBaselineEstimatedHours.nil?  %>
+  <tr>
+    <th></th>
+    <td></td>
+    <th class="estimated-hours"><%= l(:field_baseline_estimated_hours) %>:</th>
+    <td class="estimated-hours"><%=  l_hours(@issue.lastBaselineEstimatedHours) %></td>
+  </tr>
+<% end %>

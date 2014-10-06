@@ -57,3 +57,5 @@ en:
   label_evm_legend_actual: Actual Values
   label_evm_legend_predicted: Predicted values
 
+  field_baseline_estimated_hours: Baseline estimated time
+

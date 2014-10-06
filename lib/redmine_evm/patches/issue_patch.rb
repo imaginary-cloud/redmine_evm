@@ -39,6 +39,10 @@ module RedmineEvm
         estimated_hours_for_chart(update_hours, baseline_id) / number_of_days 
       end
 
+      def lastBaselineEstimatedHours
+        baseline_issues.last.estimated_hours unless baseline_issues.last.nil?
+      end
+
       private 
         def dates 
           dates = []
