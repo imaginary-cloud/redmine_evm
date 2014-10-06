@@ -72,31 +72,31 @@ module Forecastable
   end
 
   def actual_cost_forecast_line
-    [[ Time.now.beginning_of_week, project.actual_cost(self) ], [ estimate_at_completion_duration.week.from_now.beginning_of_week, estimate_at_completion_cost ]] #The estimated line after actual cost
+    [[ Time.now, project.actual_cost(self) ], [ estimate_at_completion_duration.week.from_now, estimate_at_completion_cost ]] #The estimated line after actual cost
   end
 
   def earned_value_forecast_line
-    [[ Time.now.beginning_of_week, project.earned_value(self) ], [ estimate_at_completion_duration.week.from_now.beginning_of_week, budget_at_completion]]
+    [[ Time.now, project.earned_value(self) ], [ estimate_at_completion_duration.week.from_now, budget_at_completion]]
   end
 
   #End date for top lines. Detects if it is an old project, so it does not go beyond baseline due_date.
   def end_date_for_top_line
     if(end_date < Date.today) #If it is an old project.
-      end_date_for_top_line = [project.maximum_chart_date(self).beginning_of_week, self.end_date.beginning_of_week].max
+      end_date_for_top_line = [project.maximum_chart_date(self), self.end_date].max
     else
-      end_date_for_top_line = [project.maximum_chart_date(self).beginning_of_week, self.end_date.beginning_of_week, estimate_at_completion_duration.week.from_now].max
+      end_date_for_top_line = [project.maximum_chart_date(self), self.end_date, estimate_at_completion_duration.week.from_now].max
     end
   end
 
   #Ceiling line for the chart to indicate the project BAC value.
   def bac_top_line
     bac = budget_at_completion
-    bac_top_line = [[start_date.beginning_of_week, bac],[end_date_for_top_line, bac]] 
+    bac_top_line = [[start_date, bac],[end_date_for_top_line, bac]] 
   end
 
   #Ceiling line for the chart to indicate the project EAC value.
   def eac_top_line
     eac = estimate_at_completion_cost
-    eac_top_line = [[start_date.beginning_of_week, eac],[end_date_for_top_line, eac]]
+    eac_top_line = [[start_date, eac],[end_date_for_top_line, eac]]
   end
 end

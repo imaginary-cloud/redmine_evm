@@ -28,7 +28,7 @@ module RedmineEvm
         else
           array = []
           (dates2[0].to_date..dates2[1].to_date).each do |day|
-            array<< day.beginning_of_week
+            array<< day
           end
           @@days_by_week["#{dates2[0].to_date} #{dates2[1].to_date}"] = array.uniq
           array.uniq
