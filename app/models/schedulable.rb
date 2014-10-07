@@ -30,7 +30,7 @@ module Schedulable
       end
       unless baseline_issues.empty?
         baseline_issues.each do |baseline_issue|
-          next if baseline_issue.exclude || baseline_issue.estimated_hours_for_chart == 0
+          next if baseline_issue.exclude || baseline_issue.estimated_hours_for_chart == 0 || !baseline_issue.is_leaf
           baseline_issue.days.each do |day|
             planned_value_by_week[day] += baseline_issue.hours_per_day unless planned_value_by_week[day].nil?
           end
