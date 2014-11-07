@@ -15,7 +15,7 @@ module RedmineEvm
       end
     end
 
-    module ClassMethods  
+    module ClassMethods
     end
 
     module IssueInstanceMethods
@@ -36,15 +36,15 @@ module RedmineEvm
       end
 
       def hours_per_day update_hours, baseline_id
-        estimated_hours_for_chart(update_hours, baseline_id) / number_of_days 
+        estimated_hours_for_chart(update_hours, baseline_id) / number_of_days
       end
 
       def lastBaselineEstimatedHours
         baseline_issues.last.estimated_hours unless baseline_issues.last.nil?
       end
 
-      private 
-        def dates 
+      private
+        def dates
           dates = []
           selected_journals = journals.select {|journal| journal.journalized.done_ratio > 0}
           dates[0] = selected_journals.first.created_on unless selected_journals.first.nil?
@@ -60,9 +60,9 @@ module RedmineEvm
         end
 
         def estimated_hours_for_chart update_hours, baseline_id
-          update_hours ? closed? && baseline_issues.find_by_baseline_id(baseline_id).is_closed ? spent_hours : estimated_hours || 0 : estimated_hours || 0
+          update_hours ? closed? && baseline_issues.find_by_baseline_id(baseline_id).is_closed ? spent_hours : baseline_issues.find_by_baseline_id(baseline_id).estimated_hours || 0 : baseline_issues.find_by_baseline_id(baseline_id).estimated_hours || 0
         end
-      end  
+      end
     end
   end
 
