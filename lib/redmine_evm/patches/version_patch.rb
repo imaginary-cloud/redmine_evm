@@ -42,13 +42,13 @@ module RedmineEvm
 
         final_date = [maximum_chart_date(baseline), end_date].compact.max
         date_today = Date.today
-        if final_date > date_today      
+        if final_date > date_today
           final_date = date_today
         end
 
 
         summed_time_entries = self.summed_time_entries(baseline)
-        
+
         unless summed_time_entries.empty?
           (start_date..final_date.to_date).each do |key|
             unless summed_time_entries[key].nil?
@@ -65,12 +65,13 @@ module RedmineEvm
         earned_value_by_week = Hash.new { |h, k| h[k] = 0 }
         baseline_versions.find_by_baseline_id(baseline_id).update_hours ? update_hours = true : update_hours = false
         fixed_issues.each do |fixed_issue|
+          next if fixed_issue.baseline_issues.find_by_baseline_id(baseline_id).nil?
           fixed_issue.days.each do |day|
-            earned_value_by_week[day] += fixed_issue.hours_per_day(update_hours, baseline_id) * fixed_issue.done_ratio/100.0 
+            earned_value_by_week[day] += fixed_issue.hours_per_day(update_hours, baseline_id) * fixed_issue.done_ratio/100.0
           end
         end
         ordered_earned_value = order_earned_value earned_value_by_week
-        extend_earned_value_to_final_date ordered_earned_value, baseline_id      
+        extend_earned_value_to_final_date ordered_earned_value, baseline_id
       end
 
       def data_for_chart baseline
@@ -130,13 +131,13 @@ module RedmineEvm
           unless ordered_earned_value.empty?
             if ordered_earned_value.keys.last+1 <= dat
               (ordered_earned_value.keys.last+1..dat).each do |date|
-                ordered_earned_value[date] = 0 unless ordered_earned_value[date] 
+                ordered_earned_value[date] = 0 unless ordered_earned_value[date]
               end
-            end  
+            end
           end
           ordered_earned_value.each_with_object({}) { |(key, v), h| h[key] = v + (h.values.last||0) }
         end
-    end  
+    end
   end
 end
 

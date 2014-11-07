@@ -15,7 +15,7 @@ module RedmineEvm
       end
     end
 
-    module ClassMethods  
+    module ClassMethods
     end
 
     module ProjectInstanceMethods
@@ -46,7 +46,7 @@ module RedmineEvm
 
         final_date = [maximum_chart_date(baseline), end_date].compact.max
         date_today = Date.today
-        if final_date > date_today      
+        if final_date > date_today
           final_date = date_today
         end
 
@@ -68,9 +68,9 @@ module RedmineEvm
         earned_value_by_week = Hash.new { |h, k| h[k] = 0 }
         baselines.find(baseline_id).update_hours ? update_hours = true : update_hours = false
         issues.each do |issue|
-          next if issue.baseline_issues.find_by_baseline_id(baseline_id).try(:exclude)
+          next if issue.baseline_issues.find_by_baseline_id(baseline_id).try(:exclude)  || issue.baseline_issues.find_by_baseline_id(baseline_id).nil?
           issue.days.each do |day|
-            earned_value_by_week[day] += issue.hours_per_day(update_hours, baseline_id) * issue.done_ratio/100.0 
+            earned_value_by_week[day] += issue.hours_per_day(update_hours, baseline_id) * issue.done_ratio/100.0
           end
         end
         ordered_earned_value = order_earned_value earned_value_by_week
@@ -80,14 +80,14 @@ module RedmineEvm
       def earned_value baseline_id
         sum_earned_value = 0
         issues.each do |issue|
-          next if issue.baseline_issues.where(original_issue_id: issue.id, baseline_id: baseline_id).first.try(:exclude)
+          next if issue.baseline_issues.where(original_issue_id: issue.id, baseline_id: baseline_id).first.try(:exclude) || issue.baseline_issues.find_by_baseline_id(baseline_id).nil?
           if baselines.find(baseline_id).update_hours
             if issue.closed?
               next if issue.spent_hours == 0
-              sum_earned_value += issue.spent_hours * (issue.done_ratio / 100.0)    
+              sum_earned_value += issue.spent_hours * (issue.done_ratio / 100.0)
             else
               next if issue.estimated_hours.nil?
-              sum_earned_value += issue.estimated_hours * (issue.done_ratio / 100.0)  
+              sum_earned_value += issue.estimated_hours * (issue.done_ratio / 100.0)
             end
           else
             next if issue.estimated_hours.nil?
@@ -155,9 +155,9 @@ module RedmineEvm
           unless ordered_earned_value.empty?
             if ordered_earned_value.keys.last+1 <= dat
               (ordered_earned_value.keys.last+1..dat).each do |date|
-                ordered_earned_value[date] = 0 unless ordered_earned_value[date] 
+                ordered_earned_value[date] = 0 unless ordered_earned_value[date]
               end
-            end  
+            end
           end
           ordered_earned_value.each_with_object({}) { |(key, v), h| h[key] = v + (h.values.last||0) }
         end
