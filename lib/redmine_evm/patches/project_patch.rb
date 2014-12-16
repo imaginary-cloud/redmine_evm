@@ -81,14 +81,9 @@ module RedmineEvm
         sum_earned_value = 0
         issues.each do |issue|
           next if issue.baseline_issues.where(original_issue_id: issue.id, baseline_id: baseline_id).first.try(:exclude) || issue.baseline_issues.find_by_baseline_id(baseline_id).nil? || !issue.leaf?
-          if baselines.find(baseline_id).update_hours
-            if issue.closed?
-              next if issue.spent_hours == 0
-              sum_earned_value += issue.spent_hours * (issue.done_ratio / 100.0)
-            else
-              next if issue.estimated_hours.nil?
-              sum_earned_value += issue.estimated_hours * (issue.done_ratio / 100.0)
-            end
+          if baselines.find(baseline_id).update_hours && issue.closed?
+            next if issue.spent_hours == 0
+            sum_earned_value += issue.spent_hours * (issue.done_ratio / 100.0)
           else
             next if issue.estimated_hours.nil?
             sum_earned_value += issue.estimated_hours * (issue.done_ratio / 100.0)
