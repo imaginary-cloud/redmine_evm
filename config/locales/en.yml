@@ -15,7 +15,7 @@ en:
   label_select_baseline: Select Baseline
 
   title_evm_tab: EVM Indicators
-  subtitle_evm_tab: Here you can see how your project is progressing relative to the plan seted
+  subtitle_evm_tab: Here you can see how your project is progressing relative to the set plan
   subtitle_evm_summary: Summary
   subtitle_evm_forecast: Forecast
 
@@ -28,7 +28,9 @@ en:
   label_the_project_is: The project is
   label_ahead_schedule: ahead schedule
   label_behind_schedule: behind schedule
+  label_on_schedule: on schedule
   label_above_budget: above budget
+  label_on_budget: on budget
   label_under_budget: under budget
 
   label_the_project_is_now: The project is now 

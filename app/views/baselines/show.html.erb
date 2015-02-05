@@ -35,7 +35,7 @@
             </div>
           </div>
           <p>
-            <b><%= l(:label_the_project_is)%> <%= label_cost_performance_percentage %>%</b><br>
+            <b><%= l(:label_the_project_is)%> <%= "#{label_cost_performance_percentage}%" if label_cost_performance_percentage%></b><br>
             <%= label_cost_performance_status %> 
           </p>
         </div>
@@ -54,8 +54,9 @@
           </div>
           <div id="evm-cpi-barchart"></div>
           <p>
-            <b><%= l(:label_the_project_is)%> <%= label_schedule_performance_percentage %>%</b><br> 
-            <%= label_schedule_performance_status%>
+
+            <b><%= l(:label_the_project_is)%> <%= "#{label_schedule_performance_percentage}%" if label_schedule_performance_percentage %></b><br>
+            <%= label_schedule_performance_status %>
           </p>
         </div>
       </div>
