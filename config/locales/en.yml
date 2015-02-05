@@ -58,6 +58,16 @@ en:
   label_evm_legend_ev_description: total cost taken to complete the work
   label_evm_legend_actual: Actual Values
   label_evm_legend_predicted: Predicted values
-
   field_baseline_estimated_hours: Baseline estimated time
+  budget_at_complete: Budget at Complete
+  estimated_at_complete: Estimated at Complete
+  actual_cost_forecast: Actual Cost Forecast
+  earned_value_forecast: Earned Value Forcast
+  planned_value: Planned Value
+  actual_cost: Actual Cost
+  earned_value: Earned Value
+  date: Date
+  hours: Hours
+
+
 

@@ -10,7 +10,9 @@
   <%= javascript_include_tag 'drawindicators',    :plugin => 'redmine_evm' %>
   <%= javascript_include_tag '../../../javascripts/select_list_move', :plugin => 'redmine_evm' %>
 <% end %>
-
+<script>
+  <%=render partial: 'init_translations.js'%>
+</script>
 <!--Title-->
 <h2 id="evm-title"><%=l(:title_evm_tab)%></h2>
 <% html_title('EVM Indicators') %>

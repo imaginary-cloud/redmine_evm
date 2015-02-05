@@ -19,31 +19,31 @@ function drawChart(dataToChart, placeholder, actualWeek, endDate){
     var graphData = [
     { 
         data: data.bac_top_line,
-        label:"Budget at Complete", 
+        label: RedmineEVM.I18n.t('budget_at_complete'),
         color: "#CEE8FA", dashes: { show: true, lineWidth: 1 }
     },{ 
         data: data.eac_top_line ,
-        label: "Estimated at Complete",
+        label: RedmineEVM.I18n.t('estimated_at_complete'),
         color: "#FFE2B8", dashes: { show: true, lineWidth: 1 }     
     },{
         data: actualCostEstimateLine ,
-        label:"Actual Cost Forecast",
+        label: RedmineEVM.I18n.t('actual_cost_forecast'),
         color: "#FCB040", dashes: { show: true, lineWidth: 3 }, points: { show: true, fill: true, fillColor: "#FCB040" }
     },{ 
         data: earnedValueEstimateLine ,
-        label: "Earned Value Forecast",
+        label: RedmineEVM.I18n.t('earned_value_forecast'),
         color: "#8CC63F", dashes: { show: true, lineWidth: 3 }, points: { show: true, fill: true, fillColor: "#8CC63F" }       
     },{
         data: data.planned_value,
-        label: "Planned Value",
+        label: RedmineEVM.I18n.t('planned_value'),
         color: '#0F75BC'
     },{ 
         data: data.actual_cost,
-        label: "Actual Cost",
+        label: RedmineEVM.I18n.t('actual_cost'),
         color: '#FBC040'
     },{  
         data: data.earned_value,
-        label: "Earned Value",
+        label: RedmineEVM.I18n.t('earned_value'),
         color: '#8CC63F'
     }];
 
@@ -66,14 +66,14 @@ function drawChart(dataToChart, placeholder, actualWeek, endDate){
             mode: "time", 
             timeformat: "%d %b %Y", /*"%d %b %Y"*/
             minTickSize: [1, "day"],
-            axisLabel: 'Date',
+            axisLabel: RedmineEVM.I18n.t('date'),
             axisLabelUseCanvas: true,
             axisLabelFontSizePixels: 10,
             axisLabelPadding: 6
         },
         yaxis: {
             min: 0,
-            axisLabel: 'Hours',
+            axisLabel: RedmineEVM.I18n.t('hours'),
             axisLabelUseCanvas: true,
             axisLabelFontSizePixels: 10,
             axisLabelPadding: 6

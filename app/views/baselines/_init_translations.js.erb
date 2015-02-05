@@ -1,0 +1,8 @@
+RedmineEVM =  {};
+RedmineEVM.I18n = {
+    translations: <%= I18n.backend.send(:translations).reject{|(k,v)| k.kind_of? String}.to_json.html_safe %>,
+    locale: '<%= I18n.locale%>',
+    t: function( key ){
+        return this.translations[this.locale][key];
+    }
+};
