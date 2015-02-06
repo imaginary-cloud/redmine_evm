@@ -66,8 +66,8 @@ en:
   planned_value: Planned Value
   actual_cost: Actual Cost
   earned_value: Earned Value
-  date: Date
-  hours: Hours
+  label_date: Date
+  label_hours: Hours
 
 
 

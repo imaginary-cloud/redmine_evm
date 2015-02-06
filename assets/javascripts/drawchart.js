@@ -66,14 +66,14 @@ function drawChart(dataToChart, placeholder, actualWeek, endDate){
             mode: "time", 
             timeformat: "%d %b %Y", /*"%d %b %Y"*/
             minTickSize: [1, "day"],
-            axisLabel: RedmineEVM.I18n.t('date'),
+            axisLabel: RedmineEVM.I18n.t('label_date'),
             axisLabelUseCanvas: true,
             axisLabelFontSizePixels: 10,
             axisLabelPadding: 6
         },
         yaxis: {
             min: 0,
-            axisLabel: RedmineEVM.I18n.t('hours'),
+            axisLabel: RedmineEVM.I18n.t('label_hours'),
             axisLabelUseCanvas: true,
             axisLabelFontSizePixels: 10,
             axisLabelPadding: 6
