@@ -3,6 +3,7 @@ require File.expand_path('../../test_helper', __FILE__)
 
 class CommonViewsTest < ActionController::IntegrationTest
   fixtures :projects,
+           :enabled_modules,
            :users,
            :roles,
            :members,

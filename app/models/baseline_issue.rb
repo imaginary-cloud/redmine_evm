@@ -4,6 +4,11 @@ class BaselineIssue < ActiveRecord::Base
   belongs_to :baseline
   belongs_to :baseline_version
   belongs_to :issue, foreign_key: 'original_issue_id'
+
+  #scope :non_excluded, ->{
+  #  self.includes(:issue).where(issues:{excluded: false})
+  #}
+
   @@days_by_week = {}
 
   def days  
