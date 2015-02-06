@@ -11,6 +11,9 @@ module RedmineEvm
         base.class_eval do
           unloadable # Send unloadable so it will not be unloaded in development
           has_many :baseline_issues, :foreign_key => 'original_issue_id'
+          scope :non_excluded, ->{
+            self.where(excluded: false)
+          }
         end
       end
     end
