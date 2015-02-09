@@ -103,11 +103,18 @@ ActiveRecord::Fixtures.create_fixtures(Redmine::Plugin.find(:redmine_evm).direct
   end
 
   def test_actual_cost
-    assert_equal 7, @project.actual_cost(@baseline)
+    BaselineIssue.find(613).update_attributes(exclude: true)
+    assert_equal 7 - Issue.find(4544).time_entries.first.hours , @project.actual_cost(@baseline)
   end
 
   def test_schedule_performance_index
     assert_equal 0.03874538745387454, @baseline.schedule_performance_index
+  end
+
+  def test_defacto_start_date_for_baseline
+    BaselineIssue.find(613).update_attributes(exclude: true)
+    assert_equal Time.new(2013,1,2), @project.defacto_start_date_for_baseline(@baseline)
+    assert_not_equal @project.start_date, @project.defacto_start_date_for_baseline(@baseline)
   end
 
   def test_cost_performance_index
