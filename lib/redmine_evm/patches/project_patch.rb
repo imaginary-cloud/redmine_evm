@@ -70,8 +70,10 @@ module RedmineEvm
       def earned_value_by_week baseline_id
         earned_value_by_week = Hash.new { |h, k| h[k] = 0 }
         baselines.find(baseline_id).update_hours ? update_hours = true : update_hours = false
-        issues.each do |issue|
-          next if issue.baseline_issues.find_by_baseline_id(baseline_id).try(:exclude)  || issue.baseline_issues.find_by_baseline_id(baseline_id).nil? || !issue.leaf?
+        relevant_issues = issues.reject do |issue|
+          issue.baseline_issues.find_by_baseline_id(baseline_id).try(:exclude)  || issue.baseline_issues.find_by_baseline_id(baseline_id).nil? || !issue.leaf?
+        end
+        relevant_issues.each do |issue|
           issue.days.each do |day|
             earned_value_by_week[day] += issue.hours_per_day(update_hours, baseline_id) * issue.done_ratio/100.0
           end
@@ -82,8 +84,11 @@ module RedmineEvm
 
       def earned_value baseline_id
         sum_earned_value = 0
-        issues.each do |issue|
-          next if issue.baseline_issues.where(original_issue_id: issue.id, baseline_id: baseline_id).first.try(:exclude) || issue.baseline_issues.find_by_baseline_id(baseline_id).nil? || !issue.leaf?
+        relevant_issues = issues.reject do |issue|
+          issue.baseline_issues.where(original_issue_id: issue.id, baseline_id: baseline_id).first.try(:exclude) || issue.baseline_issues.find_by_baseline_id(baseline_id).nil? || !issue.leaf?
+        end
+
+        relevant_issues.each do |issue|
           if baselines.find(baseline_id).update_hours && issue.closed?
             next if issue.spent_hours == 0
             sum_earned_value += issue.spent_hours * (issue.done_ratio / 100.0)
@@ -100,6 +105,7 @@ module RedmineEvm
         chart_data['planned_value'] = convert_to_chart(baseline.planned_value_by_week)
         chart_data['actual_cost']   = convert_to_chart(self.actual_cost_by_week(baseline))
         chart_data['earned_value']  = convert_to_chart(self.earned_value_by_week(baseline))
+        byebug
 
         if(forecast_is_enabled)
           chart_data['actual_cost_forecast']  = convert_to_chart(baseline.actual_cost_forecast_line)

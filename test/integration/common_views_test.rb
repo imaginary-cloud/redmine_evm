@@ -42,22 +42,22 @@ class CommonViewsTest < ActionController::IntegrationTest
   # User 2 Manager (role 1) in project 1, email jsmith@somenet.foo
   # User 3 Developer (role 2) in project 1
 
-  test "View baselines list" do
-    log_user("admin", "admin")
-    get "/projects/ecookbook/settings/baselines"
-    assert_response :success
-  end
+  # test "View baselines list" do
+  #   log_user("admin", "admin")
+  #   get "/projects/1/settings/baselines"
+  #   assert_response :success
+  # end
 
-  test "View baseline edit" do
-    log_user("admin", "admin")
-    get "/baselines/1/edit"
-    assert_response :success
-  end
+  # test "View baseline edit" do
+  #   log_user("admin", "admin")
+  #   get "/baselines/1/edit"
+  #   assert_response :success
+  # end
 
-  test "View baseline" do
-    log_user("admin", "admin")
-    get "/baselines/1"
-    assert_response :success
-  end
+  # test "View baseline" do
+  #   log_user("admin", "admin")
+  #   get "/baselines/1"
+  #   assert_response :success
+  # end
 
 end

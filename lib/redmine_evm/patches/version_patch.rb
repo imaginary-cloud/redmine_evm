@@ -64,8 +64,10 @@ module RedmineEvm
       def earned_value_by_week baseline_id
         earned_value_by_week = Hash.new { |h, k| h[k] = 0 }
         baseline_versions.find_by_baseline_id(baseline_id).update_hours ? update_hours = true : update_hours = false
-        fixed_issues.each do |fixed_issue|
-          next if fixed_issue.baseline_issues.find_by_baseline_id(baseline_id).nil? || !fixed_issue.leaf?
+        relevant_issues = fixed_issues.reject do |issue|
+          issue.baseline_issues.find_by_baseline_id(baseline_id).nil? || !issue.leaf?
+        end
+        relevant_issues.each do |fixed_issue|
           fixed_issue.days.each do |day|
             earned_value_by_week[day] += fixed_issue.hours_per_day(update_hours, baseline_id) * fixed_issue.done_ratio/100.0
           end
@@ -93,7 +95,8 @@ module RedmineEvm
         issues = self.fixed_issues
 
         dates = []
-        dates << baseline_versions.where(baseline_id: baseline, original_version_id: id).first.try(:end_date) #planned value line, returns nil if not in a baseline
+        dates << baseline_versions.where(baseline_id: baseline, original_version_id: id)
+                                  .first.try(:end_date) #planned value line, returns nil if not in a baseline
         dates << issues.select("max(spent_on) as spent_on").joins(:time_entries).first.spent_on #actual cost line
         dates << issues.map(&:updated_on).compact.max.try(:to_date) #earned value
         dates << issues.map(&:closed_on).compact.max.try(:to_date) #earnedvalue

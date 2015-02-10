@@ -154,7 +154,9 @@
   <!-- Main Chart -->
   <div id="evm-main-chart">
     <div id='evm-graph-lines' class='evm-main-chart' style="width:70%;height:350px;margin:auto;"></div>
-    <%= render :partial => '/baselines/chart_js', :locals => { maximum_chart_date: @project.maximum_chart_date(@baseline), project_chart_data: @project.data_for_chart(@baseline, @forecast_is_enabled) } %>
+    <%= render(:partial => '/baselines/chart_js',
+               :locals => { maximum_chart_date: @project.maximum_chart_date(@baseline),
+                            project_chart_data: @project.data_for_chart(@baseline, @forecast_is_enabled) }) %>
   </div>
   <!-- Versions Charts -->
   <div id="evm-versions-charts">
