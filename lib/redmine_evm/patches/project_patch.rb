@@ -105,7 +105,6 @@ module RedmineEvm
         chart_data['planned_value'] = convert_to_chart(baseline.planned_value_by_week)
         chart_data['actual_cost']   = convert_to_chart(self.actual_cost_by_week(baseline))
         chart_data['earned_value']  = convert_to_chart(self.earned_value_by_week(baseline))
-        byebug
 
         if(forecast_is_enabled)
           chart_data['actual_cost_forecast']  = convert_to_chart(baseline.actual_cost_forecast_line)
