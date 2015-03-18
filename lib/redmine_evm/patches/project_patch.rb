@@ -26,7 +26,7 @@ module RedmineEvm
 
       def actual_cost baseline_id
         issues = filter_excluded_issues(baseline_id)
-        issues.select('sum(hours) as sum_hours').joins(:time_entries).first.sum_hours || 0
+        issues.select('sum(hours) as sum_hours').joins(:time_entries).first.sum_hours.to_f || 0
       end
 
       def summed_time_entries baseline_id
@@ -38,14 +38,14 @@ module RedmineEvm
       end
 
       def defacto_start_date_for_baseline(baseline)
-        self.filter_excluded_issues(baseline).minimum(:start_date) || self.start_date
+        self.filter_excluded_issues(baseline).minimum(:start_date).try(:to_date) || self.start_date.try(:to_date)
       end
 
       def actual_cost_by_week baseline
         actual_cost_by_weeks = {}
         time = 0
         start_date = self.defacto_start_date_for_baseline(baseline)
-        end_date   = issues.select("max(spent_on) as spent_on").joins(:time_entries).first.spent_on || start_date
+        end_date   = issues.select("max(spent_on) as spent_on").joins(:time_entries).first.spent_on.try(:to_date) || start_date.try(:to_date)
 
         final_date = [maximum_chart_date(baseline), end_date].compact.max
         date_today = Date.today
@@ -119,12 +119,12 @@ module RedmineEvm
         issues = filter_excluded_issues(baseline)
 
         dates = []
-        dates << baseline.due_date # planned value line
-        dates << issues.select("max(spent_on) as spent_on").joins(:time_entries).first.spent_on # actual cost line
+        dates << baseline.due_date.try(:to_date) # planned value line
+        dates << issues.select("max(spent_on) as spent_on").joins(:time_entries).first.spent_on.try(:to_date).try(:to_date) # actual cost line
         dates << issues.map(&:updated_on).compact.max.try(:to_date)
         dates << issues.map(&:closed_on).compact.max.try(:to_date)
 
-        dates << defacto_start_date_for_baseline(baseline) #If there is no data yet
+        dates << defacto_start_date_for_baseline(baseline).try(:to_date) #If there is no data yet
 
         dates.compact.max
         #dates.max.nil? ? 0 : dates.max
