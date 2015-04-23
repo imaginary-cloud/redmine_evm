@@ -32,6 +32,14 @@ module RedmineEvm
         Hash[query]
       end
 
+      def estimated_times_for_time_entries
+        issues = self.fixed_issues
+        query = issues.select('MAX(spent_on) AS spent_on, SUM(estimated_hours) AS sum_estimated_hours').
+            joins(:time_entries).
+            group('spent_on').collect { |issue| [issue.spent_on, issue.sum_estimated_hours] }
+        Hash[query]
+      end
+
       def actual_cost_by_week baseline
         issues = self.fixed_issues
         actual_cost_by_weeks = {}
@@ -132,14 +140,6 @@ module RedmineEvm
       end
 
       private
-
-      def estimated_times_for_time_entries
-        issues = self.fixed_issues
-        query = issues.select('MAX(spent_on) AS spent_on, SUM(estimated_hours) AS sum_estimated_hours').
-            joins(:time_entries).
-            group('spent_on').collect { |issue| [issue.spent_on, issue.sum_estimated_hours] }
-        Hash[query]
-      end
 
       def start_date_of_actual_cost
           fixed_issues.select("min(spent_on) as spent_on").joins(:time_entries).first.spent_on || project.start_date

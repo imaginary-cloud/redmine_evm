@@ -67,16 +67,28 @@ module RedmineEvm
       private
       def dates(pre_start_date)
         dates = []
-        if pre_start_date == nil
-          selected_journals = journals.select { |journal| journal.journalized.done_ratio > 0 }
-          dates[0] = selected_journals.first.created_on unless selected_journals.first.nil?
+        if time_entries.empty?
+          selected_journals = []
+          journals.each do |journal|
+            journal.details.each do |journal_detail|
+              if journal_detail.prop_key == 'done_ratio' && journal_detail.value.to_i > 0
+                selected_journals << journal_detail.journal
+              end
+            end
+          end
+          dates[0] = selected_journals.last.created_on unless selected_journals.first.nil?
           dates[0] = start_date? ? start_date : created_on if dates[0].nil?
         else
-          dates[0] = pre_start_date
+          dates[0] = time_entries.first.spent_on || time_entries.first.created_on
+        end
+
+        unless pre_start_date == nil
+          if pre_start_date.to_date > dates[0].to_date
+            dates[0] = pre_start_date.to_date
+          end
         end
 
         closed? ? dates[1] = closed_on : dates[1] = updated_on
-
         dates
       end
 

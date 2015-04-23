@@ -37,6 +37,14 @@ module RedmineEvm
         Hash[query]
       end
 
+      def estimated_times_for_time_entries baseline_id
+        issues = filter_excluded_issues(baseline_id)
+        query = issues.select('MAX(spent_on) AS spent_on, SUM(estimated_hours) AS sum_estimated_hours').
+            joins(:time_entries).
+            group('spent_on').collect { |issue| [issue.spent_on, issue.sum_estimated_hours] }
+        Hash[query]
+      end
+
       def defacto_start_date_for_baseline(baseline)
         self.filter_excluded_issues(baseline).minimum(:start_date) || self.start_date
       end
@@ -159,15 +167,6 @@ module RedmineEvm
       end
 
       private
-      
-      def estimated_times_for_time_entries baseline_id
-        issues = filter_excluded_issues(baseline_id)
-        query = issues.select('MAX(spent_on) AS spent_on, SUM(estimated_hours) AS sum_estimated_hours').
-            joins(:time_entries).
-            group('spent_on').collect { |issue| [issue.spent_on, issue.sum_estimated_hours] }
-        Hash[query]
-      end
-
 
       def order_earned_value earned_value
           ordered_earned_value = {}
