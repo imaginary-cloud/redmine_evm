@@ -24,8 +24,22 @@ module RedmineEvm
     module IssueInstanceMethods
       @@days_by_week = {}
 
+      def days_from_start start_date
+        dates2 = dates(start_date)
+        if @@days_by_week["#{dates2[0].to_date} #{dates2[1].to_date}"]
+          @@days_by_week["#{dates2[0].to_date} #{dates2[1].to_date}"]
+        else
+          array = []
+          (dates2[0].to_date..dates2[1].to_date).each do |day|
+            array<< day
+          end
+          @@days_by_week["#{dates2[0].to_date} #{dates2[1].to_date}"] = array.uniq
+          array.uniq
+        end
+      end
+
       def days
-        dates2 = dates
+        dates2 = dates(nil)
         if @@days_by_week["#{dates2[0].to_date} #{dates2[1].to_date}"]
           @@days_by_week["#{dates2[0].to_date} #{dates2[1].to_date}"]
         else
@@ -42,16 +56,24 @@ module RedmineEvm
         estimated_hours_for_chart(update_hours, baseline_id) / number_of_days
       end
 
+      def hours_per_day_from_start_date update_hours, baseline_id, start_date
+        estimated_hours_for_chart(update_hours, baseline_id) / number_of_days_from_start_date(start_date)
+      end
+
       def lastBaselineEstimatedHours
         baseline_issues.last.estimated_hours unless baseline_issues.last.nil?
       end
 
       private
-      def dates
+      def dates(pre_start_date)
         dates = []
-        selected_journals = journals.select { |journal| journal.journalized.done_ratio > 0 }
-        dates[0] = selected_journals.first.created_on unless selected_journals.first.nil?
-        dates[0] = start_date? ? start_date : created_on if dates[0].nil?
+        if pre_start_date == nil
+          selected_journals = journals.select { |journal| journal.journalized.done_ratio > 0 }
+          dates[0] = selected_journals.first.created_on unless selected_journals.first.nil?
+          dates[0] = start_date? ? start_date : created_on if dates[0].nil?
+        else
+          dates[0] = pre_start_date
+        end
 
         closed? ? dates[1] = closed_on : dates[1] = updated_on
 
@@ -60,6 +82,10 @@ module RedmineEvm
 
       def number_of_days
         days.size
+      end
+
+      def number_of_days_from_start_date start_date
+        days_from_start(start_date).size
       end
 
       def estimated_hours_for_chart update_hours, baseline_id

@@ -27,8 +27,8 @@ module RedmineEvm
       def summed_time_entries baseline_id
         issues = self.fixed_issues
         query = issues.select('MAX(spent_on) AS spent_on, SUM(hours) AS sum_hours').
-                joins(:time_entries).
-                group('spent_on').collect { |issue| [issue.spent_on, issue.sum_hours] }
+            joins(:time_entries).
+            group('spent_on').collect { |issue| [issue.spent_on, issue.sum_hours] }
         Hash[query]
       end
 
@@ -37,7 +37,7 @@ module RedmineEvm
         actual_cost_by_weeks = {}
         time = 0
 
-        start_date = issues.select("min(spent_on) as spent_on").joins(:time_entries).first.spent_on || project.start_date
+        start_date = start_date_of_actual_cost
         end_date   = issues.select("max(spent_on) as spent_on").joins(:time_entries).first.spent_on || start_date
 
         final_date = [maximum_chart_date(baseline), end_date].compact.max
@@ -45,7 +45,6 @@ module RedmineEvm
         if final_date > date_today
           final_date = date_today
         end
-
 
         summed_time_entries = self.summed_time_entries(baseline)
 
@@ -62,18 +61,34 @@ module RedmineEvm
       end
 
       def earned_value_by_week baseline_id
-        earned_value_by_week = Hash.new { |h, k| h[k] = 0 }
-        baseline_versions.find_by_baseline_id(baseline_id).update_hours ? update_hours = true : update_hours = false
-        relevant_issues = fixed_issues.reject do |issue|
-          issue.baseline_issues.find_by_baseline_id(baseline_id).nil? || !issue.leaf?
-        end
-        relevant_issues.each do |fixed_issue|
-          fixed_issue.days.each do |day|
-            earned_value_by_week[day] += fixed_issue.hours_per_day(update_hours, baseline_id) * fixed_issue.done_ratio/100.0
+        cur_baseline = baseline_versions.find_by_baseline_id(baseline_id)
+        cur_baseline.update_hours ? update_hours = true : update_hours = false
+
+        no_data = update_hours ? self.summed_time_entries(baseline_id).empty? : self.estimated_times_for_time_entries.empty?
+
+        if no_data
+          {}
+        else
+          earned_value_by_week = Hash.new { |h, k| h[k] = 0 }
+
+          start_date = start_date_of_actual_cost
+
+          if start_date > cur_baseline.start_date
+            start_date = cur_baseline.start_date
           end
+
+          relevant_issues = fixed_issues.reject do |issue|
+            issue.baseline_issues.find_by_baseline_id(baseline_id).nil? || !issue.leaf?
+          end
+
+          relevant_issues.each do |fixed_issue|
+            fixed_issue.days_from_start(start_date).each do |day|
+              earned_value_by_week[day] += fixed_issue.hours_per_day_from_start_date(update_hours, baseline_id, start_date) * fixed_issue.done_ratio/100.0
+            end
+          end
+          ordered_earned_value = order_earned_value earned_value_by_week
+          extend_earned_value_to_final_date ordered_earned_value, baseline_id
         end
-        ordered_earned_value = order_earned_value earned_value_by_week
-        extend_earned_value_to_final_date ordered_earned_value, baseline_id
       end
 
       def data_for_chart baseline
@@ -117,6 +132,19 @@ module RedmineEvm
       end
 
       private
+
+      def estimated_times_for_time_entries
+        issues = self.fixed_issues
+        query = issues.select('MAX(spent_on) AS spent_on, SUM(estimated_hours) AS sum_estimated_hours').
+            joins(:time_entries).
+            group('spent_on').collect { |issue| [issue.spent_on, issue.sum_estimated_hours] }
+        Hash[query]
+      end
+
+      def start_date_of_actual_cost
+          fixed_issues.select("min(spent_on) as spent_on").joins(:time_entries).first.spent_on || project.start_date
+        end
+
         def order_earned_value earned_value
           ordered_earned_value = {}
           earned_value.keys.sort.each do |key|
