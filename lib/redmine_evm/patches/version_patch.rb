@@ -32,14 +32,6 @@ module RedmineEvm
         Hash[query]
       end
 
-      def estimated_times_for_time_entries
-        issues = self.fixed_issues
-        query = issues.select('MAX(spent_on) AS spent_on, SUM(estimated_hours) AS sum_estimated_hours').
-            joins(:time_entries).
-            group('spent_on').collect { |issue| [issue.spent_on, issue.sum_estimated_hours] }
-        Hash[query]
-      end
-
       def actual_cost_by_week baseline
         issues = self.fixed_issues
         actual_cost_by_weeks = {}
@@ -72,31 +64,19 @@ module RedmineEvm
         cur_baseline = baseline_versions.find_by_baseline_id(baseline_id)
         cur_baseline.update_hours ? update_hours = true : update_hours = false
 
-        no_data = update_hours ? self.summed_time_entries(baseline_id).empty? : self.estimated_times_for_time_entries.empty?
+        earned_value_by_week = Hash.new { |h, k| h[k] = 0 }
 
-        if no_data
-          {}
-        else
-          earned_value_by_week = Hash.new { |h, k| h[k] = 0 }
-
-          start_date = start_date_of_actual_cost
-
-          if start_date > cur_baseline.start_date
-            start_date = cur_baseline.start_date
-          end
-
-          relevant_issues = fixed_issues.reject do |issue|
-            issue.baseline_issues.find_by_baseline_id(baseline_id).nil? || !issue.leaf?
-          end
-
-          relevant_issues.each do |fixed_issue|
-            fixed_issue.days_from_start(start_date).each do |day|
-              earned_value_by_week[day] += fixed_issue.hours_per_day_from_start_date(update_hours, baseline_id, start_date) * fixed_issue.done_ratio/100.0
-            end
-          end
-          ordered_earned_value = order_earned_value earned_value_by_week
-          extend_earned_value_to_final_date ordered_earned_value, baseline_id
+        relevant_issues = fixed_issues.reject do |issue|
+          issue.baseline_issues.find_by_baseline_id(baseline_id).nil? || !issue.leaf?
         end
+
+        relevant_issues.each do |fixed_issue|
+          fixed_issue.days.each do |day|
+            earned_value_by_week[day] += fixed_issue.hours_per_day(update_hours, baseline_id) * fixed_issue.done_ratio/100.0
+          end
+        end
+        ordered_earned_value = order_earned_value earned_value_by_week
+        extend_earned_value_to_final_date ordered_earned_value, baseline_id
       end
 
       def data_for_chart baseline
@@ -141,7 +121,7 @@ module RedmineEvm
 
       private
 
-      def start_date_of_actual_cost
+        def start_date_of_actual_cost
           fixed_issues.select("min(spent_on) as spent_on").joins(:time_entries).first.spent_on || project.start_date
         end
 

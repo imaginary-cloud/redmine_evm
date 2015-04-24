@@ -37,14 +37,6 @@ module RedmineEvm
         Hash[query]
       end
 
-      def estimated_times_for_time_entries baseline_id
-        issues = filter_excluded_issues(baseline_id)
-        query = issues.select('MAX(spent_on) AS spent_on, SUM(estimated_hours) AS sum_estimated_hours').
-            joins(:time_entries).
-            group('spent_on').collect { |issue| [issue.spent_on, issue.sum_estimated_hours] }
-        Hash[query]
-      end
-
       def defacto_start_date_for_baseline(baseline)
         self.filter_excluded_issues(baseline).minimum(:start_date) || self.start_date
       end
@@ -80,32 +72,19 @@ module RedmineEvm
         cur_baseline = baselines.find(baseline_id)
         cur_baseline.update_hours ? update_hours = true : update_hours = false
 
-        no_data = update_hours ? self.summed_time_entries(baseline_id).empty? : self.estimated_times_for_time_entries(baseline_id).empty?
+        earned_value_by_week = Hash.new { |h, k| h[k] = 0 }
 
-        if no_data
-          {}
-        else
-          earned_value_by_week = Hash.new { |h, k| h[k] = 0 }
-
-          start_date = self.defacto_start_date_for_baseline(cur_baseline)
-
-          if start_date > cur_baseline.start_date
-            start_date = cur_baseline.start_date
-          end
-
-          relevant_issues = issues.reject do |issue|
-            issue.baseline_issues.find_by_baseline_id(baseline_id).try(:exclude)  || issue.baseline_issues.find_by_baseline_id(baseline_id).nil? || !issue.leaf?
-          end
-
-          relevant_issues.each do |issue|
-            issue.days_from_start(start_date).each do |day|
-              earned_value_by_week[day] += issue.hours_per_day_from_start_date(update_hours, baseline_id, start_date) * issue.done_ratio/100.0
-            end
-          end
-          ordered_earned_value = order_earned_value earned_value_by_week
-          extend_earned_value_to_final_date ordered_earned_value, baseline_id
+        relevant_issues = issues.reject do |issue|
+          issue.baseline_issues.find_by_baseline_id(baseline_id).try(:exclude)  || issue.baseline_issues.find_by_baseline_id(baseline_id).nil? || !issue.leaf?
         end
 
+        relevant_issues.each do |issue|
+          issue.days.each do |day|
+            earned_value_by_week[day] += issue.hours_per_day(update_hours, baseline_id) * issue.done_ratio/100.0
+          end
+        end
+        ordered_earned_value = order_earned_value earned_value_by_week
+        extend_earned_value_to_final_date ordered_earned_value, baseline_id
       end
 
       def earned_value baseline_id

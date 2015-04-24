@@ -24,22 +24,8 @@ module RedmineEvm
     module IssueInstanceMethods
       @@days_by_week = {}
 
-      def days_from_start start_date
-        dates2 = dates(start_date)
-        if @@days_by_week["#{dates2[0].to_date} #{dates2[1].to_date}"]
-          @@days_by_week["#{dates2[0].to_date} #{dates2[1].to_date}"]
-        else
-          array = []
-          (dates2[0].to_date..dates2[1].to_date).each do |day|
-            array<< day
-          end
-          @@days_by_week["#{dates2[0].to_date} #{dates2[1].to_date}"] = array.uniq
-          array.uniq
-        end
-      end
-
       def days
-        dates2 = dates(nil)
+        dates2 = dates
         if @@days_by_week["#{dates2[0].to_date} #{dates2[1].to_date}"]
           @@days_by_week["#{dates2[0].to_date} #{dates2[1].to_date}"]
         else
@@ -56,37 +42,33 @@ module RedmineEvm
         estimated_hours_for_chart(update_hours, baseline_id) / number_of_days
       end
 
-      def hours_per_day_from_start_date update_hours, baseline_id, start_date
-        estimated_hours_for_chart(update_hours, baseline_id) / number_of_days_from_start_date(start_date)
-      end
-
       def lastBaselineEstimatedHours
         baseline_issues.last.estimated_hours unless baseline_issues.last.nil?
       end
 
       private
-      def dates(pre_start_date)
+      def dates
         dates = []
-        if time_entries.empty?
-          selected_journals = []
-          journals.each do |journal|
-            journal.details.each do |journal_detail|
-              if journal_detail.prop_key == 'done_ratio' && journal_detail.value.to_i > 0
-                selected_journals << journal_detail.journal
-              end
+
+        journals_with_progress_change = []
+        journals.each do |journal|
+          journal.details.each do |journal_detail|
+            if journal_detail.prop_key == 'done_ratio' && journal_detail.value.to_i > 0
+              journals_with_progress_change << journal_detail.journal
             end
           end
-          dates[0] = selected_journals.last.created_on unless selected_journals.first.nil?
-          dates[0] = start_date? ? start_date : created_on if dates[0].nil?
-        else
-          dates[0] = time_entries.first.spent_on || time_entries.first.created_on
         end
+        progess_start_date = journals_with_progress_change.first.created_on unless journals_with_progress_change.first.nil?
+        progess_start_date = start_date? ? start_date : created_on if progess_start_date.nil?
 
-        unless pre_start_date == nil
-          if pre_start_date.to_date > dates[0].to_date
-            dates[0] = pre_start_date.to_date
+        unless time_entries.empty?
+          time_entries_start_date = time_entries.first.spent_on || time_entries.first.created_on
+          if time_entries_start_date.to_date < progess_start_date.to_date
+            progess_start_date = time_entries_start_date
           end
         end
+
+        dates[0] = progess_start_date
 
         closed? ? dates[1] = closed_on : dates[1] = updated_on
         dates
@@ -94,10 +76,6 @@ module RedmineEvm
 
       def number_of_days
         days.size
-      end
-
-      def number_of_days_from_start_date start_date
-        days_from_start(start_date).size
       end
 
       def estimated_hours_for_chart update_hours, baseline_id
