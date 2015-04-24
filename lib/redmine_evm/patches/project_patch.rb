@@ -126,8 +126,6 @@ module RedmineEvm
         dates = []
         dates << baseline.due_date # planned value line
         dates << issues.select("max(spent_on) as spent_on").joins(:time_entries).first.spent_on # actual cost line
-        dates << issues.map(&:updated_on).compact.max.try(:to_date)
-        dates << issues.map(&:closed_on).compact.max.try(:to_date)
 
         dates << defacto_start_date_for_baseline(baseline) #If there is no data yet
 
