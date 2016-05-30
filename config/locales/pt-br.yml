@@ -1,0 +1,70 @@
+# Portuguese Brazil strings go here for Rails i18n
+pt-br:
+  # my_label: "My label"
+  label_baseline: Linha de Base
+  label_baseline_plural: Linhas de Base
+  label_baseline_version: VersÃ£o da Linha de Base
+  label_baseline_set: Atribuir Linha de Base
+
+  label_due_date: Data fim
+  label_created_date: Data de CriaÃ§Ã£o
+
+  label_current_baseline: Atual
+  label_old_baseline: Antigo
+
+  label_select_baseline: Selecione a Linha de Base
+
+  title_evm_tab: EVM Indicadores
+  subtitle_evm_tab: Aqui vocÃª pode ver como o projeto estÃ¡ progredindo em relaÃ§Ã£o ao plano de conjunto
+  subtitle_evm_summary: Resumo
+  subtitle_evm_forecast: PrevisÃ£o
+
+  label_project_cost: Custo do projeto
+  label_project_schedule: Cronograma do projeto
+
+  label_update_estimated_hours: Tempo gasto em horas planejadas em tarefas fechadas
+
+  #Bar indicators label
+  label_the_project_is: O projeto Ã©
+  label_ahead_schedule: ProgramaÃ§Ã£o do projeto
+  label_behind_schedule: Atraso
+  label_on_schedule: Dentro do cronograma
+  label_above_budget: Acima do orÃ§amento
+  label_on_budget: Sobre o orÃ§amento
+  label_under_budget: Abaixo do orÃ§amento
+
+  label_the_project_is_now: O projeto esta agora
+  label_the_project_is_estimated: O projeto necessita estimativas
+  label_to_finish_the_project: Para terminar o projeto
+  label_hours_less_than_planned: Horas a baixo do previsto
+  label_hours_more_than_planned: Horas acima do previsto
+  label_done: Feito
+  label_hours_are_needed: Horas necessÃ¡rias
+  label_according_to_estimate: De acordo com o previsto
+
+  error_no_baseline: Por favor, escolha uma Linha de Base antes de prosseguir
+  error_no_issues: Por favor, defina tarefas antes de prosseguir
+
+  warning_log_time_with_no_issue: O custo atual nÃ£o Ã© preciso. HÃ¡ momentos de log com nenhum problema associado.
+  warning_log_time_before_start_date: O custo real nÃ£o Ã© preciso. HÃ¡ momentos de log antes da data de inÃ­cio do projeto.
+
+  label_not_avaliable: NÃ£o disponÃ­vel
+
+  label_evm_legend_pv: Valor Planejado (VP)
+  label_evm_legend_pv_description: Custo total do trabalho estimado / planejado
+  label_evm_legend_ac: Custo real (CR)
+  label_evm_legend_ac_description: Custo total da obra concluÃ­da / desenvolvido
+  label_evm_legend_ev: Valor Agregado (VA)
+  label_evm_legend_ev_description: Custo total necessÃ¡rio para completar o trabalho
+  label_evm_legend_actual: Valores atuais
+  label_evm_legend_predicted: Valores previstos
+  field_baseline_estimated_hours: Linha de Base tempo estimado
+  budget_at_complete: OrÃ§amento para completar
+  estimated_at_complete: Estimado para completar
+  actual_cost_forecast: PrevisÃ£o do Custo Real
+  earned_value_forecast: Valor Agragado
+  planned_value: Valor Planejado
+  actual_cost: Custo atual
+  earned_value: Valor Agregado
+  label_date: Data
+  label_hours: Horas
