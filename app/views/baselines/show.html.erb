@@ -8,7 +8,7 @@
   <%= javascript_include_tag 'flotdashes',        :plugin => 'redmine_evm' %>
   <%= javascript_include_tag 'drawchart',         :plugin => 'redmine_evm' %>
   <%= javascript_include_tag 'drawindicators',    :plugin => 'redmine_evm' %>
-  <%= javascript_include_tag '../../../javascripts/select_list_move', :plugin => 'redmine_evm' %>
+  <%= javascript_include_tag '../../../javascripts/select_list_move', :plugin => 'redmine_evm' if Redmine::VERSION.to_s < '3.0' %>
 <% end %>
 <script>
   <%=render partial: 'init_translations.js'%>
