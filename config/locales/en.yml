@@ -34,6 +34,7 @@ en:
   label_under_budget: under budget
 
   label_the_project_is_now: The project is now 
+  estimated_cost_at_completion: Estimated Cost at Completion
   label_the_project_is_estimated: The project is estimated to need
   label_to_finish_the_project: to finish the project
   label_hours_less_than_planned: hours less than planned 
