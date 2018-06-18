@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file. This projec
 
 ## [1.0.2](https://github.com/imaginary-cloud/redmine_evm/tree/v1.0.2) - 2018-06-19
 
-## Added
+### Added
 
 - Information about project cost calculation (issue #60)
 - Provide EAC (Estimated Cost at Completion) based on history (issue #50)
