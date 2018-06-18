@@ -15,9 +15,10 @@ With this plugin you can:
 ## Installation
 
 1. Download tarball
-2. cd {redmine_root}/plugins/; mkdir redmine_evm
-3. Extract files to {redmine_root}/plugins/redmine_evm/
-4. rake redmine:plugins:migrate NAME=redmine_evm RAILS_ENV=production
+2. `cd {redmine_root}/plugins/`
+3. `mkdir redmine_evm`
+4. Extract files to {redmine_root}/plugins/redmine_evm/
+5. `rake redmine:plugins:migrate NAME=redmine_evm RAILS_ENV={Environment}`
 
 ## How to use
 
@@ -33,9 +34,12 @@ EVM, CPI, SPI, Earned Value Management, Baseline, Forecast, Redmine, Plugin
 
 Support will only be given to the following versions or above:
 
-* Redmine version                2.5.0.stable
-* Ruby version                   1.9.2-p328
-* Rails version                  3.2.17
+* Redmine version                2.6.10
+* Ruby version                   2.2.0
+* Rails version                  3.2.22
+
+Note: Redmine 2.6.5 does not support Ruby 2.2. Redmine 2.6.6 supports it (#19652). [Link](http://www.redmine.org/projects/redmine/wiki/RedmineInstall/252#Requirements)
+
 
 ## License
 
