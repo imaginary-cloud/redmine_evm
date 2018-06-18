@@ -1,6 +1,6 @@
 # Redmine EVM
 
-V1.0.0 (4-Jul-2014)
+V1.0.1 (18-Jun-2018)
 
 
 ## About
