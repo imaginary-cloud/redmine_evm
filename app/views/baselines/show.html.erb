@@ -43,7 +43,7 @@
         </div>
 
         <div class="indicators-container">
-          <h5><%= l(:label_project_cost) %></h5>
+          <h5><%= l(:label_project_cost) %> (CPI) </h5>
           <div id="evm-cpi-bars-container" class="evm-bars-container">
             <div id="evm-cpi-ev-bar-container" class="bars">
               <p>EV</p>
@@ -71,7 +71,7 @@
           <h3><%= l(:subtitle_evm_forecast) %></h3>
           <div id="evm-forecast-indicators" class="sidebar-boxes" >
             <div id="evm-forecast-indicators-container" class="indicators-container">
-              <p><b><%=l(:estimated_cost_at_completion)%></b><br><%=  @baseline.estimate_at_completion_cost%>€</p>
+              <p><b><%=l(:estimated_cost_at_completion)%></b><br><%= (@baseline.estimate_at_completion_cost.to_f).round(2) %>€</p>
               
               <p><b><%=l(:label_the_project_is_now)%> <%= (@baseline.completed_actual * 100).round %>% <%= l(:label_done)%></b>
               <br> <%=l(:label_according_to_estimate)%></p>
