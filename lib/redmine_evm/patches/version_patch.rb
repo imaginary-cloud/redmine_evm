@@ -21,7 +21,7 @@ module RedmineEvm
     module VersionInstanceMethods
 
       def actual_cost baseline_id
-        spent_hours
+        spent_hours.to_f
       end
 
       def summed_time_entries baseline_id
@@ -37,10 +37,10 @@ module RedmineEvm
         actual_cost_by_weeks = {}
         time = 0
 
-        start_date = issues.select("min(spent_on) as spent_on").joins(:time_entries).first.spent_on || project.start_date
-        end_date   = issues.select("max(spent_on) as spent_on").joins(:time_entries).first.spent_on || start_date
+        start_date = issues.select("min(spent_on) as spent_on").joins(:time_entries).first.spent_on.try(:to_date) || project.start_date.try(:to_date)
+        end_date   = issues.select("max(spent_on) as spent_on").joins(:time_entries).first.spent_on.try(:to_date) || start_date.try(:to_date)
 
-        final_date = [maximum_chart_date(baseline), end_date].compact.max
+        final_date = [maximum_chart_date(baseline).try(:to_date), end_date.try(:to_date)].compact.max
         date_today = Date.today
         if final_date > date_today
           final_date = date_today
@@ -96,12 +96,12 @@ module RedmineEvm
 
         dates = []
         dates << baseline_versions.where(baseline_id: baseline, original_version_id: id)
-                                  .first.try(:end_date) #planned value line, returns nil if not in a baseline
-        dates << issues.select("max(spent_on) as spent_on").joins(:time_entries).first.spent_on #actual cost line
+                                  .first.try(:end_date).try(:to_date) #planned value line, returns nil if not in a baseline
+        dates << issues.select("max(spent_on) as spent_on").joins(:time_entries).first.spent_on.try(:to_date) #actual cost line
         dates << issues.map(&:updated_on).compact.max.try(:to_date) #earned value
         dates << issues.map(&:closed_on).compact.max.try(:to_date) #earnedvalue
         #fixed_issues updated on e closed on ...
-        dates << project.start_date #If there is no data yet
+        dates << project.start_date.try(:to_date) #If there is no data yet
 
         dates.compact.max
         #dates.max.nil? ? 0 : dates.max
