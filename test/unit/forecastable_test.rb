@@ -40,7 +40,7 @@ class ForecastableTest < ActiveSupport::TestCase
 
   def test_estimate_at_completion_duration
     time_difference = @baseline.end_date.to_date - @baseline.start_date.to_date
-    estimated_duration = time_difference.to_i - 5.125
+    estimated_duration = time_difference.to_i - @baseline.earned_schedule
     assert_equal estimated_duration, @baseline.estimate_at_completion_duration
   end
 
