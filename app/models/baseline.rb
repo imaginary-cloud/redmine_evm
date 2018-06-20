@@ -15,6 +15,8 @@ class Baseline < ActiveRecord::Base
 
   acts_as_customizable
 
+  attr_accessible :name, :description, :due_date, :update_hours
+
   safe_attributes 'name',
   'description',
   'due_date'

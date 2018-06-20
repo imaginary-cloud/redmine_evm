@@ -30,18 +30,18 @@ class ForecastableTest < ActiveSupport::TestCase
   end
 
   def test_planned_duration
-    pending "this was once working but needs to be reviewed for current data"
-    assert_equal 75, @baseline.planned_duration
+    time_difference = @baseline.end_date.to_date - @baseline.start_date.to_date
+    assert_equal time_difference.to_i, @baseline.planned_duration
   end
 
   def test_if_earned_schedule_returns_value
-    pending "this was once working but needs to be reviewed for current data"
-    assert_equal 0.125, @baseline.earned_schedule
+    assert_equal 5.125, @baseline.earned_schedule
   end
 
   def test_estimate_at_completion_duration
-    pending "this was once working but needs to be reviewed for current data"
-    assert_equal 74.875, @baseline.estimate_at_completion_duration
+    time_difference = @baseline.end_date.to_date - @baseline.start_date.to_date
+    estimated_duration = time_difference.to_i - @baseline.earned_schedule
+    assert_equal estimated_duration, @baseline.estimate_at_completion_duration
   end
 
   def test_actual_forecast_line
