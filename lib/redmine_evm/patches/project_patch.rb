@@ -107,8 +107,8 @@ module RedmineEvm
       end
 
       def schedule_performance_index_by_week pv_by_week, ev_by_week
-        select_keys = pv_by_week.select { |k| ev_by_week.keys.include? k }
-        spi_by_week = ev_by_week.merge(select_keys) { |k, ev, pv| ev / pv }
+        select_keys = ev_by_week.keys.size >= pv_by_week.keys.size ? ev_by_week.select { |k| pv_by_week.keys.include? k } : pv_by_week.select { |k| ev_by_week.keys.include? k }
+        spi_by_week = ev_by_week.keys.size >= pv_by_week.keys.size ? pv_by_week.merge(select_keys) { |k, pv, ev| ev / pv } : ev_by_week.merge(select_keys) { |k, ev, pv| ev / pv }
         spi_by_week
       end
 
