@@ -100,11 +100,36 @@ module RedmineEvm
         sum_earned_value
       end
 
-      def data_for_chart baseline, forecast_is_enabled
+      def cost_performance_index_by_week ac_by_week, ev_by_week
+        select_keys = ac_by_week.select { |key| ev_by_week.keys.include? key }
+        cpi_by_week = ev_by_week.merge(select_keys) { |k, ev, ac| ev / ac }
+        cpi_by_week
+      end
+
+      def schedule_performance_index_by_week pv_by_week, ev_by_week
+        select_keys = pv_by_week.select { |k| ev_by_week.keys.include? k }
+        spi_by_week = ev_by_week.merge(select_keys) { |k, ev, pv| ev / pv }
+        spi_by_week
+      end
+
+      def data_for_chart baseline, forecast_is_enabled, spi_is_enabled, cpi_is_enabled
         chart_data = {}
-        chart_data['planned_value'] = convert_to_chart(baseline.planned_value_by_week)
-        chart_data['actual_cost']   = convert_to_chart(self.actual_cost_by_week(baseline))
-        chart_data['earned_value']  = convert_to_chart(self.earned_value_by_week(baseline))
+        ac_by_week = self.actual_cost_by_week(baseline)
+        ev_by_week = self.earned_value_by_week(baseline)
+        pv_by_week = baseline.planned_value_by_week
+        chart_data['planned_value'] = convert_to_chart(pv_by_week)
+        chart_data['actual_cost']   = convert_to_chart(ac_by_week)
+        chart_data['earned_value']  = convert_to_chart(ev_by_week)
+        
+        if(cpi_is_enabled)
+          cpi_by_week = self.cost_performance_index_by_week(ac_by_week, ev_by_week)
+          chart_data['cpi_value'] = convert_to_chart(cpi_by_week)
+        end
+
+        if (spi_is_enabled)
+          spi_by_week = self.schedule_performance_index_by_week(pv_by_week, ev_by_week)
+          chart_data['spi_value'] = convert_to_chart(spi_by_week)
+        end
 
         if(forecast_is_enabled)
           chart_data['actual_cost_forecast']  = convert_to_chart(baseline.actual_cost_forecast_line)

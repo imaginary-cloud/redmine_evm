@@ -22,6 +22,8 @@ class BaselinesController < ApplicationController
   def show
     @baselines = @project.baselines.order('created_on DESC')
     @forecast_is_enabled = params[:forecast]
+    @spi_is_enabled = params[:spi]
+    @cpi_is_enabled = params[:cpi]
 
     if(@project.has_time_entries_with_no_issue)
       flash[:warning] = l(:warning_log_time_with_no_issue)

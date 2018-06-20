@@ -45,6 +45,14 @@ function drawChart(dataToChart, placeholder, actualWeek, endDate){
         data: data.earned_value,
         label: RedmineEVM.I18n.t('earned_value'),
         color: '#8CC63F'
+    },{  
+        data: data.cpi_value,
+        label: RedmineEVM.I18n.t('cpi_value'),
+        color: '#BFBFBF'
+    },{  
+        data: data.spi_value,
+        label: RedmineEVM.I18n.t('spi_value'),
+        color: '#A52A2A'
     }];
 
 

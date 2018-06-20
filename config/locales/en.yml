@@ -67,6 +67,12 @@ en:
   planned_value: Planned Value
   actual_cost: Actual Cost
   earned_value: Earned Value
+  cpi_value: Cost Performance Index
+  label_evm_legend_cpi: Cost Performance Index (CPI)
+  label_evm_legend_cpi_description: a measure of the efficiency of expenses spent on a project
+  spi_value: Schedule Performance Index
+  label_evm_legend_spi: Schedule Performance Index (SPI)
+  label_evm_legend_spi_description: is a ratio of the earned value (EV) to the planned value (PV)
   label_date: Date
   label_hours: Hours
 

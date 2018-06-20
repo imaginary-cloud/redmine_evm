@@ -130,6 +130,16 @@
   color: #0f75bc ;
 }
 
+#evm-legend-cpi{
+  padding-top: 20px;
+  color: #BFBFBF;
+}
+
+#evm-legend-spi{
+  padding-top: 20px;
+  color: #A52A2A ;
+}
+
 #evm-legend-forecast-container{
   width: 410px;
   margin: auto;

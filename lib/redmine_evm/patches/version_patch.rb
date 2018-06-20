@@ -57,7 +57,6 @@ module RedmineEvm
             actual_cost_by_weeks[key] = time      #time_entry to the beggining od week
           end
         end
-
         actual_cost_by_weeks
       end
 
@@ -76,17 +75,44 @@ module RedmineEvm
         extend_earned_value_to_final_date ordered_earned_value, baseline_id
       end
 
-      def data_for_chart baseline
+      def cost_performance_index_by_week ac_by_week, ev_by_week
+        select_keys = ac_by_week.select { |key| ev_by_week.keys.include? key }
+        cpi_by_week = ev_by_week.merge(select_keys) { |k, ev, ac| ev / ac }
+        cpi_by_week
+      end
+
+      def schedule_performance_index_by_week pv_by_week, ev_by_week
+        select_keys = pv_by_week.select { |k| ev_by_week.keys.include? k }
+        spi_by_week = ev_by_week.merge(select_keys) { |k, ev, pv| ev / pv }
+        spi_by_week
+      end
+
+      def data_for_chart baseline, spi_is_enabled, cpi_is_enabled
         #Need to show all versions but exclude the selected versions.
         baseline_version = baseline.baseline_versions.where(original_version_id: self.id, exclude: false).first
 
         chart_data = {}
+        ac_by_week = self.actual_cost_by_week(baseline)
         unless is_excluded(baseline) #If a version is not excluded.
           unless baseline_version.nil?
-            chart_data['planned_value'] = convert_to_chart(baseline_version.planned_value_by_week)
-            chart_data['earned_value']  = convert_to_chart(self.earned_value_by_week(baseline))
+            ev_by_week = self.earned_value_by_week(baseline)
+            pv_week = baseline_version.planned_value_by_week
+            chart_data['planned_value'] = convert_to_chart(pv_week)
+            chart_data['earned_value'] = convert_to_chart(ev_by_week)
+
+            if(cpi_is_enabled)
+              cpi_by_week = self.cost_performance_index_by_week(ac_by_week, ev_by_week)
+              chart_data['cpi_value'] = convert_to_chart(cpi_by_week)
+            end
+    
+            if (spi_is_enabled)
+              spi_by_week = self.schedule_performance_index_by_week(pv_week, ev_by_week)
+              chart_data['spi_value'] = convert_to_chart(spi_by_week)
+            end
+
           end
-          chart_data['actual_cost']   = convert_to_chart(self.actual_cost_by_week(baseline))
+          chart_data['actual_cost'] = convert_to_chart(ac_by_week)
+
         end
         chart_data #Data ready for chart flot.js to consume.
       end
