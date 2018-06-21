@@ -45,3 +45,8 @@ Note: Redmine 2.6.5 does not support Ruby 2.2. Redmine 2.6.6 supports it (#19652
 
 Copyright © 2014 ImaginaryCloud, imaginarycloud.com. This plugin is licensed under the MIT license.
 
+## About Imaginary Cloud
+
+![Imaginary Cloud](https://s3.eu-central-1.amazonaws.com/imaginary-images/Logo_IC_readme.svg)
+
+We apply our own Product Design Process to bring great digital products to life. Visit [our website](https://www.imaginarycloud.com) to find out about our other projects or [contact us](https://www.imaginarycloud.com/contacts) if there's an idea that you want to turn into an outstanding product, we'll take it from there!
