@@ -1,4 +1,4 @@
-# [Imaginary Cloud's](www.imaginarycloud.com) Contribution Guidelines
+# [Imaginary Cloud's](https://www.imaginarycloud.com) Contribution Guidelines
 
 We accept pull requests from everyone and you're very welcome to do it. Just be sure that you're following the Imaginary Clouds's Code of Conduct and everything will run smoothly thereafter.
 
