@@ -5,7 +5,7 @@ We accept pull requests from everyone and you're very welcome to do it. Just be 
 ## General Guidelines
 
 * Fork the repository;
-* Run tests: make redmine:plugins:test NAME=redmine_risk_management;
+* Run tests: make redmine:plugins:test NAME=redmine_evm;
 * Add test;
 * Make the test pass;
 * Test change on redmine (follow README installation guide);
