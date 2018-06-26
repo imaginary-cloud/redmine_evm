@@ -12,6 +12,8 @@ Redmine::Plugin.register :redmine_evm do
   project_module :evm do
   	permission :view_baselines, { :baselines => [:index, :show] }
     permission :manage_baselines, { :baselines => [:edit, :destroy, :new, :create, :update, :index]}
+    permission :view_rates, { :rates => [:index, :show] } 
+    permission :manage_rates, { :rates => [:edit, :destroy, :new, :create, :update, :index]}
   end
   menu :project_menu, :baselines,
        { :controller => 'baselines', :action => 'index' },

@@ -1,0 +1,6 @@
+<h2><%=l(:label_rate_set)%></h2>
+
+<%= form_tag project_rates_path(@project) do %>
+  <%= render :partial => 'rates/form', :locals => { :project => @project } %>
+  <%= submit_tag l(:button_create) %>
+<% end %>

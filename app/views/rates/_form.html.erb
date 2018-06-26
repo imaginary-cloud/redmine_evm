@@ -1,0 +1,17 @@
+<%= back_url_hidden_field_tag %>
+<%= error_messages_for 'rate' %>
+
+<div class="box tabular">
+  <% project.users.each do |user| %>
+    <%= fields_for "rates[]", @rate do |pf| %>
+      <% if !@project_user_rates.include? user.id %>
+        <p>
+          <%= label_tag user.name %>
+          <%= pf.number_field :rate, :step => 0.1%>
+          <%= pf.hidden_field :user_id, :value => user.id %>
+          <%= pf.hidden_field :project_id, :value => project.id %>
+        </p>
+      <% end %>
+    <% end %>
+  <% end %>
+</div>

@@ -1,0 +1,32 @@
+<!-- RATE SETTINGS TAB -->
+<!-- Check imaginary-intra-redmine/app/views/projects/settings/_versions.html.erb -->
+
+
+<% if @project.rates.any? %>
+    <table class="list versions">
+      <thead><tr>
+        <th><%= l(:label_user) %></th>
+        <th><%= l(:label_rate) %></th>
+        <th style="width:15%"></th>
+      </tr></thead>
+      <tbody>
+        <% @project.rates.each do |rate| %>
+          <tr class="rate">
+            <td class="user"><%= User.find(rate.user_id).name %></td>
+            <td class="rate"><%= rate.rate %></td>
+            <td class="buttons">
+              <% if rate.project == @project %>
+                  <%= link_to l(:button_edit), edit_rate_path(rate), :class => 'icon icon-edit' %>
+                  <%= delete_link rate_path(rate) %>
+              <% end %>
+            </td>
+          </tr>
+      <% end; reset_cycle %>
+      </tbody>
+    </table>
+
+<% else %>
+    <p class="nodata"><%= l(:label_no_data) %></p>
+<% end %>
+
+<p><%= link_to l(:label_rate_set), new_project_rate_path(@project, :back_url => ''), :class => 'icon icon-add' %></p>

@@ -11,6 +11,7 @@ module RedmineEvm
         base.class_eval do
           unloadable # Send unloadable so it will not be unloaded in development
           has_many :baselines
+          has_many :rates
         end
       end
     end

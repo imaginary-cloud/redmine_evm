@@ -6,6 +6,12 @@ en:
   label_baseline_version: Baseline Version
   label_baseline_set: Set Baseline
 
+  label_user: User
+  label_rate: Rate
+  label_rate_plural: Rates
+  label_rate_set: Set Rates
+  field_rate: Rate
+
   label_due_date: Due Date
   label_created_date: Created Date
 
@@ -45,6 +51,7 @@ en:
 
   error_no_baseline: Please set a baseline before proceeding
   error_no_issues: Please set a issue before proceeding
+  error_no_users: Please set a user before proceeding
 
   warning_log_time_with_no_issue: Actual cost is not accurate. There are log times with no issue associated.
   warning_log_time_before_start_date: Actual cost is not accurate. There are log times before the project start date.

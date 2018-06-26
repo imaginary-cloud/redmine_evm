@@ -20,6 +20,11 @@ module RedmineEvm
                       :partial => 'projects/baselines_settings',
                       :label => :label_baseline_plural})
 
+          tabs.push({ :name => 'rates',
+            :action => :view_rates,
+            :partial => 'projects/rates_settings',
+            :label => :label_rate_plural})
+          
           tabs
         end
       end

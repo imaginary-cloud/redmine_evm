@@ -1,0 +1,13 @@
+<h2><%= User.find(@rate.user_id).name %></h2>
+
+<%= labelled_form_for @rate do |f| %>
+  <div class="box tabular">
+    <p>
+      <%= f.number_field :rate, value: @rate.rate, :step => 0.1 %>
+      <%= f.hidden_field :user_id, :value => @rate.user_id %>
+      <%= f.hidden_field :project_id, :value => @rate.project_id %>
+    </p>
+  </div>  
+  <%= submit_tag l(:button_save) %>
+<% end %>
+
