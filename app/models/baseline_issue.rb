@@ -20,12 +20,13 @@ class BaselineIssue < ActiveRecord::Base
   end
   end
 
-  def hours_per_day
-    @hours_per_day ||= estimated_hours_for_chart / number_of_days 
+  def rates_per_day
+    @hours_per_day ||= estimated_rates_for_chart / number_of_days
   end
 
-  def estimated_hours_for_chart
-    @estimated_hours ||= update_hours ? is_closed ? spent_hours : estimated_hours || 0 : estimated_hours || 0
+  def estimated_rates_for_chart
+    user_rate = self.issue.user_rate
+    @estimated_hours ||= update_hours ? is_closed ? spent_hours * user_rate : estimated_hours || 0 * user_rate : estimated_hours || 0 * user_rate
   end
 
   private

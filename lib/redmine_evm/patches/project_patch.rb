@@ -25,13 +25,25 @@ module RedmineEvm
         issues.where("issues.id NOT IN (SELECT original_issue_id as id FROM baseline_issues WHERE exclude = 1 AND baseline_id = ?)", baseline_id)
       end
 
+      # CHANGED TO RATE
       def actual_cost baseline_id
         issues = filter_excluded_issues(baseline_id)
-        issues.select('sum(hours) as sum_hours').joins(:time_entries).first.sum_hours.to_f || 0
+        issues_cost = issues.collect { |issue| issue.spent_hours * issue.user_rate }
+        issues_cost.reduce(:+).to_f || 0
       end
 
       def summed_time_entries baseline_id
         issues = filter_excluded_issues(baseline_id)
+        query = issues.select('MAX(spent_on) AS spent_on, SUM(hours) AS sum_hours').
+                joins(:time_entries).
+                group('spent_on').collect { |issue| [issue.spent_on, issue.sum_hours] }
+        Hash[query]
+      end
+
+      def summed_rates baseline_id
+        issues = filter_excluded_issues(baseline_id)
+
+        issues.select('MAX(spent_on) AS spent_on').joins(:time_entries).group('spent_on')
         query = issues.select('MAX(spent_on) AS spent_on, SUM(hours) AS sum_hours').
                 joins(:time_entries).
                 group('spent_on').collect { |issue| [issue.spent_on, issue.sum_hours] }
@@ -83,6 +95,7 @@ module RedmineEvm
         extend_earned_value_to_final_date ordered_earned_value, baseline_id
       end
 
+      # CHANGED TO RATE
       def earned_value baseline_id
         sum_earned_value = 0
         relevant_issues = issues.reject do |issue|
@@ -90,15 +103,20 @@ module RedmineEvm
         end
 
         relevant_issues.each do |issue|
-          if baselines.find(baseline_id).update_hours && issue.closed?
-            next if issue.spent_hours == 0
-            sum_earned_value += issue.spent_hours * (issue.done_ratio / 100.0)
+          user_rate = assign_user_rate(issue)
+          if baselines.find(baseline_id).update_hours && issue.closed? 
+            next if issue.spent_hours == 0 || user_rate.nil?
+            sum_earned_value += (issue.spent_hours * user_rate.rate) * (issue.done_ratio / 100.0)
           else
-            next if issue.estimated_hours.nil?
-            sum_earned_value += issue.estimated_hours * (issue.done_ratio / 100.0)
+            next if issue.estimated_hours.nil? || user_rate.nil?
+            sum_earned_value += (issue.estimated_hours * user_rate.rate) * (issue.done_ratio / 100.0)
           end
         end
         sum_earned_value
+      end
+
+      def assign_user_rate issue
+        project.rates.where(user_id: issue.assigned_to_id).first unless issue.assigned_to_id.blank?
       end
 
       def data_for_chart baseline, forecast_is_enabled

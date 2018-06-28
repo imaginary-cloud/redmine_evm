@@ -14,6 +14,7 @@ module RedmineEvm
           scope :non_excluded, ->{
             self.where(excluded: false)
           }
+
         end
       end
     end
@@ -31,7 +32,7 @@ module RedmineEvm
         else
           array = []
           (dates2[0].to_date..dates2[1].to_date).each do |day|
-            array<< day
+            array << day
           end
           @@days_by_week["#{dates2[0].to_date} #{dates2[1].to_date}"] = array.uniq
           array.uniq
@@ -44,6 +45,11 @@ module RedmineEvm
 
       def lastBaselineEstimatedHours
         baseline_issues.last.estimated_hours unless baseline_issues.last.nil?
+      end
+
+      def user_rate
+        rate_object = self.project.rates.where(user_id: self.assigned_to_id).first unless self.assigned_to_id.blank?
+        rate_object.nil? ? 0 : rate_object.rate
       end
 
       private
